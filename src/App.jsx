@@ -45,17 +45,43 @@ function BeetleSVG({ width = 320, opacity = 1 }) {
 }
 
 function VWRoundel({ size = 48, invert = false }) {
-  const bg = invert ? S.cream : S.ink;
-  const fg = invert ? S.ink : S.cream;
+  // Period-style dark VW blue rather than modern bright blue
+  const vwBlue1966ish = "#0D4671";
+  const cream = "#F5E9D8";
+  const ink = "#111111";
+
+  const bg = invert ? cream : vwBlue1966ish;
+  const fg = invert ? vwBlue1966ish : cream;
+
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-label="Volkswagen roundel">
+      {/* Outer disc */}
       <circle cx="50" cy="50" r="48" fill={bg} />
+
+      {/* Outer ring */}
       <circle cx="50" cy="50" r="38" fill="none" stroke={fg} strokeWidth="3" />
-      {/* V shape */}
-      <polyline points="35,30 50,58 65,30" fill="none" stroke={fg} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-      {/* W shape */}
-      <polyline points="28,42 38,68 50,52 62,68 72,42" fill="none" stroke={fg} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-      {/* Dividing line */}
+
+      {/* V */}
+      <polyline
+        points="35,30 50,58 65,30"
+        fill="none"
+        stroke={fg}
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      {/* W */}
+      <polyline
+        points="28,42 38,68 50,52 62,68 72,42"
+        fill="none"
+        stroke={fg}
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      {/* Divider */}
       <line x1="28" y1="56" x2="72" y2="56" stroke={fg} strokeWidth="2.5" />
     </svg>
   );
@@ -319,7 +345,7 @@ function HomePage({ setPage }) {
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "52px 24px" }}>
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 24 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
-          <NavCard icon="✅" headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
+          <NavCard icon="✅" headline="Work Checklist" body="Nine phases. Every job in order. Video guides and references linked." cta="Open checklist" onClick={() => setPage("checklist")} />
           <NavCard icon="📁" headline="Build Folder" body="Photos and documents from the restoration. Add photos directly in Google Drive." cta="Open Drive" href={DRIVE_URL} />
         </div>
       </div>
