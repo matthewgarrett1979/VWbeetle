@@ -13,56 +13,51 @@ const S = {
   ink: "#1a1a1a",
 };
 
-function BeetleSVG({ width = 320, color = "#111111", opacity = 1 }) {
+function BeetleSVG({ width = 320, color = "#2B2B2B", opacity = 1 }) {
   return (
     <svg
       width={width}
-      viewBox="0 0 520 260"
-      fill="none"
+      viewBox="0 0 640 260"
       xmlns="http://www.w3.org/2000/svg"
       style={{ opacity }}
       aria-label="Classic Volkswagen Beetle silhouette"
     >
-      {/* Main silhouette */}
+      {/* Main body */}
       <path
         d="
-          M42 182
-          C48 160, 58 142, 76 126
-          C94 110, 116 98, 142 92
-          C152 72, 174 56, 204 48
-          C242 38, 292 38, 334 48
-          C375 58, 410 78, 436 104
-          C454 107, 470 114, 484 126
-          C496 137, 503 150, 506 164
-          L484 164
-          C478 150, 464 142, 446 142
-          C425 142, 409 152, 402 172
-          L336 172
-          C330 149, 308 131, 280 131
-          C251 131, 228 149, 221 172
-          L134 172
-          C128 149, 106 132, 78 132
-          C53 132, 34 148, 28 170
-          L18 170
-          C20 164, 22 158, 24 152
-          C28 144, 33 136, 39 128
-          C36 145, 37 162, 42 182
+          M64 179
+          C70 158, 82 141, 100 128
+          C121 112, 147 103, 181 99
+          C197 72, 228 52, 269 44
+          C316 35, 372 38, 418 52
+          C460 65, 497 89, 527 122
+          C548 125, 565 135, 578 148
+          C589 160, 596 172, 599 184
+          L566 184
+          C560 164, 544 151, 523 151
+          C495 151, 475 166, 468 192
+          L177 192
+          C171 165, 148 148, 120 148
+          C91 148, 69 165, 61 192
+          L40 192
+          C43 187, 47 183, 52 180
+          C56 179, 60 179, 64 179
           Z
         "
         fill={color}
       />
 
-      {/* Roof and cabin cut-outs */}
+      {/* Roof / greenhouse mass */}
       <path
         d="
-          M142 92
-          C152 72, 174 56, 204 48
-          C242 38, 292 38, 334 48
-          C374 58, 406 76, 432 102
-          C408 100, 390 98, 368 98
-          C352 77, 325 63, 292 58
-          C252 52, 214 55, 186 68
-          C165 78, 149 92, 142 92
+          M186 99
+          C199 77, 225 60, 261 50
+          C303 39, 353 40, 396 52
+          C434 62, 468 82, 500 115
+          C478 113, 458 112, 437 111
+          C420 91, 395 76, 363 67
+          C327 58, 285 58, 249 67
+          C221 74, 199 85, 186 99
           Z
         "
         fill={color}
@@ -71,140 +66,99 @@ function BeetleSVG({ width = 320, color = "#111111", opacity = 1 }) {
       {/* Window openings */}
       <path
         d="
-          M158 96
-          C165 80, 181 69, 202 63
-          C233 55, 266 54, 294 59
-          C320 64, 341 76, 356 95
-          L348 96
-          C342 85, 330 77, 314 73
-          C287 67, 255 67, 226 72
-          C198 78, 177 89, 165 105
-          C160 109, 154 110, 149 108
-          C146 104, 148 99, 158 96
+          M208 102
+          C219 83, 243 71, 276 66
+          C313 61, 351 64, 382 75
+          C403 83, 418 96, 426 113
+          L301 113
+          C299 96, 286 84, 266 82
+          C245 80, 226 88, 214 102
           Z
         "
-        fill="#EDE7DB"
+        fill="#EAE4D8"
       />
 
       <path
         d="
-          M367 99
-          C386 100, 404 102, 421 106
-          C409 92, 394 81, 377 73
-          C365 68, 352 70, 347 79
-          C344 86, 347 93, 355 97
-          C359 99, 363 99, 367 99
+          M305 113
+          L429 113
+          L429 152
+          C429 163, 421 171, 410 171
+          L315 171
+          C309 171, 305 167, 305 161
           Z
         "
-        fill="#EDE7DB"
+        fill="#EAE4D8"
       />
 
-      {/* Rear quarter window opening */}
       <path
         d="
-          M132 99
-          C117 102, 103 109, 90 119
-          C79 128, 72 137, 68 147
-          C66 153, 69 158, 76 159
-          L114 159
-          C124 159, 131 153, 131 143
-          L131 106
-          C131 103, 131 101, 132 99
+          M211 107
+          C198 112, 185 121, 174 133
+          C165 143, 159 153, 157 162
+          C156 168, 159 171, 165 171
+          L198 171
+          C206 171, 211 166, 211 158
           Z
         "
-        fill="#EDE7DB"
+        fill="#EAE4D8"
       />
 
-      {/* Door window opening */}
       <path
         d="
-          M143 105
-          C148 96, 160 88, 175 82
-          C200 73, 230 70, 258 71
-          C276 72, 291 76, 304 83
-          C312 88, 317 95, 318 103
-          L318 143
-          C318 152, 311 159, 302 159
-          L162 159
-          C151 159, 143 151, 143 140
+          M440 115
+          C452 97, 469 88, 490 89
+          C510 90, 531 101, 548 121
+          C552 126, 553 130, 551 133
+          C548 137, 544 138, 538 138
+          L455 138
+          C445 138, 438 129, 440 115
           Z
         "
-        fill="#EDE7DB"
+        fill="#EAE4D8"
       />
 
-      {/* Front screen opening */}
-      <path
-        d="
-          M326 103
-          C326 92, 332 84, 344 80
-          C357 76, 373 77, 388 84
-          C402 91, 414 101, 424 114
-          C427 118, 427 122, 425 125
-          C423 128, 419 129, 414 129
-          L340 129
-          C332 129, 326 122, 326 114
-          Z
-        "
-        fill="#EDE7DB"
-      />
+      {/* Door lines */}
+      <line x1="212" y1="110" x2="212" y2="191" stroke="#EAE4D8" strokeWidth="4" strokeLinecap="round" />
+      <line x1="302" y1="113" x2="302" y2="191" stroke="#EAE4D8" strokeWidth="4" strokeLinecap="round" />
 
-      {/* Wing lines / bonnet accents */}
+      {/* Running board */}
+      <line x1="155" y1="186" x2="309" y2="186" stroke="#EAE4D8" strokeWidth="5" strokeLinecap="round" />
+
+      {/* Bonnet / wing lines */}
       <path
-        d="M339 173 C345 154, 357 140, 374 129 C394 116, 418 112, 447 116"
-        stroke="#EDE7DB"
-        strokeWidth="4"
+        d="M446 186 C455 162, 472 145, 495 133 C515 123, 539 119, 563 122"
+        stroke="#EAE4D8"
+        strokeWidth="5"
         strokeLinecap="round"
       />
       <path
-        d="M363 173 C370 150, 384 131, 403 118 C421 106, 443 101, 466 103"
-        stroke="#EDE7DB"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-
-      {/* Door shut lines */}
-      <path
-        d="M141 112 L141 173"
-        stroke="#EDE7DB"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      <path
-        d="M216 108 L216 173"
-        stroke="#EDE7DB"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-
-      {/* Running board line */}
-      <path
-        d="M116 176 L244 176"
-        stroke="#EDE7DB"
-        strokeWidth="4"
+        d="M472 186 C480 160, 497 140, 520 127 C537 118, 555 114, 573 114"
+        stroke="#EAE4D8"
+        strokeWidth="5"
         strokeLinecap="round"
       />
 
       {/* Front bumper */}
-      <rect x="338" y="160" width="112" height="16" rx="8" fill="#EDE7DB" />
+      <rect x="456" y="173" width="118" height="16" rx="8" fill="#EAE4D8" />
 
-      {/* Headlights */}
-      <circle cx="366" cy="140" r="16" fill="#EDE7DB" />
-      <circle cx="472" cy="142" r="16" fill="#EDE7DB" />
-
-      {/* Small lights */}
-      <circle cx="400" cy="161" r="8" fill="#EDE7DB" />
-      <circle cx="456" cy="161" r="7" fill="#EDE7DB" />
+      {/* Lights */}
+      <circle cx="490" cy="144" r="18" fill="#EAE4D8" />
+      <circle cx="582" cy="146" r="18" fill="#EAE4D8" />
+      <circle cx="528" cy="173" r="8" fill="#EAE4D8" />
+      <circle cx="565" cy="173" r="8" fill="#EAE4D8" />
 
       {/* Wheels */}
-      <circle cx="78" cy="180" r="34" fill={color} />
-      <circle cx="78" cy="180" r="24" fill="#EDE7DB" />
-      <circle cx="78" cy="180" r="9" fill={color} />
+      <circle cx="120" cy="184" r="34" fill={color} />
+      <circle cx="120" cy="184" r="23" fill="#EAE4D8" />
+      <circle cx="120" cy="184" r="8" fill={color} />
 
-      <circle cx="286" cy="180" r="37" fill={color} />
-      <circle cx="286" cy="180" r="26" fill="#EDE7DB" />
-      <circle cx="286" cy="180" r="10" fill={color} />
+      <circle cx="302" cy="184" r="36" fill={color} />
+      <circle cx="302" cy="184" r="24" fill="#EAE4D8" />
+      <circle cx="302" cy="184" r="8" fill={color} />
 
-      <circle cx="454" cy="182" r="34" fill={color} />
+      {/* Suggest front wheel cropped by wing for a more period silhouette */}
+      <circle cx="520" cy="185" r="34" fill={color} />
     </svg>
   );
 }
