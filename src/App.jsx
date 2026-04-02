@@ -13,33 +13,198 @@ const S = {
   ink: "#1a1a1a",
 };
 
-// SVG Beetle silhouette — classic Type 1 profile
-function BeetleSVG({ width = 320, opacity = 1 }) {
+function BeetleSVG({ width = 320, color = "#111111", opacity = 1 }) {
   return (
-    <svg width={width} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
-      {/* Body */}
-      <ellipse cx="195" cy="130" rx="160" ry="48" fill={S.ink} />
-      {/* Roof */}
-      <path d="M110 130 Q115 75 160 62 Q200 52 240 62 Q282 72 290 130Z" fill={S.ink} />
-      {/* Windscreen highlight */}
-      <path d="M155 125 Q158 85 175 72 Q195 63 215 72 Q230 82 233 125Z" fill={S.cream} opacity="0.12" />
-      {/* Rear window */}
-      <path d="M242 125 Q245 88 258 78 Q272 70 282 85 Q287 100 285 125Z" fill={S.cream} opacity="0.1" />
-      {/* Front wheel arch */}
-      <ellipse cx="98" cy="160" rx="36" ry="18" fill={S.cream} />
-      <ellipse cx="98" cy="160" rx="28" ry="13" fill={S.ink} />
-      <ellipse cx="98" cy="160" rx="10" ry="8" fill={S.cream} opacity="0.3" />
-      {/* Rear wheel arch */}
-      <ellipse cx="290" cy="160" rx="40" ry="18" fill={S.cream} />
-      <ellipse cx="290" cy="160" rx="30" ry="13" fill={S.ink} />
-      <ellipse cx="290" cy="160" rx="11" ry="8" fill={S.cream} opacity="0.3" />
-      {/* Bumpers */}
-      <rect x="34" y="138" width="18" height="8" rx="3" fill={S.cream} opacity="0.6" />
-      <rect x="348" y="136" width="18" height="8" rx="3" fill={S.cream} opacity="0.6" />
-      {/* Headlamp */}
-      <circle cx="55" cy="128" r="9" fill={S.cream} opacity="0.5" />
-      {/* Door line */}
-      <line x1="168" y1="82" x2="195" y2="140" stroke={S.cream} strokeWidth="1" opacity="0.15" />
+    <svg
+      width={width}
+      viewBox="0 0 520 260"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ opacity }}
+      aria-label="Classic Volkswagen Beetle silhouette"
+    >
+      {/* Main silhouette */}
+      <path
+        d="
+          M42 182
+          C48 160, 58 142, 76 126
+          C94 110, 116 98, 142 92
+          C152 72, 174 56, 204 48
+          C242 38, 292 38, 334 48
+          C375 58, 410 78, 436 104
+          C454 107, 470 114, 484 126
+          C496 137, 503 150, 506 164
+          L484 164
+          C478 150, 464 142, 446 142
+          C425 142, 409 152, 402 172
+          L336 172
+          C330 149, 308 131, 280 131
+          C251 131, 228 149, 221 172
+          L134 172
+          C128 149, 106 132, 78 132
+          C53 132, 34 148, 28 170
+          L18 170
+          C20 164, 22 158, 24 152
+          C28 144, 33 136, 39 128
+          C36 145, 37 162, 42 182
+          Z
+        "
+        fill={color}
+      />
+
+      {/* Roof and cabin cut-outs */}
+      <path
+        d="
+          M142 92
+          C152 72, 174 56, 204 48
+          C242 38, 292 38, 334 48
+          C374 58, 406 76, 432 102
+          C408 100, 390 98, 368 98
+          C352 77, 325 63, 292 58
+          C252 52, 214 55, 186 68
+          C165 78, 149 92, 142 92
+          Z
+        "
+        fill={color}
+      />
+
+      {/* Window openings */}
+      <path
+        d="
+          M158 96
+          C165 80, 181 69, 202 63
+          C233 55, 266 54, 294 59
+          C320 64, 341 76, 356 95
+          L348 96
+          C342 85, 330 77, 314 73
+          C287 67, 255 67, 226 72
+          C198 78, 177 89, 165 105
+          C160 109, 154 110, 149 108
+          C146 104, 148 99, 158 96
+          Z
+        "
+        fill="#EDE7DB"
+      />
+
+      <path
+        d="
+          M367 99
+          C386 100, 404 102, 421 106
+          C409 92, 394 81, 377 73
+          C365 68, 352 70, 347 79
+          C344 86, 347 93, 355 97
+          C359 99, 363 99, 367 99
+          Z
+        "
+        fill="#EDE7DB"
+      />
+
+      {/* Rear quarter window opening */}
+      <path
+        d="
+          M132 99
+          C117 102, 103 109, 90 119
+          C79 128, 72 137, 68 147
+          C66 153, 69 158, 76 159
+          L114 159
+          C124 159, 131 153, 131 143
+          L131 106
+          C131 103, 131 101, 132 99
+          Z
+        "
+        fill="#EDE7DB"
+      />
+
+      {/* Door window opening */}
+      <path
+        d="
+          M143 105
+          C148 96, 160 88, 175 82
+          C200 73, 230 70, 258 71
+          C276 72, 291 76, 304 83
+          C312 88, 317 95, 318 103
+          L318 143
+          C318 152, 311 159, 302 159
+          L162 159
+          C151 159, 143 151, 143 140
+          Z
+        "
+        fill="#EDE7DB"
+      />
+
+      {/* Front screen opening */}
+      <path
+        d="
+          M326 103
+          C326 92, 332 84, 344 80
+          C357 76, 373 77, 388 84
+          C402 91, 414 101, 424 114
+          C427 118, 427 122, 425 125
+          C423 128, 419 129, 414 129
+          L340 129
+          C332 129, 326 122, 326 114
+          Z
+        "
+        fill="#EDE7DB"
+      />
+
+      {/* Wing lines / bonnet accents */}
+      <path
+        d="M339 173 C345 154, 357 140, 374 129 C394 116, 418 112, 447 116"
+        stroke="#EDE7DB"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M363 173 C370 150, 384 131, 403 118 C421 106, 443 101, 466 103"
+        stroke="#EDE7DB"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+
+      {/* Door shut lines */}
+      <path
+        d="M141 112 L141 173"
+        stroke="#EDE7DB"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <path
+        d="M216 108 L216 173"
+        stroke="#EDE7DB"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+
+      {/* Running board line */}
+      <path
+        d="M116 176 L244 176"
+        stroke="#EDE7DB"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+
+      {/* Front bumper */}
+      <rect x="338" y="160" width="112" height="16" rx="8" fill="#EDE7DB" />
+
+      {/* Headlights */}
+      <circle cx="366" cy="140" r="16" fill="#EDE7DB" />
+      <circle cx="472" cy="142" r="16" fill="#EDE7DB" />
+
+      {/* Small lights */}
+      <circle cx="400" cy="161" r="8" fill="#EDE7DB" />
+      <circle cx="456" cy="161" r="7" fill="#EDE7DB" />
+
+      {/* Wheels */}
+      <circle cx="78" cy="180" r="34" fill={color} />
+      <circle cx="78" cy="180" r="24" fill="#EDE7DB" />
+      <circle cx="78" cy="180" r="9" fill={color} />
+
+      <circle cx="286" cy="180" r="37" fill={color} />
+      <circle cx="286" cy="180" r="26" fill="#EDE7DB" />
+      <circle cx="286" cy="180" r="10" fill={color} />
+
+      <circle cx="454" cy="182" r="34" fill={color} />
     </svg>
   );
 }
