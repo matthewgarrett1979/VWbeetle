@@ -363,7 +363,7 @@ function HomePage({ setPage }) {
 
       {/* Footer */}
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "28px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Restoration 2024–2025 · GU12</div>
+        <div style={{ fontFamily: S.font, fontSize: 12, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>VW Beetle 1966 Restoration 2024–2026 · Surrey</div>
         <VWRoundel size={34} />
       </div>
     </div>
