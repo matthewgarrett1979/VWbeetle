@@ -13,156 +13,19 @@ const S = {
   ink: "#1a1a1a",
 };
 
-function BeetleSVG({ width = 320, color = "#2B2B2B", opacity = 1 }) {
+function BeetleImage({ width = 320, opacity = 1 }) {
   return (
-    <svg
-      width={width}
-      viewBox="0 0 640 260"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ opacity }}
-      aria-label="Classic Volkswagen Beetle silhouette"
-    >
-      {/* Main body */}
-      <path
-        d="
-          M64 179
-          C70 158, 82 141, 100 128
-          C121 112, 147 103, 181 99
-          C197 72, 228 52, 269 44
-          C316 35, 372 38, 418 52
-          C460 65, 497 89, 527 122
-          C548 125, 565 135, 578 148
-          C589 160, 596 172, 599 184
-          L566 184
-          C560 164, 544 151, 523 151
-          C495 151, 475 166, 468 192
-          L177 192
-          C171 165, 148 148, 120 148
-          C91 148, 69 165, 61 192
-          L40 192
-          C43 187, 47 183, 52 180
-          C56 179, 60 179, 64 179
-          Z
-        "
-        fill={color}
-      />
-
-      {/* Roof / greenhouse mass */}
-      <path
-        d="
-          M186 99
-          C199 77, 225 60, 261 50
-          C303 39, 353 40, 396 52
-          C434 62, 468 82, 500 115
-          C478 113, 458 112, 437 111
-          C420 91, 395 76, 363 67
-          C327 58, 285 58, 249 67
-          C221 74, 199 85, 186 99
-          Z
-        "
-        fill={color}
-      />
-
-      {/* Window openings */}
-      <path
-        d="
-          M208 102
-          C219 83, 243 71, 276 66
-          C313 61, 351 64, 382 75
-          C403 83, 418 96, 426 113
-          L301 113
-          C299 96, 286 84, 266 82
-          C245 80, 226 88, 214 102
-          Z
-        "
-        fill="#EAE4D8"
-      />
-
-      <path
-        d="
-          M305 113
-          L429 113
-          L429 152
-          C429 163, 421 171, 410 171
-          L315 171
-          C309 171, 305 167, 305 161
-          Z
-        "
-        fill="#EAE4D8"
-      />
-
-      <path
-        d="
-          M211 107
-          C198 112, 185 121, 174 133
-          C165 143, 159 153, 157 162
-          C156 168, 159 171, 165 171
-          L198 171
-          C206 171, 211 166, 211 158
-          Z
-        "
-        fill="#EAE4D8"
-      />
-
-      <path
-        d="
-          M440 115
-          C452 97, 469 88, 490 89
-          C510 90, 531 101, 548 121
-          C552 126, 553 130, 551 133
-          C548 137, 544 138, 538 138
-          L455 138
-          C445 138, 438 129, 440 115
-          Z
-        "
-        fill="#EAE4D8"
-      />
-
-      {/* Door lines */}
-      <line x1="212" y1="110" x2="212" y2="191" stroke="#EAE4D8" strokeWidth="4" strokeLinecap="round" />
-      <line x1="302" y1="113" x2="302" y2="191" stroke="#EAE4D8" strokeWidth="4" strokeLinecap="round" />
-
-      {/* Running board */}
-      <line x1="155" y1="186" x2="309" y2="186" stroke="#EAE4D8" strokeWidth="5" strokeLinecap="round" />
-
-      {/* Bonnet / wing lines */}
-      <path
-        d="M446 186 C455 162, 472 145, 495 133 C515 123, 539 119, 563 122"
-        stroke="#EAE4D8"
-        strokeWidth="5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M472 186 C480 160, 497 140, 520 127 C537 118, 555 114, 573 114"
-        stroke="#EAE4D8"
-        strokeWidth="5"
-        strokeLinecap="round"
-      />
-
-      {/* Front bumper */}
-      <rect x="456" y="173" width="118" height="16" rx="8" fill="#EAE4D8" />
-
-      {/* Lights */}
-      <circle cx="490" cy="144" r="18" fill="#EAE4D8" />
-      <circle cx="582" cy="146" r="18" fill="#EAE4D8" />
-      <circle cx="528" cy="173" r="8" fill="#EAE4D8" />
-      <circle cx="565" cy="173" r="8" fill="#EAE4D8" />
-
-      {/* Wheels */}
-      <circle cx="120" cy="184" r="34" fill={color} />
-      <circle cx="120" cy="184" r="23" fill="#EAE4D8" />
-      <circle cx="120" cy="184" r="8" fill={color} />
-
-      <circle cx="302" cy="184" r="36" fill={color} />
-      <circle cx="302" cy="184" r="24" fill="#EAE4D8" />
-      <circle cx="302" cy="184" r="8" fill={color} />
-
-      {/* Suggest front wheel cropped by wing for a more period silhouette */}
-      <circle cx="520" cy="185" r="34" fill={color} />
-    </svg>
+    <img
+      src="/assets/beetleimage.jpg"
+      alt="Classic VW Beetle"
+      style={{
+        width,
+        opacity,
+        display: "block"
+      }}
+    />
   );
 }
-
 function VWRoundel({ size = 48, invert = false }) {
   // Period-style dark VW blue rather than modern bright blue
   const vwBlue1966ish = "#0D4671";
