@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Checklist from "./Checklist.jsx";
 import Gallery from "./Gallery.jsx";
+import History from "./History.jsx";
 
 const S = {
   font: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -275,10 +276,10 @@ function NavCard({ icon, headline, body, cta, onClick }) {
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 function HomePage({ setPage }) {
-  const totalJobs = 45;
+  const totalJobs = 147;
   const doneCount = (() => {
-    try { return Object.values(JSON.parse(localStorage.getItem("beetle-checklist-v1")) || {}).filter(Boolean).length; }
-    catch { return 0; }
+    try { return 83 + Object.values(JSON.parse(localStorage.getItem("beetle-checklist-v1")) || {}).filter(Boolean).length; }
+    catch { return 83; }
   })();
   const pct = Math.round((doneCount / totalJobs) * 100);
   const remaining = totalJobs - doneCount;
@@ -313,6 +314,7 @@ function HomePage({ setPage }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "20px 28px" }}>
             {[
               ["VIN", "1170707xx"], ["Product", "1500 Sedan — RHD"], ["Model year", "1967"],
+              ["Original reg", "CJD 511D"], ["Current reg", "GVU 798D"],
               ["Manufactured", "9th August 1966"], ["Delivered", "11th August 1966"], ["Delivered in", "Ramsgate, GB"],
               ["Original paint", "L633 VW Blue"], ["Current colour", "L519 VW Blue (resprayed)"],
               ["Interior", "86 / Platinum leatherette"], ["Gearbox", "4-speed manual"],
@@ -358,6 +360,7 @@ function Header({ page, setPage }) {
             { id: "home", label: "Home" },
             { id: "checklist", label: "Checklist" },
             { id: "gallery", label: "Gallery" },
+            { id: "history", label: "History" },
           ].map(item => (
             <button key={item.id} onClick={() => setPage(item.id)}
               style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", transition: "all 0.15s" }}>
@@ -379,6 +382,7 @@ export default function App() {
       {page === "home" && <HomePage setPage={setPage} />}
       {page === "checklist" && <Checklist />}
       {page === "gallery" && <Gallery setPage={setPage} />}
+      {page === "history" && <History setPage={setPage} />}
     </div>
   );
 }

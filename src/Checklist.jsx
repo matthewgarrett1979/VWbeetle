@@ -266,6 +266,22 @@ const phases = [
       { id: "9h", text: "Begin run-in — vary revs, avoid sustained high speed, first oil change at 500 miles", resource: { label: "▶ Break-in guide — VW Resource", url: "https://www.vw-resource.com/engine_break_in.html" } },
     ],
   },
+  {
+    id: 10,
+    phase: "Phase 10 — 2026 Works",
+    note: "Final finishing works planned for 2026 — paint, headlining and interior to complete the restoration.",
+    colour: "#111",
+    jobs: [
+      { id: "10a", text: "Strip roof to bare metal — remove all existing paint and filler back to steel" },
+      { id: "10b", text: "Prep and prime roof — epoxy prime, spray fill, flat and cut" },
+      { id: "10c", text: "Respray roof — colour coat and lacquer to match body" },
+      { id: "10d", text: "Strip engine lid to bare metal — remove all existing paint and filler back to steel" },
+      { id: "10e", text: "Prep and prime engine lid — epoxy prime, spray fill, flat and cut" },
+      { id: "10f", text: "Respray engine lid — colour coat and lacquer to match body" },
+      { id: "10g", text: "Headlining — book Dave the Trimmer (07871 487617), fit new headliner" },
+      { id: "10h", text: "Interior dash respray — strip, prep and respray dash to match interior" },
+    ],
+  },
 ];
 
 const STORAGE_KEY = "beetle-checklist-v1";
@@ -357,7 +373,9 @@ function PINPrompt({ onUnlock }) {
 }
 
 export default function Checklist() {
-  const totalJobs = phases.reduce((acc, p) => acc + p.jobs.length, 0);
+  const BUILD_RECORD_TOTAL = buildRecord.reduce((acc, p) => acc + p.jobs.length, 0); // all completed
+  const phaseJobsTotal = phases.reduce((acc, p) => acc + p.jobs.length, 0);
+  const totalJobs = BUILD_RECORD_TOTAL + phaseJobsTotal;
   const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(PIN_KEY) === "1");
   const [showPin, setShowPin] = useState(false);
   const [checked, setChecked] = useState(() => {
@@ -399,7 +417,8 @@ export default function Checklist() {
     setChecked(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const doneCount = Object.values(checked).filter(Boolean).length;
+  const phaseDoneCount = Object.values(checked).filter(Boolean).length;
+  const doneCount = BUILD_RECORD_TOTAL + phaseDoneCount;
   const pct = Math.round((doneCount / totalJobs) * 100);
 
   return (
@@ -520,6 +539,7 @@ export default function Checklist() {
 
         <div style={{ marginTop: 32, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#bbb", letterSpacing: 3, textTransform: "uppercase" }}>
           <span>Volkswagen · Beetle · 1966 · Resto '26 · 60 Years Anniversary</span>
+          <span>⚠️ = Check needed · → = Guide</span>
         </div>
       </div>
     </div>
