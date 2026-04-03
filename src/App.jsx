@@ -301,10 +301,26 @@ function HomePage({ setPage }) {
       </div>
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 32px" }}>
+
+        {/* Personal intro */}
+        <div style={{ borderBottom: S.border, paddingBottom: 40, marginBottom: 40 }}>
+          <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The story.</div>
+          <div style={{ fontFamily: S.font, fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 24 }}>
+            Some things are worth waiting for.
+          </div>
+          <div style={{ fontFamily: S.font, fontSize: 13, color: "#444", lineHeight: 1.9, maxWidth: 680, display: "flex", flexDirection: "column", gap: 16 }}>
+            <p>I grew up around Volkswagens. My grandmother owned one of the first Type 2 campers imported into the UK — bought from Colbournes in Ripley, one of the earliest VW dealers in the country. That was followed by a 1970 Type 2 that the family simply called the Big Car. Summers, holidays, weekends — it went everywhere with us. The shape, the sound, the whole philosophy of the thing became part of how I thought about cars. My first car was a 1968 Beetle. As a student who couldn't afford to restore it properly, I sold it. I've regretted it ever since.</p>
+            <p>For years the idea of owning another sat quietly in the background — not a nostalgia trip, but something more considered. When the means finally aligned, so did the opportunity. In May 2024 this one came up and I knew immediately it was the right car.</p>
+            <p>It looked promising. The paintwork had other ideas — bubbling, poorly done, hiding what turned out to be a significant amount of work underneath. What started as stopping the doors from dropping became a proper restoration. Beetlelink stripped it back, rebuilt what needed rebuilding, and brought the bodywork up to the standard the car always deserved.</p>
+            <p>The mechanical restoration follows now. A rebuilt engine, correct specification throughout. The goal is a show-quality result — not a concours trailer queen, but a car that can be driven, enjoyed, and occasionally turn heads at the right events. The restoration stops here, before it becomes necessary to rob a bank.</p>
+            <p style={{ fontStyle: "italic", color: "#888" }}>Sixty years from Wolfsburg. Worth every minute.</p>
+          </div>
+        </div>
+
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
-          <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration. Upload directly and they appear here automatically." cta="View gallery" onClick={() => setPage("gallery")} />
+          <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="A full record of the restoration — professional works completed and outstanding jobs remaining." cta="Open checklist" onClick={() => setPage("checklist")} />
+          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="Photos from the restoration, from strip-down to the current state of the build." cta="View gallery" onClick={() => setPage("gallery")} />
         </div>
       </div>
 
