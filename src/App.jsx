@@ -2,25 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import Checklist from "./Checklist.jsx";
 import Gallery from "./Gallery.jsx";
 import History from "./History.jsx";
-
-const S = {
-  font: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-  black: "#111111",
-  cream: "#f2efe8",
-  darkCream: "#e8e4db",
-  red: "#cc0000",
-  border: "2px solid #111",
-  ink: "#1a1a1a",
-};
+import { S, FOLDERS } from "./constants.js";
+import { fetchFolder as fetchFolderRaw } from "./utils.js";
 
 // ─── CLOUDINARY via serverless API ───────────────────────────────────────────
 async function fetchFolder(folder) {
-  try {
-    const res = await fetch(`/api/photos?folder=${encodeURIComponent(folder)}`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.images || []).map(i => i.url);
-  } catch { return []; }
+  const imgs = await fetchFolderRaw(folder);
+  return imgs.map(i => i.url);
 }
 
 // ─── Local advert scans (public/assets/adverts/) ─────────────────────────────
@@ -78,7 +66,7 @@ function PhotoSlideshow() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchFolder("beetle/hero").then(urls => {
+    fetchFolder(FOLDERS.hero).then(urls => {
       setPhotos(urls.length > 0 ? urls : ["/assets/photos/placeholder.svg"]);
       setLoading(false);
     });
@@ -166,7 +154,7 @@ function AdCarousel() {
 
   // Fetch archive images on mount, fall back to local then SVG panels
   useEffect(() => {
-    fetchFolder("beetle/archive").then(urls => {
+    fetchFolder(FOLDERS.archive).then(urls => {
       if (urls.length > 0) {
         setAdvertImages(urls);
       } else {

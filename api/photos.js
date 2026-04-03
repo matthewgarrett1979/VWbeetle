@@ -3,9 +3,13 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET');
 
   const folder = req.query.folder || 'beetle/gallery';
-  const cloud = 'dnpglftl4';
-  const apiKey = '434363825281813';
-  const apiSecret = '1a2_pEqEnCRBL1riRamlJjbCbts';
+  const cloud = process.env.CLOUDINARY_CLOUD;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  if (!cloud || !apiKey || !apiSecret) {
+    return res.status(500).json({ error: 'Cloudinary credentials not configured', images: [] });
+  }
 
   try {
     const credentials = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');

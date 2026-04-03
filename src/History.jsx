@@ -1,25 +1,7 @@
 import { useState, useEffect } from "react";
-
-const CLOUDINARY_CLOUD = "dnpglftl4";
-
-const S = {
-  font: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-  black: "#111111",
-  cream: "#f2efe8",
-  darkCream: "#e8e4db",
-  red: "#cc0000",
-  border: "2px solid #111",
-  ink: "#1a1a1a",
-};
-
-async function fetchFolder(folder) {
-  try {
-    const res = await fetch(`/api/photos?folder=${encodeURIComponent(folder)}`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.images || []);
-  } catch { return []; }
-}
+import { S, FOLDERS } from "./constants.js";
+import { fetchFolder } from "./utils.js";
+import Lightbox from "./Lightbox.jsx";
 
 export default function History({ setPage }) {
   const [photos, setPhotos] = useState([]);
@@ -27,22 +9,11 @@ export default function History({ setPage }) {
   const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
-    fetchFolder("beetle/history").then(imgs => {
+    fetchFolder(FOLDERS.history).then(imgs => {
       setPhotos(imgs);
       setLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    if (lightbox === null) return;
-    const handler = (e) => {
-      if (e.key === "ArrowRight") setLightbox(i => Math.min(i + 1, photos.length - 1));
-      if (e.key === "ArrowLeft") setLightbox(i => Math.max(i - 1, 0));
-      if (e.key === "Escape") setLightbox(null);
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [lightbox, photos.length]);
 
   return (
     <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font }}>
@@ -124,26 +95,14 @@ export default function History({ setPage }) {
         )}
       </div>
 
-      {/* Lightbox */}
       {lightbox !== null && (
-        <div onClick={() => setLightbox(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <img
-            src={photos[lightbox].full}
-            alt=""
-            onClick={e => e.stopPropagation()}
-            style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain", display: "block", border: S.border, filter: "sepia(10%)" }}
-          />
-          <div onClick={() => setLightbox(null)} style={{ position: "fixed", top: 20, right: 24, color: "#fff", fontSize: 28, cursor: "pointer", fontWeight: 300, userSelect: "none" }}>✕</div>
-          <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", fontFamily: S.font, fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: 3, textTransform: "uppercase" }}>
-            {lightbox + 1} / {photos.length}
-          </div>
-          {lightbox > 0 && (
-            <div onClick={e => { e.stopPropagation(); setLightbox(i => i - 1); }} style={{ position: "fixed", left: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}>‹</div>
-          )}
-          {lightbox < photos.length - 1 && (
-            <div onClick={e => { e.stopPropagation(); setLightbox(i => i + 1); }} style={{ position: "fixed", right: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}>›</div>
-          )}
-        </div>
+        <Lightbox
+          photos={photos}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onNavigate={i => setLightbox(i)}
+          imageStyle={{ filter: "sepia(10%)" }}
+        />
       )}
     </div>
   );

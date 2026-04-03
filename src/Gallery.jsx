@@ -1,50 +1,20 @@
 import { useState, useEffect } from "react";
-
-
-
-const S = {
-  font: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-  black: "#111111",
-  cream: "#f2efe8",
-  darkCream: "#e8e4db",
-  red: "#cc0000",
-  border: "2px solid #111",
-  ink: "#1a1a1a",
-};
-
-async function fetchFolder(folder) {
-  try {
-    const res = await fetch(`/api/photos?folder=${encodeURIComponent(folder)}`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.images || []);
-  } catch { return []; }
-}
+import { S, FOLDERS } from "./constants.js";
+import { fetchFolder } from "./utils.js";
+import Lightbox from "./Lightbox.jsx";
 
 export default function Gallery({ setPage }) {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [lightbox, setLightbox] = useState(null); // index of open photo
+  const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
-    fetchFolder("beetle/gallery").then(imgs => {
+    fetchFolder(FOLDERS.gallery).then(imgs => {
       const sorted = [...imgs].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
       setPhotos(sorted);
       setLoading(false);
     });
   }, []);
-
-  // Keyboard nav for lightbox
-  useEffect(() => {
-    if (lightbox === null) return;
-    const handler = (e) => {
-      if (e.key === "ArrowRight") setLightbox(i => Math.min(i + 1, photos.length - 1));
-      if (e.key === "ArrowLeft") setLightbox(i => Math.max(i - 1, 0));
-      if (e.key === "Escape") setLightbox(null);
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [lightbox, photos.length]);
 
   return (
     <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font }}>
@@ -86,7 +56,7 @@ export default function Gallery({ setPage }) {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 3 }}>
               {photos.map((photo, i) => (
                 <div
-                  key={photo.id}
+                  key={photo.public_id || i}
                   onClick={() => setLightbox(i)}
                   style={{ aspectRatio: "4/3", overflow: "hidden", cursor: "pointer", position: "relative", background: S.darkCream, border: "1px solid rgba(0,0,0,0.08)" }}
                 >
@@ -104,46 +74,13 @@ export default function Gallery({ setPage }) {
         )}
       </div>
 
-      {/* Lightbox */}
       {lightbox !== null && (
-        <div
-          onClick={() => setLightbox(null)}
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}
-        >
-          <img
-            src={photos[lightbox].full}
-            alt=""
-            onClick={e => e.stopPropagation()}
-            style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain", display: "block", border: S.border }}
-          />
-
-          {/* Close */}
-          <div onClick={() => setLightbox(null)}
-            style={{ position: "fixed", top: 20, right: 24, color: "#fff", fontSize: 28, cursor: "pointer", fontFamily: S.font, fontWeight: 300, lineHeight: 1, userSelect: "none" }}>
-            ✕
-          </div>
-
-          {/* Counter */}
-          <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", fontFamily: S.font, fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: 3, textTransform: "uppercase" }}>
-            {lightbox + 1} / {photos.length}
-          </div>
-
-          {/* Prev */}
-          {lightbox > 0 && (
-            <div onClick={e => { e.stopPropagation(); setLightbox(i => i - 1); }}
-              style={{ position: "fixed", left: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}>
-              ‹
-            </div>
-          )}
-
-          {/* Next */}
-          {lightbox < photos.length - 1 && (
-            <div onClick={e => { e.stopPropagation(); setLightbox(i => i + 1); }}
-              style={{ position: "fixed", right: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}>
-              ›
-            </div>
-          )}
-        </div>
+        <Lightbox
+          photos={photos}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onNavigate={i => setLightbox(i)}
+        />
       )}
     </div>
   );
