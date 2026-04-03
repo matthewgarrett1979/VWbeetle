@@ -354,7 +354,7 @@ export default function Checklist() {
         })}
 
         <div style={{ marginTop: 32, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#bbb", letterSpacing: 3, textTransform: "uppercase" }}>
-          <span>Surrey, UK · Aug 1966 · Saves automatically</span>
+          <span>Volkswagen · Beetle · 1966 · Resto '26 · 60 Years Anniversary</span>
           <span>⚠️ = Check needed · → = Guide</span>
         </div>
       </div>
