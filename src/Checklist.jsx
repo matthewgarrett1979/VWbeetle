@@ -286,7 +286,7 @@ export default function Checklist() {
         })}
 
         <div style={{ marginTop: 32, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#bbb", letterSpacing: 3, textTransform: "uppercase" }}>
-          <span>GU12 · Aug 1966 · Saves automatically</span>
+          <span>Surrey, UK · Aug 1966 · Saves automatically</span>
           <span>⚠️ = Check needed · → = Guide</span>
         </div>
       </div>

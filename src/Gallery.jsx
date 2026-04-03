@@ -57,7 +57,7 @@ export default function Gallery({ setPage }) {
             Gallery.
           </div>
           <div style={{ fontSize: 10, color: "#555", letterSpacing: 3, marginTop: 8, textTransform: "uppercase" }}>
-            VW Beetle 1966 1500 · Restoration pictures
+            VIN 1170707xx · Surrey, UK
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default function Gallery({ setPage }) {
             <div style={{ fontSize: 48, marginBottom: 16 }}>📷</div>
             <div style={{ fontSize: 14, fontWeight: 900, color: S.ink, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>No photos yet.</div>
             <div style={{ fontSize: 11, color: "#777", lineHeight: 1.8 }}>
-              Upload photos to <strong>Cloudinary → beetle/gallery</strong><br />
+              Add photos to the build gallery<br />
               They will appear here automatically.
             </div>
           </div>

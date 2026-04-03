@@ -104,7 +104,7 @@ function PhotoSlideshow() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>VIN 117070752 · L519 VW Blue</div>
+          <div style={{ fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>VIN 1170707xx · L519 VW Blue</div>
           <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 3vw, 28px)", fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>1967 Volkswagen Beetle.</div>
         </div>
         <VWRoundel size={40} />
@@ -132,7 +132,7 @@ const ADS = [
   { headline: "Lemon.", subhead: "Volkswagen quality control", body: "This Volkswagen missed the boat. The chrome strip on the glove compartment is blemished and must be replaced. Chances are you wouldn't have noticed it; Inspector Kurt Kroner did. There are 3,389 men at our Wolfsburg factory with only one job: to inspect Volkswagens at each stage of production. Every shock absorber is tested, every windshield scanned. VW's have been rejected for surface scratches barely visible to the eye. We pluck the lemons; you get the plums." },
   { headline: "It's ugly,\nbut it gets\nyou there.", subhead: "Volkswagen reliability", body: "The Volkswagen isn't much to look at. But it will get you to where you're going — and back — without the headaches. The engine is in the back, the heater is unusual, the shape is odd. The car will go 70 miles an hour all day without protest. 32 miles per gallon without trying. And it'll start in the morning when your neighbour's streamlined steel sculpture won't." },
   { headline: "After we paint the car, we paint the paint.", subhead: "Volkswagen craftsmanship", body: "Every Volkswagen is given a full 23-step paint job. First, the metal is treated so it won't rust. Then, successive layers of paint are applied — and baked — until we're done. In all, there are seven coats of paint on a VW. That's about the same number you'd find on a piece of fine jewellery. A Volkswagen is meant to last." },
-  { headline: "Restoration\nin progress.", subhead: "VIN 117070752 · Surrey UK", body: "Manufactured 9th August 1966 at Wolfsburg. Delivered to Ramsgate, Great Britain, 11th August 1966. Original finish L633 VW Blue. Resprayed L519 VW Blue. Current engine 1641cc twin port. Nine phases of restoration work, carried out with the same obsessive attention to detail that Kurt Kroner would approve of. Almost.", isOwn: true },
+  { headline: "Restoration\nin progress.", subhead: "VIN 1170707xx · Surrey, UK", body: "Manufactured 9th August 1966 at Wolfsburg. Delivered to Ramsgate, Great Britain, 11th August 1966. Original finish L633 VW Blue. Resprayed L519 VW Blue. Current engine 1641cc twin port. Nine phases of restoration work, carried out with the same obsessive attention to detail that Kurt Kroner would approve of. Almost.", isOwn: true },
 ];
 
 function AdPanel({ ad }) {
@@ -159,7 +159,7 @@ function AdCarousel() {
   const [advertImages, setAdvertImages] = useState([]);
   const perPage = typeof window !== "undefined" && window.innerWidth >= 900 ? 3 : window.innerWidth >= 600 ? 2 : 1;
 
-  // Fetch from Cloudinary beetle/archive on mount, fall back to local then SVG panels
+  // Fetch archive images on mount, fall back to local then SVG panels
   useEffect(() => {
     fetchFolder("beetle/archive").then(urls => {
       if (urls.length > 0) {
@@ -299,7 +299,7 @@ function HomePage({ setPage }) {
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
           <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration." cta="View gallery" onClick={() => setPage("gallery")} />
+          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration. Photos from the restoration." cta="View gallery" onClick={() => setPage("gallery")} />
         </div>
       </div>
 
@@ -308,7 +308,7 @@ function HomePage({ setPage }) {
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 28 }}>Technical specification.</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "20px 28px" }}>
             {[
-              ["VIN", "1170707X, ["Product", "1500 Sedan — RHD"], ["Model year", "1967"],
+              ["VIN", "1170707xx"], ["Product", "1500 Sedan — RHD"], ["Model year", "1967"],
               ["Manufactured", "9th August 1966"], ["Delivered", "11th August 1966"], ["Delivered in", "Ramsgate, GB"],
               ["Original paint", "L633 VW Blue"], ["Current colour", "L519 VW Blue (resprayed)"],
               ["Interior", "86 / Platinum leatherette"], ["Gearbox", "4-speed manual"],
@@ -316,7 +316,7 @@ function HomePage({ setPage }) {
               ["Carburettor", "Solex PICT 34"], ["Exhaust", "EMPI GT Two Tip"],
               ["Tyres", "5.60-15 tubeless"], ["Wheelbase", "2400mm"], ["Weight", "800kg (empty)"],
               ["Spec M348", "Equipment for GB"], ["Spec M042", "British regulations"],
-              ["Location", "UK"],
+              ["Certificate", "Wolfsburg 30 Apr 2025"], ["Location", "Surrey, UK"],
             ].map(([label, value]) => (
               <div key={label} style={{ borderLeft: `2px solid ${S.red}`, paddingLeft: 12 }}>
                 <div style={{ fontSize: 9, color: "#555", letterSpacing: 3, textTransform: "uppercase", marginBottom: 4 }}>{label}</div>
@@ -330,7 +330,7 @@ function HomePage({ setPage }) {
       <AdCarousel />
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Beetle Restoration 2024–2026 · Surrey · UK </div>
+        <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Restoration 2024–2026 · Surrey, UK</div>
         <VWRoundel size={32} />
       </div>
     </div>
