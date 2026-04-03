@@ -50,41 +50,22 @@ function BeetleSVG({ width = 320, opacity = 1 }) {
 }
 
 // ─── VW Roundel ──────────────────────────────────────────────────────────────
-// Modelled on the actual 1966 VW enamel badge:
-// two concentric rings, bold filled V and W letterforms, horizontal divider
+// invert=false → on light/cream background (multiply removes white bg, black logo stays)
+// invert=true  → on dark background (invert image + screen removes black bg, white logo stays)
 function VWRoundel({ size = 48, invert = false }) {
-  const bg = invert ? S.cream : S.ink;
-  const fg = invert ? S.ink : S.cream;
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Background circle */}
-      <circle cx="50" cy="50" r="50" fill={bg} />
-
-      {/* Outer ring */}
-      <circle cx="50" cy="50" r="46" fill="none" stroke={fg} strokeWidth="3.5" />
-
-      {/* Inner ring */}
-      <circle cx="50" cy="50" r="36.5" fill="none" stroke={fg} strokeWidth="3.5" />
-
-      {/* V — two thick filled arms meeting at a sharp point */}
-      {/* Left arm */}
-      <polygon points="26,18 37,18 50.5,54 44,54" fill={fg} />
-      {/* Right arm */}
-      <polygon points="74,18 63,18 49.5,54 56,54" fill={fg} />
-
-      {/* Horizontal divider */}
-      <rect x="22" y="50" width="56" height="3" fill={fg} />
-
-      {/* W — four thick filled arms */}
-      {/* Far left arm */}
-      <polygon points="22,57 29,57 38,82 31,82" fill={fg} />
-      {/* Left-centre arm */}
-      <polygon points="36,57 43,57 50,72 44,72" fill={fg} />
-      {/* Right-centre arm */}
-      <polygon points="64,57 57,57 50,72 56,72" fill={fg} />
-      {/* Far right arm */}
-      <polygon points="78,57 71,57 62,82 69,82" fill={fg} />
-    </svg>
+    <img
+      src="/assets/vw-logo.png"
+      alt="VW"
+      style={{
+        width: size,
+        height: size,
+        objectFit: "contain",
+        display: "block",
+        filter: invert ? "invert(1)" : "none",
+        mixBlendMode: invert ? "screen" : "multiply",
+      }}
+    />
   );
 }
 
@@ -130,7 +111,7 @@ function PhotoSlideshow() {
           <div style={{ fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>VIN 1170707xx · L519 VW Blue</div>
           <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 3vw, 28px)", fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>1966 Volkswagen Beetle.</div>
         </div>
-        <VWRoundel size={40} />
+        <VWRoundel size={40} invert={true} />
       </div>
       {photos.length > 1 && (
         <div style={{ position: "absolute", top: 16, right: 20, display: "flex", gap: 6, zIndex: 10 }}>
@@ -322,7 +303,7 @@ function HomePage({ setPage }) {
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
           <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration. Photos from the restoration." cta="View gallery" onClick={() => setPage("gallery")} />
+          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration. Upload directly and they appear here automatically." cta="View gallery" onClick={() => setPage("gallery")} />
         </div>
       </div>
 
