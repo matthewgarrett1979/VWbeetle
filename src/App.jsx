@@ -313,7 +313,7 @@ function HomePage({ setPage }) {
             <p>For years the idea of owning another sat quietly in the background — not a nostalgia trip, but something more considered. When the means finally aligned, so did the opportunity. In May 2024 this one came up and I knew immediately it was the right car.</p>
             <p>It looked promising. The paintwork had other ideas — bubbling, poorly done, hiding what turned out to be a significant amount of work underneath. What started as stopping the doors from dropping became a proper restoration. Beetlelink stripped it back, rebuilt what needed rebuilding, and brought the bodywork up to the standard the car always deserved.</p>
             <p>The mechanical restoration follows now. A rebuilt engine, enhanced as i couldn't find a matching numbers engine. The goal is a decent quality result — not a concours trailer queen, but a car that can be driven, enjoyed, and occasionally turn heads at the right events. The restoration stops here, before it becomes necessary to rob a bank.</p>
-            <p style={{ fontStyle: "italic", color: "#888" }}>Sixty years from Wolfsburg. Worth every minute.</p>
+            <p style={{ fontStyle: "italic", color: "#888" }}>Sixty years from Wolfsburg..</p>
           </div>
         </div>
 
