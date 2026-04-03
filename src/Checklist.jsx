@@ -164,13 +164,70 @@ const S = {
   thinBorder: "1px solid #ccc",
 };
 
+const PIN = "1966"; // Change this to your preferred PIN
+const PIN_KEY = "beetle-checklist-unlocked";
+
+function PINPrompt({ onUnlock }) {
+  const [input, setInput] = useState("");
+  const [shake, setShake] = useState(false);
+
+  const attempt = (val) => {
+    if (val === PIN) {
+      sessionStorage.setItem(PIN_KEY, "1");
+      onUnlock();
+    } else if (val.length === PIN.length) {
+      setShake(true);
+      setInput("");
+      setTimeout(() => setShake(false), 500);
+    }
+  };
+
+  const press = (digit) => {
+    const next = input + digit;
+    setInput(next);
+    if (next.length === PIN.length) attempt(next);
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: S.black, zIndex: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: S.font }}>
+      <div style={{ fontSize: 10, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 32 }}>Checklist PIN</div>
+
+      {/* PIN dots */}
+      <div style={{ display: "flex", gap: 16, marginBottom: 40, animation: shake ? "shake 0.4s ease" : "none" }}>
+        <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }`}</style>
+        {Array.from({ length: PIN.length }).map((_, i) => (
+          <div key={i} style={{ width: 14, height: 14, borderRadius: "50%", border: `2px solid ${input.length > i ? "#f2efe8" : "#333"}`, background: input.length > i ? "#f2efe8" : "transparent", transition: "all 0.15s" }} />
+        ))}
+      </div>
+
+      {/* Keypad */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 64px)", gap: 12 }}>
+        {["1","2","3","4","5","6","7","8","9","","0","⌫"].map((d, i) => (
+          <button key={i} onClick={() => d === "⌫" ? setInput(p => p.slice(0,-1)) : d ? press(d) : null}
+            style={{ width: 64, height: 64, border: "1px solid #222", background: d ? "#1a1a1a" : "transparent", color: "#f2efe8", fontSize: d === "⌫" ? 18 : 22, fontWeight: 600, cursor: d ? "pointer" : "default", fontFamily: S.font, transition: "background 0.1s" }}
+            onMouseEnter={e => { if(d) e.target.style.background = "#2a2a2a"; }}
+            onMouseLeave={e => { if(d) e.target.style.background = "#1a1a1a"; }}>
+            {d}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ marginTop: 40, fontSize: 9, color: "#333", letterSpacing: 3, textTransform: "uppercase" }}>
+        View only — enter PIN to tick jobs
+      </div>
+    </div>
+  );
+}
+
 export default function Checklist() {
   const totalJobs = phases.reduce((acc, p) => acc + p.jobs.length, 0);
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(PIN_KEY) === "1");
+  const [showPin, setShowPin] = useState(false);
   const [checked, setChecked] = useState(() => {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
   });
-  const [saveStatus, setSaveStatus] = useState(""); // "", "saving", "saved", "error"
+  const [saveStatus, setSaveStatus] = useState("");
   const [synced, setSynced] = useState(false);
   const isFirstLoad = useRef(true);
 
@@ -200,12 +257,18 @@ export default function Checklist() {
     });
   }, [checked, synced]);
 
-  const toggle = (id) => setChecked(prev => ({ ...prev, [id]: !prev[id] }));
+  const toggle = (id) => {
+    if (!unlocked) { setShowPin(true); return; }
+    setChecked(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   const doneCount = Object.values(checked).filter(Boolean).length;
   const pct = Math.round((doneCount / totalJobs) * 100);
 
   return (
     <div style={{ minHeight: "100vh", background: S.white, fontFamily: S.font }}>
+      {/* PIN prompt overlay */}
+      {showPin && <PINPrompt onUnlock={() => { setUnlocked(true); setShowPin(false); }} />}
       {/* Header bar */}
       <div style={{ background: S.black, padding: "28px 32px" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
@@ -223,6 +286,11 @@ export default function Checklist() {
               <div style={{ fontSize: 11, color: "#888", letterSpacing: 3, textTransform: "uppercase" }}>{doneCount} of {totalJobs} done</div>
               <div style={{ fontSize: 10, color: saveStatus === "saved" ? "#4ade80" : saveStatus === "saving" ? "#facc15" : saveStatus === "error" ? "#f87171" : "transparent", transition: "color 0.3s", letterSpacing: 2, marginTop: 4 }}>
                 {saveStatus === "saving" ? "SYNCING..." : saveStatus === "error" ? "SYNC FAILED" : "SYNCED ✓"}
+              </div>
+              <div
+                onClick={() => unlocked ? (sessionStorage.removeItem(PIN_KEY), setUnlocked(false)) : setShowPin(true)}
+                style={{ marginTop: 8, fontSize: 9, color: unlocked ? "#4ade80" : "#555", letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", userSelect: "none" }}>
+                {unlocked ? "🔓 Unlocked — tap to lock" : "🔒 Locked — tap to unlock"}
               </div>
             </div>
           </div>

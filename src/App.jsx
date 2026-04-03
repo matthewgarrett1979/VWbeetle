@@ -299,7 +299,7 @@ function HomePage({ setPage }) {
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
           <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration - Photos detailing restoration 24/26." cta="View gallery" onClick={() => setPage("gallery")} />
+          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration. Photos from the restoration." cta="View gallery" onClick={() => setPage("gallery")} />
         </div>
       </div>
 
