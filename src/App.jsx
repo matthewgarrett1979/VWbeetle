@@ -353,7 +353,7 @@ function HomePage({ setPage }) {
       <AdCarousel />
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Restoration 2024–2026 · Surrey, UK</div>
+        <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Volkswagen · Beetle · 1966 · Resto '26 · 60 Years Anniversary</div>
         <VWRoundel size={32} />
       </div>
     </div>
