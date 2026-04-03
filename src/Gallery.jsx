@@ -57,7 +57,7 @@ export default function Gallery({ setPage }) {
             Gallery.
           </div>
           <div style={{ fontSize: 10, color: "#555", letterSpacing: 3, marginTop: 8, textTransform: "uppercase" }}>
-            VIN 117070752 · Upload to Cloudinary → beetle/gallery
+            VW Beetle 1966 1500 · Restoration pictures
           </div>
         </div>
       </div>
