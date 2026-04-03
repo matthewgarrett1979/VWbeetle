@@ -67,14 +67,25 @@ function VWRoundel({ size = 48, invert = false }) {
   );
 }
 
-// ─── PHOTO SLIDESHOW (top) ───────────────────────────────────────────────────
-// Automatically picks up ALL images in /public/assets/photos/
-// Just drop photos into that folder in GitHub and push — no code changes needed
-const photoModules = import.meta.glob('/public/assets/photos/*.{jpg,jpeg,png,webp,svg}', { eager: true, query: '?url', import: 'default' });
-const PHOTO_LIST = Object.values(photoModules);
+// ─── CLOUDINARY CONFIG ───────────────────────────────────────────────────────
+const CLOUDINARY_CLOUD = "dnpglftl4";
 
-// Automatically picks up ALL advert images in /public/assets/adverts/
-// Drop scanned 1960s VW ads in here — they replace the rendered panels automatically
+// Fetches all images from the beetle folder
+// Upload photos to Cloudinary → beetle folder — they appear automatically
+async function fetchCloudinaryFolder() {
+  try {
+    const res = await fetch(
+      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/beetle.json`
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.resources || []).map(r =>
+      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`
+    );
+  } catch { return []; }
+}
+
+// ─── ADVERT IMAGES (local fallback + Cloudinary) ─────────────────────────────
 const advertModules = import.meta.glob('/public/assets/adverts/*.{jpg,jpeg,png,webp,svg}', { eager: true, query: '?url', import: 'default' });
 const ADVERT_IMAGES = Object.keys(advertModules)
   .filter(p => !p.includes('placeholder'))
@@ -82,8 +93,23 @@ const ADVERT_IMAGES = Object.keys(advertModules)
 const USE_REAL_ADVERTS = ADVERT_IMAGES.length > 0;
 
 function PhotoSlideshow() {
+  const [photos, setPhotos] = useState([]);
   const [current, setCurrent] = useState(0);
   const [opacity, setOpacity] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch from Cloudinary beetle folder on mount
+  useEffect(() => {
+    fetchCloudinaryFolder().then(urls => {
+      if (urls.length > 0) {
+        setPhotos(urls);
+      } else {
+        // Fallback to placeholder if no photos yet
+        setPhotos(["/assets/photos/placeholder.svg"]);
+      }
+      setLoading(false);
+    });
+  }, []);
 
   const goTo = useCallback((idx) => {
     setOpacity(0);
@@ -91,12 +117,20 @@ function PhotoSlideshow() {
   }, []);
 
   useEffect(() => {
-    if (PHOTO_LIST.length <= 1) return;
-    const t = setInterval(() => goTo((current + 1) % PHOTO_LIST.length), 5000);
+    if (photos.length <= 1) return;
+    const t = setInterval(() => goTo((current + 1) % photos.length), 5000);
     return () => clearInterval(t);
-  }, [current, goTo]);
+  }, [current, goTo, photos.length]);
 
-  const src = PHOTO_LIST[current];
+  if (loading) {
+    return (
+      <div style={{ width: "100%", height: "clamp(360px, 60vh, 620px)", background: S.black, borderBottom: S.border, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontFamily: S.font, fontSize: 10, color: "#444", letterSpacing: 4, textTransform: "uppercase" }}>Loading...</div>
+      </div>
+    );
+  }
+
+  const src = photos[current];
 
   return (
     <div style={{ position: "relative", width: "100%", height: "clamp(360px, 60vh, 620px)", overflow: "hidden", background: S.black, borderBottom: S.border }}>
@@ -123,17 +157,17 @@ function PhotoSlideshow() {
       </div>
 
       {/* Dot nav */}
-      {PHOTO_LIST.length > 1 && (
+      {photos.length > 1 && (
         <div style={{ position: "absolute", top: 16, right: 20, display: "flex", gap: 6, zIndex: 10 }}>
-          {PHOTO_LIST.map((_, i) => (
+          {photos.map((_, i) => (
             <div key={i} onClick={() => goTo(i)} style={{ width: i === current ? 22 : 7, height: 7, borderRadius: 4, background: i === current ? "#fff" : "rgba(255,255,255,0.35)", cursor: "pointer", transition: "all 0.3s" }} />
           ))}
         </div>
       )}
 
       {/* Arrow nav */}
-      {PHOTO_LIST.length > 1 && ["‹", "›"].map((arrow, idx) => (
-        <div key={arrow} onClick={() => goTo(idx === 0 ? (current - 1 + PHOTO_LIST.length) % PHOTO_LIST.length : (current + 1) % PHOTO_LIST.length)}
+      {photos.length > 1 && ["‹", "›"].map((arrow, idx) => (
+        <div key={arrow} onClick={() => goTo(idx === 0 ? (current - 1 + photos.length) % photos.length : (current + 1) % photos.length)}
           style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", [idx === 0 ? "left" : "right"]: 14, width: 36, height: 36, border: "2px solid rgba(255,255,255,0.3)", background: "rgba(0,0,0,0.3)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, cursor: "pointer", userSelect: "none", zIndex: 10 }}>
           {arrow}
         </div>
