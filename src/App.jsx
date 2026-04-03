@@ -13,253 +13,294 @@ const S = {
   ink: "#1a1a1a",
 };
 
-function BeetleImage({ width = 320, opacity = 1 }) {
+// ─── SVG Beetle silhouette ───────────────────────────────────────────────────
+function BeetleSVG({ width = 320, opacity = 1 }) {
   return (
-    <img
-      src="/assets/beetleimage.jpg"
-      alt="Classic VW Beetle"
-      style={{
-        width,
-        opacity,
-        display: "block"
-      }}
-    />
-  );
-}
-function VWRoundel({ size = 48, invert = false }) {
-  // Period-style dark VW blue rather than modern bright blue
-  const vwBlue1966ish = "#0D4671";
-  const cream = "#F5E9D8";
-  const ink = "#111111";
-
-  const bg = invert ? cream : vwBlue1966ish;
-  const fg = invert ? vwBlue1966ish : cream;
-
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-label="Volkswagen roundel">
-      {/* Outer disc */}
-      <circle cx="50" cy="50" r="48" fill={bg} />
-
-      {/* Outer ring */}
-      <circle cx="50" cy="50" r="38" fill="none" stroke={fg} strokeWidth="3" />
-
-      {/* V */}
-      <polyline
-        points="35,30 50,58 65,30"
-        fill="none"
-        stroke={fg}
-        strokeWidth="7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {/* W */}
-      <polyline
-        points="28,42 38,68 50,52 62,68 72,42"
-        fill="none"
-        stroke={fg}
-        strokeWidth="7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      {/* Divider */}
-      <line x1="28" y1="56" x2="72" y2="56" stroke={fg} strokeWidth="2.5" />
+    <svg width={width} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
+      <ellipse cx="195" cy="130" rx="160" ry="48" fill={S.ink} />
+      <path d="M110 130 Q115 75 160 62 Q200 52 240 62 Q282 72 290 130Z" fill={S.ink} />
+      <path d="M155 125 Q158 85 175 72 Q195 63 215 72 Q230 82 233 125Z" fill={S.cream} opacity="0.12" />
+      <path d="M242 125 Q245 88 258 78 Q272 70 282 85 Q287 100 285 125Z" fill={S.cream} opacity="0.1" />
+      <ellipse cx="98" cy="160" rx="36" ry="18" fill={S.cream} />
+      <ellipse cx="98" cy="160" rx="28" ry="13" fill={S.ink} />
+      <ellipse cx="98" cy="160" rx="10" ry="8" fill={S.cream} opacity="0.3" />
+      <ellipse cx="290" cy="160" rx="40" ry="18" fill={S.cream} />
+      <ellipse cx="290" cy="160" rx="30" ry="13" fill={S.ink} />
+      <ellipse cx="290" cy="160" rx="11" ry="8" fill={S.cream} opacity="0.3" />
+      <rect x="34" y="138" width="18" height="8" rx="3" fill={S.cream} opacity="0.6" />
+      <rect x="348" y="136" width="18" height="8" rx="3" fill={S.cream} opacity="0.6" />
+      <circle cx="55" cy="128" r="9" fill={S.cream} opacity="0.5" />
     </svg>
   );
 }
 
-// Each slide is a fully rendered DDB-style print ad
+// ─── VW Roundel ──────────────────────────────────────────────────────────────
+function VWRoundel({ size = 48, invert = false }) {
+  const bg = invert ? S.cream : S.ink;
+  const fg = invert ? S.ink : S.cream;
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="50" fill={bg} />
+      <circle cx="50" cy="50" r="44" fill="none" stroke={fg} strokeWidth="2.5" />
+      <circle cx="50" cy="50" r="37" fill="none" stroke={fg} strokeWidth="2.5" />
+      {/* V — two angled strokes meeting at bottom centre */}
+      <path
+        d="M32 22 L44 48 L50 34 L56 48 L68 22"
+        fill="none"
+        stroke={fg}
+        strokeWidth="6.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Horizontal divider */}
+      <line x1="27" y1="52" x2="73" y2="52" stroke={fg} strokeWidth="2.5" />
+      {/* W — four strokes */}
+      <path
+        d="M27 58 L35 78 L50 62 L65 78 L73 58"
+        fill="none"
+        stroke={fg}
+        strokeWidth="6.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// ─── PHOTO SLIDESHOW (top) ───────────────────────────────────────────────────
+// Automatically picks up ALL images in /public/assets/photos/
+// Just drop photos into that folder in GitHub and push — no code changes needed
+const photoModules = import.meta.glob('/public/assets/photos/*.{jpg,jpeg,png,webp,svg}', { eager: true, query: '?url', import: 'default' });
+const PHOTO_LIST = Object.values(photoModules);
+
+// Automatically picks up ALL advert images in /public/assets/adverts/
+// Drop scanned 1960s VW ads in here — they replace the rendered panels automatically
+const advertModules = import.meta.glob('/public/assets/adverts/*.{jpg,jpeg,png,webp,svg}', { eager: true, query: '?url', import: 'default' });
+const ADVERT_IMAGES = Object.keys(advertModules)
+  .filter(p => !p.includes('placeholder'))
+  .map(path => path.replace('/public', ''));
+const USE_REAL_ADVERTS = ADVERT_IMAGES.length > 0;
+
+function PhotoSlideshow() {
+  const [current, setCurrent] = useState(0);
+  const [opacity, setOpacity] = useState(1);
+
+  const goTo = useCallback((idx) => {
+    setOpacity(0);
+    setTimeout(() => { setCurrent(idx); setOpacity(1); }, 400);
+  }, []);
+
+  useEffect(() => {
+    if (PHOTO_LIST.length <= 1) return;
+    const t = setInterval(() => goTo((current + 1) % PHOTO_LIST.length), 5000);
+    return () => clearInterval(t);
+  }, [current, goTo]);
+
+  const src = PHOTO_LIST[current];
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "clamp(360px, 60vh, 620px)", overflow: "hidden", background: S.black, borderBottom: S.border }}>
+      <img
+        src={src}
+        alt="Beetle restoration"
+        style={{ width: "100%", height: "100%", objectFit: "cover", opacity, transition: "opacity 0.4s ease", display: "block" }}
+      />
+
+      {/* Dark gradient overlay at bottom */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%)" }} />
+
+      {/* Caption strip */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+        <div>
+          <div style={{ fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>
+            VIN 117070752 · L519 VW Blue
+          </div>
+          <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 3vw, 28px)", fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
+            1967 Volkswagen Beetle.
+          </div>
+        </div>
+        <VWRoundel size={40} />
+      </div>
+
+      {/* Dot nav */}
+      {PHOTO_LIST.length > 1 && (
+        <div style={{ position: "absolute", top: 16, right: 20, display: "flex", gap: 6, zIndex: 10 }}>
+          {PHOTO_LIST.map((_, i) => (
+            <div key={i} onClick={() => goTo(i)} style={{ width: i === current ? 22 : 7, height: 7, borderRadius: 4, background: i === current ? "#fff" : "rgba(255,255,255,0.35)", cursor: "pointer", transition: "all 0.3s" }} />
+          ))}
+        </div>
+      )}
+
+      {/* Arrow nav */}
+      {PHOTO_LIST.length > 1 && ["‹", "›"].map((arrow, idx) => (
+        <div key={arrow} onClick={() => goTo(idx === 0 ? (current - 1 + PHOTO_LIST.length) % PHOTO_LIST.length : (current + 1) % PHOTO_LIST.length)}
+          style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", [idx === 0 ? "left" : "right"]: 14, width: 36, height: 36, border: "2px solid rgba(255,255,255,0.3)", background: "rgba(0,0,0,0.3)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, cursor: "pointer", userSelect: "none", zIndex: 10 }}>
+          {arrow}
+        </div>
+      ))}
+
+      {/* Add photos link */}
+      <a href={DRIVE_URL} target="_blank" rel="noopener noreferrer"
+        style={{ position: "absolute", top: 14, left: 18, fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 2, textTransform: "uppercase", textDecoration: "none", background: "rgba(0,0,0,0.35)", padding: "4px 9px", border: "1px solid rgba(255,255,255,0.15)" }}>
+        Build folder →
+      </a>
+    </div>
+  );
+}
+
+// ─── DDB AD PANELS (bottom) ──────────────────────────────────────────────────
 const ADS = [
   {
     headline: "Think small.",
     subhead: "1967 Volkswagen Beetle",
-    body: "Our little car isn't so much of a novelty any more. A couple of dozen college kids don't try to squeeze inside it. The local greasy kid stuff doesn't mark it up. Nobody even stares at our shape. In fact, some people who drive our little flivver don't even think 32 miles to the gallon is going\u00a0much of a novelty. Or paying less for insurance. Or never needing anti-freeze. Or racking up 40,000 miles on a set of tyres. That's because once you get used to some of our economies, you don't even think about them any more. Except when you\u00a0squeeze into a small parking spot. Or renew your small insurance. Or pay a small repair bill. Or trade in your old VW for a new one. Think it over.",
-    layout: "small-car", // car small, top left, lots of white space
+    body: "Our little car isn't so much of a novelty any more. A couple of dozen college kids don't try to squeeze inside it. Nobody even stares at our shape. In fact, some people who drive our little flivver don't even think 32 miles to the gallon is going much of a novelty. Or paying less for insurance. Or never needing anti-freeze. Or racking up 40,000 miles on a set of tyres. That's because once you get used to some of our economies, you don't even think about them any more. Except when you squeeze into a small parking spot. Or renew your small insurance. Or pay a small repair bill. Or trade in your old VW for a new one. Think it over.",
   },
   {
     headline: "Lemon.",
     subhead: "Volkswagen quality control",
-    body: "This Volkswagen missed the boat. The chrome strip on the glove compartment is blemished and must be replaced. Chances are you wouldn't have noticed it; Inspector Kurt Kroner did. There are 3,389 men at our Wolfsburg factory with only one job: to inspect Volkswagens at each stage of production. Every shock absorber is tested, every windshield scanned. VW's have been rejected for surface scratches barely visible to the eye. Final inspection is\u00a0really something! VW inspectors run each car off the line onto the Funktionsprüfstand, one of those unhuman rolling road beds, and\u00a0do\u00a0120 checks, one by one. This preoccupation with detail means the VW lasts longer and requires less maintenance, by and large, than other cars. It also means a used VW depreciates less than any other car. We pluck the lemons; you get the plums.",
-    layout: "top-centre",
+    body: "This Volkswagen missed the boat. The chrome strip on the glove compartment is blemished and must be replaced. Chances are you wouldn't have noticed it; Inspector Kurt Kroner did. There are 3,389 men at our Wolfsburg factory with only one job: to inspect Volkswagens at each stage of production. Every shock absorber is tested, every windshield scanned. VW's have been rejected for surface scratches barely visible to the eye. We pluck the lemons; you get the plums.",
   },
   {
-    headline: "It's ugly, but\u00a0it\u00a0gets you there.",
+    headline: "It's ugly,\nbut it gets\nyou there.",
     subhead: "Volkswagen reliability",
     body: "The Volkswagen isn't much to look at. But it will get you to where you're going — and back — without the headaches. The engine is in the back, the heater is unusual, the shape is odd. The car will go 70 miles an hour all day without protest. 32 miles per gallon without trying. And it'll start in the morning when your neighbour's streamlined steel sculpture won't.",
-    layout: "left-align",
   },
   {
-    headline: "After we paint\u00a0the car,\u00a0we paint the\u00a0paint.",
+    headline: "After we paint the car, we paint the paint.",
     subhead: "Volkswagen craftsmanship",
-    body: "Every Volkswagen is given a full 23-step paint job. First, the metal is treated so it won't rust. Then, successive layers of paint are applied — and baked — until we're done. In all, there are seven coats of paint on a VW. That's about the same number you'd find on a piece of fine jewellery. Which is not such an odd comparison. After all, a Volkswagen is meant to last.",
-    layout: "right-align",
+    body: "Every Volkswagen is given a full 23-step paint job. First, the metal is treated so it won't rust. Then, successive layers of paint are applied — and baked — until we're done. In all, there are seven coats of paint on a VW. That's about the same number you'd find on a piece of fine jewellery. A Volkswagen is meant to last.",
   },
   {
-    headline: "Restoration\u00a0in progress.",
-    subhead: "VIN 117070752 — GU12",
+    headline: "Restoration\nin progress.",
+    subhead: "VIN 117070752 · GU12",
     body: "Manufactured 9th August 1966 at Wolfsburg. Delivered to Ramsgate, Great Britain, 11th August 1966. Original finish L633 VW Blue. Resprayed L519 VW Blue. Current engine 1641cc twin port. Nine phases of restoration work, carried out with the same obsessive attention to detail that Kurt Kroner would approve of. Almost.",
-    layout: "restoration",
     isOwn: true,
   },
 ];
 
-function AdSlide({ ad, visible }) {
-  const isSmall = ad.layout === "small-car";
-  const isTop = ad.layout === "top-centre";
-  const isOwn = ad.isOwn;
-
+function AdPanel({ ad }) {
   return (
-    <div style={{
-      position: "absolute", inset: 0,
-      opacity: visible ? 1 : 0,
-      transition: "opacity 0.6s ease",
-      background: S.cream,
-      display: "flex",
-      flexDirection: "column",
-      overflow: "hidden",
-      // Subtle paper texture via repeating gradient
-      backgroundImage: `repeating-linear-gradient(
-        0deg, transparent, transparent 28px,
-        rgba(0,0,0,0.012) 28px, rgba(0,0,0,0.012) 29px
-      )`,
-    }}>
-      {/* Main ad area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "40px 56px 28px", maxWidth: 900, margin: "0 auto", width: "100%" }}>
+    <div style={{ background: S.cream, border: S.border, display: "flex", flexDirection: "column", minHeight: 420 }}>
+      {/* Beetle silhouette */}
+      <div style={{ display: "flex", justifyContent: "center", padding: "32px 32px 0", borderBottom: "1px solid rgba(0,0,0,0.1)" }}>
+        <BeetleSVG width={220} opacity={0.8} />
+      </div>
 
-        {isTop || isSmall ? (
-          // Small car centred at top with lots of white space — "Think small" layout
-          <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", justifyContent: isSmall ? "flex-start" : "center", marginBottom: 8, paddingTop: 8 }}>
-              <BeetleSVG width={isSmall ? 200 : 240} opacity={0.85} />
-            </div>
-            <div style={{ flex: 1 }} />
-          </div>
-        ) : (
-          // Larger car for other layouts
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-            <BeetleSVG width={300} opacity={0.85} />
-          </div>
-        )}
-
-        {/* Headline — the hero element */}
-        <div style={{
-          fontFamily: S.font,
-          fontSize: "clamp(22px, 4.5vw, 52px)",
-          fontWeight: 900,
-          color: S.ink,
-          letterSpacing: "-1.5px",
-          lineHeight: 1.0,
-          marginBottom: 20,
-          maxWidth: 680,
-        }}>
+      {/* Ad content */}
+      <div style={{ flex: 1, padding: "24px 32px 20px", display: "flex", flexDirection: "column" }}>
+        <div style={{ fontFamily: S.font, fontSize: "clamp(16px, 2.5vw, 26px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.05, marginBottom: 16, whiteSpace: "pre-line" }}>
           {ad.headline}
         </div>
-
-        {/* Dividing rule */}
-        <div style={{ width: "100%", height: 1, background: S.ink, marginBottom: 16, opacity: 0.3 }} />
-
-        {/* Body copy — small, tight, period-correct */}
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 32, alignItems: "flex-start" }}>
-          <div style={{
-            fontFamily: S.font,
-            fontSize: 11,
-            color: "#333",
-            lineHeight: 1.75,
-            maxWidth: 600,
-            columnCount: 2,
-            columnGap: 28,
-          }}>
-            {ad.body}
-          </div>
-          {/* VW roundel — always bottom right of copy */}
-          <div style={{ flexShrink: 0, alignSelf: "flex-end" }}>
-            <VWRoundel size={52} />
-          </div>
+        <div style={{ width: "100%", height: 1, background: S.ink, opacity: 0.25, marginBottom: 14 }} />
+        <div style={{ fontFamily: S.font, fontSize: 10.5, color: "#333", lineHeight: 1.8, flex: 1 }}>
+          {ad.body}
         </div>
-
       </div>
 
-      {/* Bottom bar — newspaper-style */}
-      <div style={{ borderTop: `2px solid ${S.ink}`, padding: "8px 56px", display: "flex", alignItems: "center", justifyContent: "space-between", background: S.ink }}>
-        <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>
-          {ad.subhead}
-        </div>
-        <div style={{ fontFamily: S.font, fontSize: 9, color: "#666", letterSpacing: 3, textTransform: "uppercase" }}>
-          {isOwn ? "VIN 117070752 · GU12 · 1966" : "Volkswagen · 1966"}
-        </div>
+      {/* Footer */}
+      <div style={{ borderTop: "1px solid rgba(0,0,0,0.15)", padding: "10px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(0,0,0,0.04)" }}>
+        <div style={{ fontFamily: S.font, fontSize: 8, color: "#888", letterSpacing: 3, textTransform: "uppercase" }}>{ad.subhead}</div>
+        <VWRoundel size={28} />
       </div>
     </div>
   );
 }
 
-function Slideshow() {
-  const [current, setCurrent] = useState(0);
+function AdCarousel() {
+  const [start, setStart] = useState(0);
+  const perPage = typeof window !== "undefined" && window.innerWidth >= 900 ? 3 : window.innerWidth >= 600 ? 2 : 1;
 
-  const goTo = useCallback((idx) => { setCurrent(idx); }, []);
+  // Use real advert images if available, otherwise use rendered SVG panels
+  if (USE_REAL_ADVERTS) {
+    const total = ADVERT_IMAGES.length;
+    const maxStart = Math.max(0, total - perPage);
+
+    useEffect(() => {
+      const t = setInterval(() => setStart(s => s >= maxStart ? 0 : s + 1), 6000);
+      return () => clearInterval(t);
+    }, [maxStart]);
+
+    const visible = ADVERT_IMAGES.slice(start, start + perPage);
+
+    return (
+      <div>
+        <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px 24px" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ fontFamily: S.font, fontSize: 9, color: "#555", letterSpacing: 6, textTransform: "uppercase", marginBottom: 4 }}>Volkswagen · 1966</div>
+              <div style={{ fontFamily: S.font, fontSize: 20, fontWeight: 900, color: S.cream, letterSpacing: -0.5 }}>From the archive.</div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => setStart(s => Math.max(0, s - 1))} disabled={start === 0} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start === 0 ? "#333" : S.cream, cursor: start === 0 ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
+              <button onClick={() => setStart(s => Math.min(maxStart, s + 1))} disabled={start >= maxStart} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start >= maxStart ? "#333" : S.cream, cursor: start >= maxStart ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
+            </div>
+          </div>
+        </div>
+        <div style={{ background: S.darkCream, padding: "24px", borderBottom: S.border }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: `repeat(${perPage}, 1fr)`, gap: 16 }}>
+            {visible.map((src, i) => (
+              <div key={i} style={{ border: S.border, background: S.cream, overflow: "hidden" }}>
+                <img src={src} alt="VW advertisement" style={{ width: "100%", height: "auto", display: "block" }} />
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 20 }}>
+            {Array.from({ length: maxStart + 1 }).map((_, i) => (
+              <div key={i} onClick={() => setStart(i)} style={{ width: i === start ? 20 : 7, height: 7, borderRadius: 4, background: i === start ? S.ink : "rgba(0,0,0,0.2)", cursor: "pointer", transition: "all 0.3s" }} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback — rendered SVG ad panels
+  const total = ADS.length;
+  const maxStart = Math.max(0, total - perPage);
+  const prev = () => setStart(s => Math.max(0, s - 1));
+  const next = () => setStart(s => Math.min(maxStart, s + 1));
 
   useEffect(() => {
-    const t = setInterval(() => setCurrent(c => (c + 1) % ADS.length), 7000);
+    const t = setInterval(() => setStart(s => s >= maxStart ? 0 : s + 1), 6000);
     return () => clearInterval(t);
-  }, []);
+  }, [maxStart]);
+
+  const visible = ADS.slice(start, start + perPage);
+  while (visible.length < perPage) visible.push(null);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "clamp(480px, 70vh, 640px)", overflow: "hidden", background: S.cream, borderBottom: S.border }}>
-      {ADS.map((ad, i) => (
-        <AdSlide key={i} ad={ad} visible={i === current} />
-      ))}
-
-      {/* Dot navigation */}
-      <div style={{ position: "absolute", bottom: 52, right: 56, display: "flex", gap: 8, zIndex: 10 }}>
-        {ADS.map((_, i) => (
-          <div
-            key={i}
-            onClick={() => goTo(i)}
-            style={{
-              width: i === current ? 24 : 8,
-              height: 8,
-              borderRadius: 4,
-              background: i === current ? S.ink : "rgba(0,0,0,0.2)",
-              cursor: "pointer",
-              transition: "all 0.3s",
-              border: "1px solid rgba(0,0,0,0.2)",
-            }}
-          />
-        ))}
+    <div>
+      {/* Section header */}
+      <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px 24px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontFamily: S.font, fontSize: 9, color: "#555", letterSpacing: 6, textTransform: "uppercase", marginBottom: 4 }}>Volkswagen · 1966</div>
+            <div style={{ fontFamily: S.font, fontSize: 20, fontWeight: 900, color: S.cream, letterSpacing: -0.5 }}>From the archive.</div>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => setStart(s => Math.max(0, s - 1))} disabled={start === 0} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start === 0 ? "#333" : S.cream, cursor: start === 0 ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
+            <button onClick={() => setStart(s => Math.min(maxStart, s + 1))} disabled={start >= maxStart} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start >= maxStart ? "#333" : S.cream, cursor: start >= maxStart ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
+          </div>
+        </div>
       </div>
 
-      {/* Arrow nav */}
-      {["‹", "›"].map((arrow, idx) => (
-        <div
-          key={arrow}
-          onClick={() => goTo(idx === 0 ? (current - 1 + ADS.length) % ADS.length : (current + 1) % ADS.length)}
-          style={{
-            position: "absolute",
-            top: "50%",
-            transform: "translateY(-50%)",
-            [idx === 0 ? "left" : "right"]: 16,
-            width: 36,
-            height: 36,
-            border: S.border,
-            background: S.cream,
-            color: S.ink,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 20,
-            cursor: "pointer",
-            userSelect: "none",
-            zIndex: 10,
-            fontFamily: S.font,
-          }}
-        >
-          {arrow}
+      {/* Ad grid */}
+      <div style={{ background: S.darkCream, padding: "24px", borderBottom: S.border }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: `repeat(${perPage}, 1fr)`, gap: 16 }}>
+          {visible.map((ad, i) => ad ? <AdPanel key={`${start}-${i}`} ad={ad} /> : <div key={i} />)}
         </div>
-      ))}
+        {/* Dot indicators */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 20 }}>
+          {Array.from({ length: maxStart + 1 }).map((_, i) => (
+            <div key={i} onClick={() => setStart(i)} style={{ width: i === start ? 20 : 7, height: 7, borderRadius: 4, background: i === start ? S.ink : "rgba(0,0,0,0.2)", cursor: "pointer", transition: "all 0.3s" }} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
+// ─── Stats ───────────────────────────────────────────────────────────────────
 function StatBox({ number, label }) {
   return (
     <div style={{ borderLeft: `4px solid ${S.ink}`, paddingLeft: 16 }}>
@@ -269,32 +310,43 @@ function StatBox({ number, label }) {
   );
 }
 
+// ─── Nav card icons (SVG, no emoji) ─────────────────────────────────────────
+function IconChecklist() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="1" y="1" width="30" height="30" stroke={S.ink} strokeWidth="2" />
+      <line x1="8" y1="10" x2="24" y2="10" stroke={S.ink} strokeWidth="2" />
+      <line x1="8" y1="16" x2="24" y2="16" stroke={S.ink} strokeWidth="2" />
+      <line x1="8" y1="22" x2="18" y2="22" stroke={S.ink} strokeWidth="2" />
+      <polyline points="6,15 8.5,18 13,12" stroke={S.red} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconFolder() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M2 8 L2 26 L30 26 L30 10 L14 10 L11 6 L2 6 Z" stroke={S.ink} strokeWidth="2" fill="none" strokeLinejoin="round" />
+      <line x1="2" y1="14" x2="30" y2="14" stroke={S.ink} strokeWidth="1.5" />
+    </svg>
+  );
+}
 function NavCard({ icon, headline, body, cta, onClick, href }) {
   const [hov, setHov] = useState(false);
   const inner = (
-    <div
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        border: S.border,
-        padding: "32px 28px",
-        cursor: "pointer",
-        background: hov ? S.ink : S.cream,
-        transition: "background 0.15s",
-        height: "100%",
-      }}
-    >
-      <div style={{ fontSize: 26, marginBottom: 18 }}>{icon}</div>
-      <div style={{ fontFamily: S.font, fontSize: 16, fontWeight: 900, color: hov ? S.cream : S.ink, letterSpacing: -0.5, marginBottom: 10, textTransform: "uppercase", lineHeight: 1.1 }}>{headline}</div>
-      <div style={{ fontFamily: S.font, fontSize: 11, color: hov ? "#aaa" : "#555", lineHeight: 1.8, marginBottom: 20 }}>{body}</div>
-      <div style={{ fontFamily: S.font, fontSize: 10, fontWeight: 700, color: hov ? S.cream : S.red, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
+    <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{ border: S.border, padding: "28px 24px", cursor: "pointer", background: hov ? S.ink : S.cream, transition: "background 0.15s", height: "100%" }}>
+      <div style={{ marginBottom: 18, filter: hov ? "invert(1)" : "none", transition: "filter 0.15s" }}>{icon}</div>
+      <div style={{ fontFamily: S.font, fontSize: 15, fontWeight: 900, color: hov ? S.cream : S.ink, letterSpacing: -0.5, marginBottom: 10, textTransform: "uppercase", lineHeight: 1.1 }}>{headline}</div>
+      <div style={{ fontFamily: S.font, fontSize: 11, color: hov ? "#aaa" : "#555", lineHeight: 1.8, marginBottom: 18 }}>{body}</div>
+      <div style={{ fontFamily: S.font, fontSize: 9, fontWeight: 700, color: hov ? S.cream : S.red, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
     </div>
   );
   if (href) return <a href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>{inner}</a>;
   return inner;
 }
 
+// ─── Home page ───────────────────────────────────────────────────────────────
 function HomePage({ setPage }) {
   const totalJobs = 45;
   const doneCount = (() => {
@@ -306,37 +358,37 @@ function HomePage({ setPage }) {
 
   return (
     <div style={{ background: S.cream, fontFamily: S.font }}>
-      <Slideshow />
+
+      {/* ── TOP: Photo slideshow ── */}
+      <PhotoSlideshow />
 
       {/* Stats strip */}
       <div style={{ borderBottom: S.border, background: S.cream }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "36px 24px", display: "flex", gap: 48, flexWrap: "wrap" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px", display: "flex", gap: 40, flexWrap: "wrap" }}>
           <StatBox number={`${pct}%`} label="Complete" />
           <StatBox number={doneCount} label="Jobs done" />
           <StatBox number={remaining} label="Jobs left" />
           <StatBox number="9" label="Phases" />
         </div>
       </div>
-
-      {/* Progress */}
       <div style={{ height: 5, background: S.darkCream }}>
         <div style={{ height: 5, width: `${pct}%`, background: S.red, transition: "width 0.5s" }} />
       </div>
 
-      {/* Nav cards */}
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "52px 24px" }}>
-        <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 24 }}>The project.</div>
+      {/* Quick access cards */}
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 32px" }}>
+        <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
-          <NavCard icon="✅" headline="Work Checklist" body="Nine phases. Every job in order. Video guides and references linked." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon="📁" headline="Build Folder" body="Photos and documents from the restoration. Add photos directly in Google Drive." cta="Open Drive" href={DRIVE_URL} />
+          <NavCard icon={<IconChecklist />} headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
+          <NavCard icon={<IconFolder />} headline="Build Folder" body="Photos and documents from the restoration. Hosted in Google Drive." cta="Open Drive" href={DRIVE_URL} />
         </div>
       </div>
 
       {/* Spec table */}
       <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px 24px" }}>
-          <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 32 }}>Technical specification.</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "24px 32px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "44px 24px" }}>
+          <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 28 }}>Technical specification.</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "20px 28px" }}>
             {[
               ["VIN", "117070752"],
               ["Product", "1500 Sedan — RHD"],
@@ -362,26 +414,30 @@ function HomePage({ setPage }) {
             ].map(([label, value]) => (
               <div key={label} style={{ borderLeft: `2px solid ${S.red}`, paddingLeft: 12 }}>
                 <div style={{ fontSize: 9, color: "#555", letterSpacing: 3, textTransform: "uppercase", marginBottom: 4 }}>{label}</div>
-                <div style={{ fontSize: 13, color: S.cream, fontWeight: 700 }}>{value}</div>
+                <div style={{ fontSize: 12, color: S.cream, fontWeight: 700 }}>{value}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
+      {/* ── BOTTOM: DDB Ad carousel ── */}
+      <AdCarousel />
+
       {/* Footer */}
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "28px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ fontFamily: S.font, fontSize: 12, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>VW Beetle 1966 Restoration 2024–2026 · Surrey</div>
-        <VWRoundel size={34} />
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Restoration 2024–2025 · GU12</div>
+        <VWRoundel size={32} />
       </div>
     </div>
   );
 }
 
+// ─── Header ──────────────────────────────────────────────────────────────────
 function Header({ page, setPage }) {
   return (
     <div style={{ background: S.cream, borderBottom: S.border, position: "sticky", top: 0, zIndex: 100 }}>
-      <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div onClick={() => setPage("home")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
           <VWRoundel size={30} />
           <div>
@@ -391,11 +447,13 @@ function Header({ page, setPage }) {
         </div>
         <nav style={{ display: "flex" }}>
           {[{ id: "home", label: "Home" }, { id: "checklist", label: "Checklist" }].map(item => (
-            <button key={item.id} onClick={() => setPage(item.id)} style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", transition: "all 0.15s" }}>
+            <button key={item.id} onClick={() => setPage(item.id)}
+              style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", transition: "all 0.15s" }}>
               {item.label}
             </button>
           ))}
-          <a href={DRIVE_URL} target="_blank" rel="noopener noreferrer" style={{ borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, display: "flex", alignItems: "center", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", textDecoration: "none", color: "#888" }}>
+          <a href={DRIVE_URL} target="_blank" rel="noopener noreferrer"
+            style={{ borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, display: "flex", alignItems: "center", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", textDecoration: "none", color: "#888" }}>
             Photos ↗
           </a>
         </nav>
@@ -404,6 +462,7 @@ function Header({ page, setPage }) {
   );
 }
 
+// ─── Root ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const [page, setPage] = useState("home");
   return (

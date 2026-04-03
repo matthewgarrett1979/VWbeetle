@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#f2efe8"/>
+  <rect x="3" y="3" width="794" height="994" fill="none" stroke="#ccc" stroke-width="2" stroke-dasharray="12,8"/>
+  <text x="400" y="460" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#aaa" letter-spacing="6">ADD ADVERT SCANS HERE</text>
+  <text x="400" y="490" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#bbb" letter-spacing="3">public/assets/adverts/</text>
+  <text x="400" y="540" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="48" fill="#ccc">📰</text>
+</svg>

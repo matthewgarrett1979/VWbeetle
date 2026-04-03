@@ -147,10 +147,10 @@ async function remoteGet() {
 
 async function remoteSet(value) {
   try {
-    await fetch(`${UPSTASH_URL}/set/${STORAGE_KEY}`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ value: JSON.stringify(value) }),
+    const encoded = encodeURIComponent(JSON.stringify(value));
+    await fetch(`${UPSTASH_URL}/set/${STORAGE_KEY}/${encoded}`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
     });
   } catch {}
 }
