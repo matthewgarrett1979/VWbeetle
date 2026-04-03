@@ -1,5 +1,142 @@
 import { useState, useEffect, useRef } from "react";
 
+// ─── BUILD RECORD — Professional workshop works (GVU 798D, Mar–Oct 2025) ─────
+// All items completed by bodyshop. Read-only historical record.
+const buildRecord = [
+  {
+    id: "br1",
+    phase: "Strip Down",
+    date: "Mar 2025",
+    jobs: [
+      "Put vehicle on ramp. Removed fuel tank, washer bottle, horn, all seats and carpet",
+      "Removed front and rear bumpers, all wings, both doors, both running boards, seatbelts",
+      "Disconnected all wiring looms, brake feed pipes and steering column",
+      "Split body from chassis — body lifted and moved to separate work area",
+      "Removed engine from chassis",
+    ],
+  },
+  {
+    id: "br2",
+    phase: "Chassis & Floor Pan",
+    date: "Mar 2025",
+    jobs: [
+      "Wire wheeled top and underside of chassis. Welded over holes. Covered joins with sprayable sealer",
+      "Painted chassis in black POR15 — two coats",
+      "Cut away and replaced both heater channels (n/s and o/s)",
+      "Cut away and replaced rear crossmember sections",
+      "Welded body mount captives. Corrected misaligned body mount holes on both heater channels",
+      "Made and welded heating pipes. Welded throttle pedal bracket correctly. Welded frame head cover plate",
+      "Applied underbody seal to underside of chassis",
+    ],
+  },
+  {
+    id: "br3",
+    phase: "Body Shell — Structural Repairs",
+    date: "Mar–May 2025",
+    jobs: [
+      "Cut away and replaced new bulkhead panel — trimmed, punched, welded and ground back",
+      "Repaired and replaced bottom sections of both A posts (n/s and o/s)",
+      "Repaired n/s and o/s B posts — cut away old repairs, made new sections, welded in",
+      "Replaced both front quarter panels — fettled, aligned, welded and ground back",
+      "Replaced n/s rear quarter panel — trimmed, joggled, welded top and bottom edges",
+      "Replaced o/s rear quarter panel — cut away old, trimmed new, welded working slowly to prevent warping",
+      "Replaced boot panel — trimmed top edge, spot welded bottom and sides, added blanking plate",
+      "Replaced rear valance — ground away old, offered up new, clamped and welded",
+      "Fitted rear suspension panels both sides — trimmed, tacked and fully welded",
+      "Repaired inner rear quarter panels both sides",
+      "Made and welded bonnet seal channel — shaped with shrinker/stretcher, spot welded on",
+      "Repaired rear panel and rear valance fitment — manipulated, bent and welded",
+      "Fitted front bumper mounts from donor vehicle — clamped and welded in correct position",
+      "Welded up all small holes and imperfections throughout body shell",
+    ],
+  },
+  {
+    id: "br4",
+    phase: "Protection & Sealing",
+    date: "Jun–Jul 2025",
+    jobs: [
+      "Ground back all welds throughout — front to rear, inside and out",
+      "Fibreglassed over internal welds on rear inner arches, A posts and boot area — sanded back",
+      "Seam sealed all panel joins at front and rear of vehicle",
+      "Drilled and fitted bakelite grommets with M6 rivnuts",
+      "DA sanded floor pan. Applied two coats black POR15 to floor pan",
+      "Keyed up all areas for Raptor coating",
+      "Applied Raptor to boot area, heater channels, bulkhead, spare wheel well, all arches and engine bay",
+    ],
+  },
+  {
+    id: "br5",
+    phase: "Mechanical Rebuild",
+    date: "Jul 2025",
+    jobs: [
+      "Removed and replaced all four trailing arms — heated out old ball joints, pressed in new, painted POR15",
+      "Replaced all trailing arm seals. Fitted all ball joint boots",
+      "Wire wheeled and painted beam black POR15. Cut away old steering stop",
+      "Fitted new steering box and coupler. Fitted new track rods with new track rod ends",
+      "Fitted new steering damper. Fitted new front hubs with discs",
+      "Fitted new master cylinder. Made new hard brake lines. Fitted pedal assembly",
+      "Fitted new front shocks",
+      "Lowered body onto chassis — fitted and torqued all body bolts",
+      "Fitted new engine bay seal, gearbox seal, foam body seal",
+      "Fitted engine and connected all wiring. Ran new fuel lines from hard line to pump to carb",
+      "Connected throttle cable. Bled brake system. Connected and tested horn",
+      "Fitted heat exchangers with new clamps, gaskets and copper nuts",
+      "Fitted heat exchanger cables, heat control cables, flap cables and heating pipes",
+      "Filled fuel tank and ran vehicle — first drive out of workshop",
+      "Fitted new rear door cards, carpet (most), front seats, rear seat, handbrake lever",
+      "Fitted wiring for horn down column. Fitted footlight button",
+    ],
+  },
+  {
+    id: "br6",
+    phase: "Bodywork & Paint Prep",
+    date: "Jul–Sep 2025",
+    jobs: [
+      "Repaired o/s rear quarter panel — fibreglass, fill, sand",
+      "Stripped both side doors fully. Removed both rear side windows, front windscreen and rear screen",
+      "Started sanding scuttle panel, front door shuts, bonnet, doors and boot lid",
+      "Repaired front quarter panels. Welded plug holes on o/s front quarter and A post",
+      "Replaced door hinge pins — pressed out seized pins, reamed to 8.2mm, commissioned custom 8.4mm stainless pins, pressed in",
+      "Repaired n/s and o/s doors — ground, filled, primed inside and out",
+      "Repaired bonnet — filler work, rub down, prime. Multiple cycles 320g / 500g",
+      "Raptored insides of bonnet and front wings",
+      "Masked entire vehicle. Epoxy primed all panels. Spray filled and rubbed down — multiple stages",
+      "Painted insides of both doors",
+    ],
+  },
+  {
+    id: "br7",
+    phase: "Paint & Final Assembly",
+    date: "Sep–Oct 2025",
+    jobs: [
+      "Painted bonnet and both doors — flatted with 2000g and 3000g, polished",
+      "Painted both front wings. Painted both rear wings. Flatted and polished all panels",
+      "Machine polished roof. Compounded roof. Polished full car",
+      "Fitted all windows — chrome into rubber on bench, cord-pulled into apertures (rear, front, side, quarterlights)",
+      "Door alignment — made custom shims for door hinges, adjusted until no catching",
+      "Fitted engine lid, engine lid catch, bonnet, bonnet catch, bonnet seal and engine lid seal",
+      "Fitted all door handles (inner), door catches. Checked operation",
+      "Fitted rear lamps to wings. Tested all lights — replaced 1x indicator bulb",
+      "Fitted new gas struts for bonnet. Fitted new bumper seals",
+      "Fitted n/s rear wing beading. Torqued wheels",
+      "Replaced both rear brake slave cylinders. New shoes, brake adjusters, handbrake arms with new pins",
+      "Bled rear brake system. Adjusted brakes and handbrake",
+      "Replaced front shocks",
+      "Cavity wax / wax oil — heater channels, doors, rear quarters, A posts",
+      "Fitted blanking grommets, screenwash bottle, steering box cover",
+      "Fitted tailpipes with new clamps. Fitted wing mirrors",
+      "Removed and replaced faulty indicator switch — tested all lights",
+      "Fitted steering stops — adjusted to prevent tyre contact on full lock",
+      "Adjusted tracking. NOTE: full laser tracking recommended at tyre specialist",
+      "NOTE: n/s rear drum threads stripped — rear drums and shoes replaced.",
+      "NOTE: fuel tank has rust internally — fuel tank replaced.",
+      "NOTE: engine idles high — engine and carb replacement outstanding (see Phase 8).",
+      "NOTE: tyres perishing — replacement required",
+      "Car driven in yard — drives, stops and steers. Not fully road tested",
+    ],
+  },
+];
+
 const phases = [
   {
     id: 1,
@@ -298,6 +435,34 @@ export default function Checklist() {
           <div style={{ marginTop: 20, height: 3, background: "#333" }}>
             <div style={{ height: 3, width: `${pct}%`, background: S.red, transition: "width 0.4s" }} />
           </div>
+        </div>
+      </div>
+
+      {/* Build Record */}
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "40px 24px 0" }}>
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ fontSize: 11, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 4 }}>Build Record</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: S.black, letterSpacing: -0.5 }}>Professional Works — GVU 798D.</div>
+          <div style={{ fontSize: 11, color: "#999", marginTop: 4 }}>Bodyshop restoration Mar–Oct 2025. All items completed.</div>
+        </div>
+        {buildRecord.map((phase) => (
+          <div key={phase.id} style={{ borderBottom: `1px solid #ddd`, marginTop: 24 }}>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", paddingBottom: 10, borderBottom: "1px solid #eee", marginBottom: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 900, color: S.black, textTransform: "uppercase", letterSpacing: -0.3 }}>{phase.phase}</div>
+              <div style={{ fontSize: 9, color: "#aaa", letterSpacing: 3, textTransform: "uppercase" }}>{phase.date}</div>
+            </div>
+            {phase.jobs.map((job, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "7px 0", borderBottom: i < phase.jobs.length - 1 ? "1px solid #f0f0f0" : "none" }}>
+                <div style={{ width: 16, height: 16, flexShrink: 0, marginTop: 1, background: S.black, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="9" height="9" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" stroke="#f5f5f0" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </div>
+                <div style={{ fontSize: 11, color: job.startsWith("NOTE:") ? "#cc6600" : "#666", lineHeight: 1.5, fontStyle: job.startsWith("NOTE:") ? "italic" : "normal" }}>{job}</div>
+              </div>
+            ))}
+          </div>
+        ))}
+        <div style={{ marginTop: 24, marginBottom: 40, paddingTop: 16, borderTop: `2px solid ${S.black}` }}>
+          <div style={{ fontSize: 9, color: "#bbb", letterSpacing: 3, textTransform: "uppercase" }}>Total professional works · Mar–Oct 2025 · GVU 798D</div>
         </div>
       </div>
 

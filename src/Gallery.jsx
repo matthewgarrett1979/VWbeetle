@@ -28,7 +28,8 @@ export default function Gallery({ setPage }) {
 
   useEffect(() => {
     fetchFolder("beetle/gallery").then(imgs => {
-      setPhotos(imgs);
+      const sorted = [...imgs].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+      setPhotos(sorted);
       setLoading(false);
     });
   }, []);

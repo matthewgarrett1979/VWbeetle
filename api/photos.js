@@ -10,7 +10,6 @@ export default async function handler(req, res) {
   try {
     const credentials = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
 
-    // Search API — works in both fixed and dynamic folder mode
     const searchRes = await fetch(
       `https://api.cloudinary.com/v1_1/${cloud}/resources/search`,
       {
@@ -22,7 +21,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           expression: `folder:${folder}`,
           max_results: 200,
-          sort_by: [{ created_at: 'desc' }],
+          sort_by: [{ created_at: 'desc' }], // newest uploaded first
         }),
       }
     );
@@ -34,11 +33,12 @@ export default async function handler(req, res) {
         thumb: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_600/${r.public_id}`,
         full: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`,
         public_id: r.public_id,
+        created_at: r.created_at,
       }));
       return res.status(200).json({ images, count: images.length });
     }
 
-    // Fallback — resources by prefix
+    // Fallback — prefix endpoint, sort by created_at desc
     const prefixRes = await fetch(
       `https://api.cloudinary.com/v1_1/${cloud}/resources/image?prefix=${encodeURIComponent(folder + '/')}&type=upload&max_results=200`,
       { headers: { Authorization: `Basic ${credentials}` } }
@@ -50,12 +50,15 @@ export default async function handler(req, res) {
     }
 
     const data = await prefixRes.json();
-    const images = (data.resources || []).map(r => ({
-      url: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`,
-      thumb: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_600/${r.public_id}`,
-      full: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`,
-      public_id: r.public_id,
-    }));
+    const images = (data.resources || [])
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // newest first
+      .map(r => ({
+        url: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`,
+        thumb: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_600/${r.public_id}`,
+        full: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`,
+        public_id: r.public_id,
+        created_at: r.created_at,
+      }));
 
     return res.status(200).json({ images, count: images.length });
 
