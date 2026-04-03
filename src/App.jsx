@@ -12,21 +12,21 @@ const S = {
   ink: "#1a1a1a",
 };
 
-// ─── CLOUDINARY ───────────────────────────────────────────────────────────────
-const CLOUDINARY_CLOUD = "dnpglftl4";
-
+// ─── CLOUDINARY via serverless API ───────────────────────────────────────────
 async function fetchFolder(folder) {
   try {
-    const res = await fetch(
-      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/${folder}.json`
-    );
+    const res = await fetch(`/api/photos?folder=${encodeURIComponent(folder)}`);
     if (!res.ok) return [];
     const data = await res.json();
-    return (data.resources || []).map(r =>
-      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`
-    );
+    return (data.images || []).map(i => i.url);
   } catch { return []; }
 }
+
+// ─── Local advert scans (public/assets/adverts/) ─────────────────────────────
+// Drop scanned 1960s VW ads here — they replace the rendered panels automatically
+const advertModules = import.meta.glob('/public/assets/adverts/*.{jpg,jpeg,png,webp}', { eager: true, query: '?url', import: 'default' });
+const ADVERT_IMAGES = Object.values(advertModules);
+const USE_REAL_ADVERTS = ADVERT_IMAGES.length > 0;
 
 // ─── VW Beetle SVG ───────────────────────────────────────────────────────────
 function BeetleSVG({ width = 320, opacity = 1 }) {
@@ -156,15 +156,31 @@ function AdPanel({ ad }) {
 
 function AdCarousel() {
   const [start, setStart] = useState(0);
+  const [advertImages, setAdvertImages] = useState([]);
   const perPage = typeof window !== "undefined" && window.innerWidth >= 900 ? 3 : window.innerWidth >= 600 ? 2 : 1;
-  const maxStart = Math.max(0, ADS.length - perPage);
+
+  // Fetch from Cloudinary beetle/archive on mount, fall back to local then SVG panels
+  useEffect(() => {
+    fetchFolder("beetle/archive").then(urls => {
+      if (urls.length > 0) {
+        setAdvertImages(urls);
+      } else {
+        // Fall back to local scanned adverts if any, otherwise empty (uses SVG panels)
+        setAdvertImages(USE_REAL_ADVERTS ? ADVERT_IMAGES : []);
+      }
+    });
+  }, []);
+
+  const useImages = advertImages.length > 0;
+  const items = useImages ? advertImages : ADS;
+  const maxStart = Math.max(0, items.length - perPage);
 
   useEffect(() => {
     const t = setInterval(() => setStart(s => s >= maxStart ? 0 : s + 1), 6000);
     return () => clearInterval(t);
   }, [maxStart]);
 
-  const visible = ADS.slice(start, start + perPage);
+  const visible = items.slice(start, start + perPage);
   while (visible.length < perPage) visible.push(null);
 
   return (
@@ -183,7 +199,17 @@ function AdCarousel() {
       </div>
       <div style={{ background: S.darkCream, padding: "24px", borderBottom: S.border }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: `repeat(${perPage}, 1fr)`, gap: 16 }}>
-          {visible.map((ad, i) => ad ? <AdPanel key={`${start}-${i}`} ad={ad} /> : <div key={i} />)}
+          {visible.map((item, i) => {
+            if (!item) return <div key={i} />;
+            if (useImages) {
+              return (
+                <div key={i} style={{ border: S.border, background: S.cream, overflow: "hidden" }}>
+                  <img src={item} alt="VW advertisement" style={{ width: "100%", height: "auto", display: "block" }} />
+                </div>
+              );
+            }
+            return <AdPanel key={`${start}-${i}`} ad={item} />;
+          })}
         </div>
         <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 20 }}>
           {Array.from({ length: maxStart + 1 }).map((_, i) => (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const CLOUDINARY_CLOUD = "dnpglftl4";
+
 
 const S = {
   font: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -14,16 +14,10 @@ const S = {
 
 async function fetchFolder(folder) {
   try {
-    const res = await fetch(
-      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/${folder}.json`
-    );
+    const res = await fetch(`/api/photos?folder=${encodeURIComponent(folder)}`);
     if (!res.ok) return [];
     const data = await res.json();
-    return (data.resources || []).map(r => ({
-      thumb: `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/q_auto,f_auto,w_600/${r.public_id}`,
-      full: `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`,
-      id: r.public_id,
-    }));
+    return (data.images || []);
   } catch { return []; }
 }
 
