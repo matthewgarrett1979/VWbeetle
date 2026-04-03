@@ -232,12 +232,36 @@ function StatBox({ number, label }) {
 }
 
 // ─── Nav card ─────────────────────────────────────────────────────────────────
+function ChecklistIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect x="1" y="1" width="26" height="26" stroke={S.ink} strokeWidth="2"/>
+      <line x1="8" y1="9" x2="20" y2="9" stroke={S.ink} strokeWidth="1.5"/>
+      <line x1="8" y1="14" x2="20" y2="14" stroke={S.ink} strokeWidth="1.5"/>
+      <line x1="8" y1="19" x2="16" y2="19" stroke={S.ink} strokeWidth="1.5"/>
+      <polyline points="4,14 6,16.5 10,11" stroke={S.red} strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function GalleryIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect x="1" y="1" width="26" height="26" stroke={S.ink} strokeWidth="2"/>
+      <rect x="5" y="5" width="8" height="8" stroke={S.ink} strokeWidth="1.5"/>
+      <rect x="15" y="5" width="8" height="8" stroke={S.ink} strokeWidth="1.5"/>
+      <rect x="5" y="15" width="8" height="8" stroke={S.ink} strokeWidth="1.5"/>
+      <rect x="15" y="15" width="8" height="8" stroke={S.ink} strokeWidth="1.5"/>
+    </svg>
+  );
+}
+
 function NavCard({ icon, headline, body, cta, onClick }) {
   const [hov, setHov] = useState(false);
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{ border: S.border, padding: "28px 24px", cursor: "pointer", background: hov ? S.ink : S.cream, transition: "background 0.15s", height: "100%" }}>
-      <div style={{ fontSize: 24, marginBottom: 14 }}>{icon}</div>
+      <div style={{ marginBottom: 20, filter: hov ? "invert(1)" : "none", transition: "filter 0.15s" }}>{icon}</div>
       <div style={{ fontFamily: S.font, fontSize: 15, fontWeight: 900, color: hov ? S.cream : S.ink, letterSpacing: -0.5, marginBottom: 10, textTransform: "uppercase", lineHeight: 1.1 }}>{headline}</div>
       <div style={{ fontFamily: S.font, fontSize: 11, color: hov ? "#aaa" : "#555", lineHeight: 1.8, marginBottom: 18 }}>{body}</div>
       <div style={{ fontFamily: S.font, fontSize: 9, fontWeight: 700, color: hov ? S.cream : S.red, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
@@ -274,8 +298,8 @@ function HomePage({ setPage }) {
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 32px" }}>
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
-          <NavCard icon="✅" headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon="📷" headline="Build Gallery" body="All photos from the restoration. Upload directly to Cloudinary and they appear here automatically." cta="View gallery" onClick={() => setPage("gallery")} />
+          <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
+          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="All photos from the restoration. Upload directly to Cloudinary and they appear here automatically." cta="View gallery" onClick={() => setPage("gallery")} />
         </div>
       </div>
 
