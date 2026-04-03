@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Checklist from "./Checklist.jsx";
-
-const DRIVE_URL = "https://drive.google.com/drive/folders/15H1ICgPyXokmRCnPz8n1pw360WBuNr59?usp=drive_link";
+import Gallery from "./Gallery.jsx";
 
 const S = {
   font: "'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -13,7 +12,23 @@ const S = {
   ink: "#1a1a1a",
 };
 
-// ─── SVG Beetle silhouette ───────────────────────────────────────────────────
+// ─── CLOUDINARY ───────────────────────────────────────────────────────────────
+const CLOUDINARY_CLOUD = "dnpglftl4";
+
+async function fetchFolder(folder) {
+  try {
+    const res = await fetch(
+      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/${folder}.json`
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.resources || []).map(r =>
+      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`
+    );
+  } catch { return []; }
+}
+
+// ─── VW Beetle SVG ───────────────────────────────────────────────────────────
 function BeetleSVG({ width = 320, opacity = 1 }) {
   return (
     <svg width={width} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity }}>
@@ -43,70 +58,23 @@ function VWRoundel({ size = 48, invert = false }) {
       <circle cx="50" cy="50" r="50" fill={bg} />
       <circle cx="50" cy="50" r="44" fill="none" stroke={fg} strokeWidth="2.5" />
       <circle cx="50" cy="50" r="37" fill="none" stroke={fg} strokeWidth="2.5" />
-      {/* V — two angled strokes meeting at bottom centre */}
-      <path
-        d="M32 22 L44 48 L50 34 L56 48 L68 22"
-        fill="none"
-        stroke={fg}
-        strokeWidth="6.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Horizontal divider */}
+      <path d="M32 22 L44 48 L50 34 L56 48 L68 22" fill="none" stroke={fg} strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
       <line x1="27" y1="52" x2="73" y2="52" stroke={fg} strokeWidth="2.5" />
-      {/* W — four strokes */}
-      <path
-        d="M27 58 L35 78 L50 62 L65 78 L73 58"
-        fill="none"
-        stroke={fg}
-        strokeWidth="6.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M27 58 L35 78 L50 62 L65 78 L73 58" fill="none" stroke={fg} strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-// ─── CLOUDINARY CONFIG ───────────────────────────────────────────────────────
-const CLOUDINARY_CLOUD = "dnpglftl4";
-
-// Fetches all images from the beetle folder
-// Upload photos to Cloudinary → beetle folder — they appear automatically
-async function fetchCloudinaryFolder() {
-  try {
-    const res = await fetch(
-      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/beetle.json`
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.resources || []).map(r =>
-      `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`
-    );
-  } catch { return []; }
-}
-
-// ─── ADVERT IMAGES (local fallback + Cloudinary) ─────────────────────────────
-const advertModules = import.meta.glob('/public/assets/adverts/*.{jpg,jpeg,png,webp,svg}', { eager: true, query: '?url', import: 'default' });
-const ADVERT_IMAGES = Object.keys(advertModules)
-  .filter(p => !p.includes('placeholder'))
-  .map(path => path.replace('/public', ''));
-const USE_REAL_ADVERTS = ADVERT_IMAGES.length > 0;
-
+// ─── Hero photo slideshow (beetle/hero folder) ────────────────────────────────
 function PhotoSlideshow() {
   const [photos, setPhotos] = useState([]);
   const [current, setCurrent] = useState(0);
   const [opacity, setOpacity] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  // Fetch from Cloudinary beetle folder on mount
   useEffect(() => {
-    fetchCloudinaryFolder().then(urls => {
-      if (urls.length > 0) {
-        setPhotos(urls);
-      } else {
-        // Fallback to placeholder if no photos yet
-        setPhotos(["/assets/photos/placeholder.svg"]);
-      }
+    fetchFolder("beetle/hero").then(urls => {
+      setPhotos(urls.length > 0 ? urls : ["/assets/photos/placeholder.svg"]);
       setLoading(false);
     });
   }, []);
@@ -122,41 +90,25 @@ function PhotoSlideshow() {
     return () => clearInterval(t);
   }, [current, goTo, photos.length]);
 
-  if (loading) {
-    return (
-      <div style={{ width: "100%", height: "clamp(360px, 60vh, 620px)", background: S.black, borderBottom: S.border, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ fontFamily: S.font, fontSize: 10, color: "#444", letterSpacing: 4, textTransform: "uppercase" }}>Loading...</div>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div style={{ width: "100%", height: "clamp(360px, 60vh, 620px)", background: S.black, borderBottom: S.border, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ fontFamily: S.font, fontSize: 10, color: "#444", letterSpacing: 4, textTransform: "uppercase" }}>Loading...</div>
+    </div>
+  );
 
   const src = photos[current];
 
   return (
     <div style={{ position: "relative", width: "100%", height: "clamp(360px, 60vh, 620px)", overflow: "hidden", background: S.black, borderBottom: S.border }}>
-      <img
-        src={src}
-        alt="Beetle restoration"
-        style={{ width: "100%", height: "100%", objectFit: "cover", opacity, transition: "opacity 0.4s ease", display: "block" }}
-      />
-
-      {/* Dark gradient overlay at bottom */}
+      <img src={src} alt="Beetle" style={{ width: "100%", height: "100%", objectFit: "cover", opacity, transition: "opacity 0.4s ease", display: "block" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%)" }} />
-
-      {/* Caption strip */}
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>
-            VIN 117070752 · L519 VW Blue
-          </div>
-          <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 3vw, 28px)", fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
-            1967 Volkswagen Beetle.
-          </div>
+          <div style={{ fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>VIN 117070752 · L519 VW Blue</div>
+          <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 3vw, 28px)", fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>1967 Volkswagen Beetle.</div>
         </div>
         <VWRoundel size={40} />
       </div>
-
-      {/* Dot nav */}
       {photos.length > 1 && (
         <div style={{ position: "absolute", top: 16, right: 20, display: "flex", gap: 6, zIndex: 10 }}>
           {photos.map((_, i) => (
@@ -164,74 +116,36 @@ function PhotoSlideshow() {
           ))}
         </div>
       )}
-
-      {/* Arrow nav */}
       {photos.length > 1 && ["‹", "›"].map((arrow, idx) => (
         <div key={arrow} onClick={() => goTo(idx === 0 ? (current - 1 + photos.length) % photos.length : (current + 1) % photos.length)}
           style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", [idx === 0 ? "left" : "right"]: 14, width: 36, height: 36, border: "2px solid rgba(255,255,255,0.3)", background: "rgba(0,0,0,0.3)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, cursor: "pointer", userSelect: "none", zIndex: 10 }}>
           {arrow}
         </div>
       ))}
-
-      {/* Add photos link */}
-      <a href={DRIVE_URL} target="_blank" rel="noopener noreferrer"
-        style={{ position: "absolute", top: 14, left: 18, fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 2, textTransform: "uppercase", textDecoration: "none", background: "rgba(0,0,0,0.35)", padding: "4px 9px", border: "1px solid rgba(255,255,255,0.15)" }}>
-        Build folder →
-      </a>
     </div>
   );
 }
 
-// ─── DDB AD PANELS (bottom) ──────────────────────────────────────────────────
+// ─── DDB Ad panels ────────────────────────────────────────────────────────────
 const ADS = [
-  {
-    headline: "Think small.",
-    subhead: "1967 Volkswagen Beetle",
-    body: "Our little car isn't so much of a novelty any more. A couple of dozen college kids don't try to squeeze inside it. Nobody even stares at our shape. In fact, some people who drive our little flivver don't even think 32 miles to the gallon is going much of a novelty. Or paying less for insurance. Or never needing anti-freeze. Or racking up 40,000 miles on a set of tyres. That's because once you get used to some of our economies, you don't even think about them any more. Except when you squeeze into a small parking spot. Or renew your small insurance. Or pay a small repair bill. Or trade in your old VW for a new one. Think it over.",
-  },
-  {
-    headline: "Lemon.",
-    subhead: "Volkswagen quality control",
-    body: "This Volkswagen missed the boat. The chrome strip on the glove compartment is blemished and must be replaced. Chances are you wouldn't have noticed it; Inspector Kurt Kroner did. There are 3,389 men at our Wolfsburg factory with only one job: to inspect Volkswagens at each stage of production. Every shock absorber is tested, every windshield scanned. VW's have been rejected for surface scratches barely visible to the eye. We pluck the lemons; you get the plums.",
-  },
-  {
-    headline: "It's ugly,\nbut it gets\nyou there.",
-    subhead: "Volkswagen reliability",
-    body: "The Volkswagen isn't much to look at. But it will get you to where you're going — and back — without the headaches. The engine is in the back, the heater is unusual, the shape is odd. The car will go 70 miles an hour all day without protest. 32 miles per gallon without trying. And it'll start in the morning when your neighbour's streamlined steel sculpture won't.",
-  },
-  {
-    headline: "After we paint the car, we paint the paint.",
-    subhead: "Volkswagen craftsmanship",
-    body: "Every Volkswagen is given a full 23-step paint job. First, the metal is treated so it won't rust. Then, successive layers of paint are applied — and baked — until we're done. In all, there are seven coats of paint on a VW. That's about the same number you'd find on a piece of fine jewellery. A Volkswagen is meant to last.",
-  },
-  {
-    headline: "Restoration\nin progress.",
-    subhead: "VIN 117070752 · GU12",
-    body: "Manufactured 9th August 1966 at Wolfsburg. Delivered to Ramsgate, Great Britain, 11th August 1966. Original finish L633 VW Blue. Resprayed L519 VW Blue. Current engine 1641cc twin port. Nine phases of restoration work, carried out with the same obsessive attention to detail that Kurt Kroner would approve of. Almost.",
-    isOwn: true,
-  },
+  { headline: "Think small.", subhead: "1967 Volkswagen Beetle", body: "Our little car isn't so much of a novelty any more. A couple of dozen college kids don't try to squeeze inside it. Nobody even stares at our shape. In fact, some people who drive our little flivver don't even think 32 miles to the gallon is going much of a novelty. Or paying less for insurance. Or never needing anti-freeze. Or racking up 40,000 miles on a set of tyres. That's because once you get used to some of our economies, you don't even think about them any more. Except when you squeeze into a small parking spot. Or renew your small insurance. Or pay a small repair bill. Think it over." },
+  { headline: "Lemon.", subhead: "Volkswagen quality control", body: "This Volkswagen missed the boat. The chrome strip on the glove compartment is blemished and must be replaced. Chances are you wouldn't have noticed it; Inspector Kurt Kroner did. There are 3,389 men at our Wolfsburg factory with only one job: to inspect Volkswagens at each stage of production. Every shock absorber is tested, every windshield scanned. VW's have been rejected for surface scratches barely visible to the eye. We pluck the lemons; you get the plums." },
+  { headline: "It's ugly,\nbut it gets\nyou there.", subhead: "Volkswagen reliability", body: "The Volkswagen isn't much to look at. But it will get you to where you're going — and back — without the headaches. The engine is in the back, the heater is unusual, the shape is odd. The car will go 70 miles an hour all day without protest. 32 miles per gallon without trying. And it'll start in the morning when your neighbour's streamlined steel sculpture won't." },
+  { headline: "After we paint the car, we paint the paint.", subhead: "Volkswagen craftsmanship", body: "Every Volkswagen is given a full 23-step paint job. First, the metal is treated so it won't rust. Then, successive layers of paint are applied — and baked — until we're done. In all, there are seven coats of paint on a VW. That's about the same number you'd find on a piece of fine jewellery. A Volkswagen is meant to last." },
+  { headline: "Restoration\nin progress.", subhead: "VIN 117070752 · GU12", body: "Manufactured 9th August 1966 at Wolfsburg. Delivered to Ramsgate, Great Britain, 11th August 1966. Original finish L633 VW Blue. Resprayed L519 VW Blue. Current engine 1641cc twin port. Nine phases of restoration work, carried out with the same obsessive attention to detail that Kurt Kroner would approve of. Almost.", isOwn: true },
 ];
 
 function AdPanel({ ad }) {
   return (
     <div style={{ background: S.cream, border: S.border, display: "flex", flexDirection: "column", minHeight: 420 }}>
-      {/* Beetle silhouette */}
       <div style={{ display: "flex", justifyContent: "center", padding: "32px 32px 0", borderBottom: "1px solid rgba(0,0,0,0.1)" }}>
         <BeetleSVG width={220} opacity={0.8} />
       </div>
-
-      {/* Ad content */}
       <div style={{ flex: 1, padding: "24px 32px 20px", display: "flex", flexDirection: "column" }}>
-        <div style={{ fontFamily: S.font, fontSize: "clamp(16px, 2.5vw, 26px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.05, marginBottom: 16, whiteSpace: "pre-line" }}>
-          {ad.headline}
-        </div>
+        <div style={{ fontFamily: S.font, fontSize: "clamp(16px, 2.5vw, 26px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.05, marginBottom: 16, whiteSpace: "pre-line" }}>{ad.headline}</div>
         <div style={{ width: "100%", height: 1, background: S.ink, opacity: 0.25, marginBottom: 14 }} />
-        <div style={{ fontFamily: S.font, fontSize: 10.5, color: "#333", lineHeight: 1.8, flex: 1 }}>
-          {ad.body}
-        </div>
+        <div style={{ fontFamily: S.font, fontSize: 10.5, color: "#333", lineHeight: 1.8, flex: 1 }}>{ad.body}</div>
       </div>
-
-      {/* Footer */}
       <div style={{ borderTop: "1px solid rgba(0,0,0,0.15)", padding: "10px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(0,0,0,0.04)" }}>
         <div style={{ fontFamily: S.font, fontSize: 8, color: "#888", letterSpacing: 3, textTransform: "uppercase" }}>{ad.subhead}</div>
         <VWRoundel size={28} />
@@ -243,56 +157,7 @@ function AdPanel({ ad }) {
 function AdCarousel() {
   const [start, setStart] = useState(0);
   const perPage = typeof window !== "undefined" && window.innerWidth >= 900 ? 3 : window.innerWidth >= 600 ? 2 : 1;
-
-  // Use real advert images if available, otherwise use rendered SVG panels
-  if (USE_REAL_ADVERTS) {
-    const total = ADVERT_IMAGES.length;
-    const maxStart = Math.max(0, total - perPage);
-
-    useEffect(() => {
-      const t = setInterval(() => setStart(s => s >= maxStart ? 0 : s + 1), 6000);
-      return () => clearInterval(t);
-    }, [maxStart]);
-
-    const visible = ADVERT_IMAGES.slice(start, start + perPage);
-
-    return (
-      <div>
-        <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px 24px" }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div>
-              <div style={{ fontFamily: S.font, fontSize: 9, color: "#555", letterSpacing: 6, textTransform: "uppercase", marginBottom: 4 }}>Volkswagen · 1966</div>
-              <div style={{ fontFamily: S.font, fontSize: 20, fontWeight: 900, color: S.cream, letterSpacing: -0.5 }}>From the archive.</div>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => setStart(s => Math.max(0, s - 1))} disabled={start === 0} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start === 0 ? "#333" : S.cream, cursor: start === 0 ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
-              <button onClick={() => setStart(s => Math.min(maxStart, s + 1))} disabled={start >= maxStart} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start >= maxStart ? "#333" : S.cream, cursor: start >= maxStart ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
-            </div>
-          </div>
-        </div>
-        <div style={{ background: S.darkCream, padding: "24px", borderBottom: S.border }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: `repeat(${perPage}, 1fr)`, gap: 16 }}>
-            {visible.map((src, i) => (
-              <div key={i} style={{ border: S.border, background: S.cream, overflow: "hidden" }}>
-                <img src={src} alt="VW advertisement" style={{ width: "100%", height: "auto", display: "block" }} />
-              </div>
-            ))}
-          </div>
-          <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 20 }}>
-            {Array.from({ length: maxStart + 1 }).map((_, i) => (
-              <div key={i} onClick={() => setStart(i)} style={{ width: i === start ? 20 : 7, height: 7, borderRadius: 4, background: i === start ? S.ink : "rgba(0,0,0,0.2)", cursor: "pointer", transition: "all 0.3s" }} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Fallback — rendered SVG ad panels
-  const total = ADS.length;
-  const maxStart = Math.max(0, total - perPage);
-  const prev = () => setStart(s => Math.max(0, s - 1));
-  const next = () => setStart(s => Math.min(maxStart, s + 1));
+  const maxStart = Math.max(0, ADS.length - perPage);
 
   useEffect(() => {
     const t = setInterval(() => setStart(s => s >= maxStart ? 0 : s + 1), 6000);
@@ -304,7 +169,6 @@ function AdCarousel() {
 
   return (
     <div>
-      {/* Section header */}
       <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px 24px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
@@ -312,18 +176,15 @@ function AdCarousel() {
             <div style={{ fontFamily: S.font, fontSize: 20, fontWeight: 900, color: S.cream, letterSpacing: -0.5 }}>From the archive.</div>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={() => setStart(s => Math.max(0, s - 1))} disabled={start === 0} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start === 0 ? "#333" : S.cream, cursor: start === 0 ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
-            <button onClick={() => setStart(s => Math.min(maxStart, s + 1))} disabled={start >= maxStart} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start >= maxStart ? "#333" : S.cream, cursor: start >= maxStart ? "default" : "pointer", fontFamily: S.font, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
+            <button onClick={() => setStart(s => Math.max(0, s - 1))} disabled={start === 0} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start === 0 ? "#333" : S.cream, cursor: start === 0 ? "default" : "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>‹</button>
+            <button onClick={() => setStart(s => Math.min(maxStart, s + 1))} disabled={start >= maxStart} style={{ width: 36, height: 36, border: "2px solid #333", background: "transparent", color: start >= maxStart ? "#333" : S.cream, cursor: start >= maxStart ? "default" : "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>›</button>
           </div>
         </div>
       </div>
-
-      {/* Ad grid */}
       <div style={{ background: S.darkCream, padding: "24px", borderBottom: S.border }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: `repeat(${perPage}, 1fr)`, gap: 16 }}>
           {visible.map((ad, i) => ad ? <AdPanel key={`${start}-${i}`} ad={ad} /> : <div key={i} />)}
         </div>
-        {/* Dot indicators */}
         <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 20 }}>
           {Array.from({ length: maxStart + 1 }).map((_, i) => (
             <div key={i} onClick={() => setStart(i)} style={{ width: i === start ? 20 : 7, height: 7, borderRadius: 4, background: i === start ? S.ink : "rgba(0,0,0,0.2)", cursor: "pointer", transition: "all 0.3s" }} />
@@ -334,7 +195,7 @@ function AdCarousel() {
   );
 }
 
-// ─── Stats ───────────────────────────────────────────────────────────────────
+// ─── Stats ────────────────────────────────────────────────────────────────────
 function StatBox({ number, label }) {
   return (
     <div style={{ borderLeft: `4px solid ${S.ink}`, paddingLeft: 16 }}>
@@ -344,43 +205,21 @@ function StatBox({ number, label }) {
   );
 }
 
-// ─── Nav card icons (SVG, no emoji) ─────────────────────────────────────────
-function IconChecklist() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="1" y="1" width="30" height="30" stroke={S.ink} strokeWidth="2" />
-      <line x1="8" y1="10" x2="24" y2="10" stroke={S.ink} strokeWidth="2" />
-      <line x1="8" y1="16" x2="24" y2="16" stroke={S.ink} strokeWidth="2" />
-      <line x1="8" y1="22" x2="18" y2="22" stroke={S.ink} strokeWidth="2" />
-      <polyline points="6,15 8.5,18 13,12" stroke={S.red} strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function IconFolder() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M2 8 L2 26 L30 26 L30 10 L14 10 L11 6 L2 6 Z" stroke={S.ink} strokeWidth="2" fill="none" strokeLinejoin="round" />
-      <line x1="2" y1="14" x2="30" y2="14" stroke={S.ink} strokeWidth="1.5" />
-    </svg>
-  );
-}
-function NavCard({ icon, headline, body, cta, onClick, href }) {
+// ─── Nav card ─────────────────────────────────────────────────────────────────
+function NavCard({ icon, headline, body, cta, onClick }) {
   const [hov, setHov] = useState(false);
-  const inner = (
+  return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{ border: S.border, padding: "28px 24px", cursor: "pointer", background: hov ? S.ink : S.cream, transition: "background 0.15s", height: "100%" }}>
-      <div style={{ marginBottom: 18, filter: hov ? "invert(1)" : "none", transition: "filter 0.15s" }}>{icon}</div>
+      <div style={{ fontSize: 24, marginBottom: 14 }}>{icon}</div>
       <div style={{ fontFamily: S.font, fontSize: 15, fontWeight: 900, color: hov ? S.cream : S.ink, letterSpacing: -0.5, marginBottom: 10, textTransform: "uppercase", lineHeight: 1.1 }}>{headline}</div>
       <div style={{ fontFamily: S.font, fontSize: 11, color: hov ? "#aaa" : "#555", lineHeight: 1.8, marginBottom: 18 }}>{body}</div>
       <div style={{ fontFamily: S.font, fontSize: 9, fontWeight: 700, color: hov ? S.cream : S.red, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
     </div>
   );
-  if (href) return <a href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>{inner}</a>;
-  return inner;
 }
 
-// ─── Home page ───────────────────────────────────────────────────────────────
+// ─── Home page ────────────────────────────────────────────────────────────────
 function HomePage({ setPage }) {
   const totalJobs = 45;
   const doneCount = (() => {
@@ -392,11 +231,8 @@ function HomePage({ setPage }) {
 
   return (
     <div style={{ background: S.cream, fontFamily: S.font }}>
-
-      {/* ── TOP: Photo slideshow ── */}
       <PhotoSlideshow />
 
-      {/* Stats strip */}
       <div style={{ borderBottom: S.border, background: S.cream }}>
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px", display: "flex", gap: 40, flexWrap: "wrap" }}>
           <StatBox number={`${pct}%`} label="Complete" />
@@ -409,42 +245,28 @@ function HomePage({ setPage }) {
         <div style={{ height: 5, width: `${pct}%`, background: S.red, transition: "width 0.5s" }} />
       </div>
 
-      {/* Quick access cards */}
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 32px" }}>
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
-          <NavCard icon={<IconChecklist />} headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon={<IconFolder />} headline="Build Folder" body="Photos and documents from the restoration. Hosted in Google Drive." cta="Open Drive" href={DRIVE_URL} />
+          <NavCard icon="✅" headline="Work Checklist" body="9 phases. Every job in order. Video guides and references linked. Syncs across all your devices." cta="Open checklist" onClick={() => setPage("checklist")} />
+          <NavCard icon="📷" headline="Build Gallery" body="All photos from the restoration. Upload directly to Cloudinary and they appear here automatically." cta="View gallery" onClick={() => setPage("gallery")} />
         </div>
       </div>
 
-      {/* Spec table */}
       <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink }}>
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "44px 24px" }}>
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 28 }}>Technical specification.</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "20px 28px" }}>
             {[
-              ["VIN", "117070752"],
-              ["Product", "1500 Sedan — RHD"],
-              ["Model year", "1967"],
-              ["Manufactured", "9th August 1966"],
-              ["Delivered", "11th August 1966"],
-              ["Delivered in", "Ramsgate, GB"],
-              ["Original paint", "L633 VW Blue"],
-              ["Current colour", "L519 VW Blue (resprayed)"],
-              ["Interior", "86 / Platinum leatherette"],
-              ["Gearbox", "4-speed manual"],
-              ["Original engine", "H / 4-Cyl 1.5L / 44hp"],
-              ["Current engine", "1641cc Twin Port"],
-              ["Carburettor", "Solex PICT 34"],
-              ["Exhaust", "EMPI GT Two Tip"],
-              ["Tyres", "5.60-15 tubeless"],
-              ["Wheelbase", "2400mm"],
-              ["Weight", "800kg (empty)"],
-              ["Spec M348", "Equipment for GB"],
-              ["Spec M042", "British regulations"],
-              ["Certificate", "Wolfsburg 30 Apr 2025"],
-              ["Location", "GU12"],
+              ["VIN", "117070752"], ["Product", "1500 Sedan — RHD"], ["Model year", "1967"],
+              ["Manufactured", "9th August 1966"], ["Delivered", "11th August 1966"], ["Delivered in", "Ramsgate, GB"],
+              ["Original paint", "L633 VW Blue"], ["Current colour", "L519 VW Blue (resprayed)"],
+              ["Interior", "86 / Platinum leatherette"], ["Gearbox", "4-speed manual"],
+              ["Original engine", "H / 4-Cyl 1.5L / 44hp"], ["Current engine", "1641cc Twin Port"],
+              ["Carburettor", "Solex PICT 34"], ["Exhaust", "EMPI GT Two Tip"],
+              ["Tyres", "5.60-15 tubeless"], ["Wheelbase", "2400mm"], ["Weight", "800kg (empty)"],
+              ["Spec M348", "Equipment for GB"], ["Spec M042", "British regulations"],
+              ["Certificate", "Wolfsburg 30 Apr 2025"], ["Location", "GU12"],
             ].map(([label, value]) => (
               <div key={label} style={{ borderLeft: `2px solid ${S.red}`, paddingLeft: 12 }}>
                 <div style={{ fontSize: 9, color: "#555", letterSpacing: 3, textTransform: "uppercase", marginBottom: 4 }}>{label}</div>
@@ -455,10 +277,8 @@ function HomePage({ setPage }) {
         </div>
       </div>
 
-      {/* ── BOTTOM: DDB Ad carousel ── */}
       <AdCarousel />
 
-      {/* Footer */}
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ fontFamily: S.font, fontSize: 9, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Restoration 2024–2025 · GU12</div>
         <VWRoundel size={32} />
@@ -467,7 +287,7 @@ function HomePage({ setPage }) {
   );
 }
 
-// ─── Header ──────────────────────────────────────────────────────────────────
+// ─── Header ───────────────────────────────────────────────────────────────────
 function Header({ page, setPage }) {
   return (
     <div style={{ background: S.cream, borderBottom: S.border, position: "sticky", top: 0, zIndex: 100 }}>
@@ -475,21 +295,21 @@ function Header({ page, setPage }) {
         <div onClick={() => setPage("home")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
           <VWRoundel size={30} />
           <div>
-            <div style={{ fontFamily: S.font, fontSize: 11, fontWeight: 900, color: S.ink, letterSpacing: 0, lineHeight: 1 }}>1967 BEETLE</div>
+            <div style={{ fontFamily: S.font, fontSize: 11, fontWeight: 900, color: S.ink, lineHeight: 1 }}>1967 BEETLE</div>
             <div style={{ fontFamily: S.font, fontSize: 8, color: "#999", letterSpacing: 3, textTransform: "uppercase" }}>Restoration</div>
           </div>
         </div>
         <nav style={{ display: "flex" }}>
-          {[{ id: "home", label: "Home" }, { id: "checklist", label: "Checklist" }].map(item => (
+          {[
+            { id: "home", label: "Home" },
+            { id: "checklist", label: "Checklist" },
+            { id: "gallery", label: "Gallery" },
+          ].map(item => (
             <button key={item.id} onClick={() => setPage(item.id)}
               style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", transition: "all 0.15s" }}>
               {item.label}
             </button>
           ))}
-          <a href={DRIVE_URL} target="_blank" rel="noopener noreferrer"
-            style={{ borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, display: "flex", alignItems: "center", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", textDecoration: "none", color: "#888" }}>
-            Photos ↗
-          </a>
         </nav>
       </div>
     </div>
@@ -504,6 +324,7 @@ export default function App() {
       <Header page={page} setPage={setPage} />
       {page === "home" && <HomePage setPage={setPage} />}
       {page === "checklist" && <Checklist />}
+      {page === "gallery" && <Gallery setPage={setPage} />}
     </div>
   );
 }
