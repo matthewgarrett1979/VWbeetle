@@ -50,17 +50,40 @@ function BeetleSVG({ width = 320, opacity = 1 }) {
 }
 
 // ─── VW Roundel ──────────────────────────────────────────────────────────────
+// Modelled on the actual 1966 VW enamel badge:
+// two concentric rings, bold filled V and W letterforms, horizontal divider
 function VWRoundel({ size = 48, invert = false }) {
   const bg = invert ? S.cream : S.ink;
   const fg = invert ? S.ink : S.cream;
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Background circle */}
       <circle cx="50" cy="50" r="50" fill={bg} />
-      <circle cx="50" cy="50" r="44" fill="none" stroke={fg} strokeWidth="2.5" />
-      <circle cx="50" cy="50" r="37" fill="none" stroke={fg} strokeWidth="2.5" />
-      <path d="M32 22 L44 48 L50 34 L56 48 L68 22" fill="none" stroke={fg} strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
-      <line x1="27" y1="52" x2="73" y2="52" stroke={fg} strokeWidth="2.5" />
-      <path d="M27 58 L35 78 L50 62 L65 78 L73 58" fill="none" stroke={fg} strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
+
+      {/* Outer ring */}
+      <circle cx="50" cy="50" r="46" fill="none" stroke={fg} strokeWidth="3.5" />
+
+      {/* Inner ring */}
+      <circle cx="50" cy="50" r="36.5" fill="none" stroke={fg} strokeWidth="3.5" />
+
+      {/* V — two thick filled arms meeting at a sharp point */}
+      {/* Left arm */}
+      <polygon points="26,18 37,18 50.5,54 44,54" fill={fg} />
+      {/* Right arm */}
+      <polygon points="74,18 63,18 49.5,54 56,54" fill={fg} />
+
+      {/* Horizontal divider */}
+      <rect x="22" y="50" width="56" height="3" fill={fg} />
+
+      {/* W — four thick filled arms */}
+      {/* Far left arm */}
+      <polygon points="22,57 29,57 38,82 31,82" fill={fg} />
+      {/* Left-centre arm */}
+      <polygon points="36,57 43,57 50,72 44,72" fill={fg} />
+      {/* Right-centre arm */}
+      <polygon points="64,57 57,57 50,72 56,72" fill={fg} />
+      {/* Far right arm */}
+      <polygon points="78,57 71,57 62,82 69,82" fill={fg} />
     </svg>
   );
 }
