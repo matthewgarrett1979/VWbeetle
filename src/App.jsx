@@ -108,7 +108,7 @@ function PhotoSlideshow() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontFamily: S.font, fontSize: 9, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>VIN 1170707xx · L519 VW Blue</div>
+          <div style={{ fontFamily: S.font, fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: 4, textTransform: "uppercase", marginBottom: 4 }}>60th Birthday</div>
           <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 3vw, 28px)", fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>1966 Volkswagen Beetle.</div>
         </div>
         <VWRoundel size={40} invert={true} />
@@ -350,7 +350,7 @@ function Header({ page, setPage }) {
           <VWRoundel size={30} />
           <div>
             <div style={{ fontFamily: S.font, fontSize: 12, fontWeight: 900, color: S.ink, lineHeight: 1 }}>1966 BEETLE</div>
-            <div style={{ fontFamily: S.font, fontSize: 10, color: "#999", letterSpacing: 3, textTransform: "uppercase" }}>Resto '26 · 60th Anniversary</div>
+            <div style={{ fontFamily: S.font, fontSize: 9, color: "#999", letterSpacing: 3, textTransform: "uppercase" }}>Resto '26</div>
           </div>
         </div>
         <nav style={{ display: "flex" }}>
