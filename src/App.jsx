@@ -368,8 +368,8 @@ function Header({ page, setPage }) {
         <div onClick={() => setPage("home")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
           <VWRoundel size={30} />
           <div>
-            <div style={{ fontFamily: S.font, fontSize: 11, fontWeight: 900, color: S.ink, lineHeight: 1 }}>1966 BEETLE</div>
-            <div style={{ fontFamily: S.font, fontSize: 8, color: "#999", letterSpacing: 3, textTransform: "uppercase" }}>Resto '66 · 60th Anniversat</div>
+            <div style={{ fontFamily: S.font, fontSize: 12, fontWeight: 900, color: S.ink, lineHeight: 1 }}>1966 BEETLE</div>
+            <div style={{ fontFamily: S.font, fontSize: 10, color: "#999", letterSpacing: 3, textTransform: "uppercase" }}>Resto '26 · 60th Anniversary</div>
           </div>
         </div>
         <nav style={{ display: "flex" }}>
