@@ -8,7 +8,11 @@ export default async function handler(req, res) {
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
   if (!cloud || !apiKey || !apiSecret) {
-    return res.status(500).json({ error: 'Cloudinary credentials not configured', images: [] });
+    return res.status(500).json({
+      error: 'Cloudinary credentials not configured',
+      debug: { cloud: !!cloud, apiKey: !!apiKey, apiSecret: !!apiSecret },
+      images: [],
+    });
   }
 
   try {
