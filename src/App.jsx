@@ -249,6 +249,17 @@ function GalleryIcon() {
   );
 }
 
+function HistoryIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect x="1" y="1" width="26" height="26" stroke={S.ink} strokeWidth="2"/>
+      <circle cx="14" cy="14" r="7" stroke={S.ink} strokeWidth="1.5"/>
+      <line x1="14" y1="10" x2="14" y2="14" stroke={S.ink} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="14" y1="14" x2="17" y2="16" stroke={S.ink} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 function NavCard({ icon, headline, body, cta, onClick }) {
   const [hov, setHov] = useState(false);
   return (
@@ -309,6 +320,7 @@ function HomePage({ setPage }) {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 2 }}>
           <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="A full record of the restoration — professional works completed and outstanding jobs remaining." cta="Open checklist" onClick={() => setPage("checklist")} />
           <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="Photos from the restoration, from strip-down to the current state of the build." cta="View gallery" onClick={() => setPage("gallery")} />
+          <NavCard icon={<HistoryIcon />} headline="History" body="Archive photos and records from previous owners." cta="View archive" onClick={() => setPage("history")} />
         </div>
       </div>
 
