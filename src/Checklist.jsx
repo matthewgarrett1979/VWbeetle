@@ -164,7 +164,7 @@ const S = {
   thinBorder: "1px solid #ccc",
 };
 
-const PIN = "1966"; // Change this to your preferred PIN
+const PIN = "140279"; // Change this to your preferred PIN
 const PIN_KEY = "beetle-checklist-unlocked";
 
 function PINPrompt({ onUnlock }) {
@@ -193,7 +193,7 @@ function PINPrompt({ onUnlock }) {
       <div style={{ fontSize: 10, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 32 }}>Checklist PIN</div>
 
       {/* PIN dots */}
-      <div style={{ display: "flex", gap: 16, marginBottom: 40, animation: shake ? "shake 0.4s ease" : "none" }}>
+      <div style={{ display: "flex", gap: 12, marginBottom: 40, animation: shake ? "shake 0.4s ease" : "none" }}>
         <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }`}</style>
         {Array.from({ length: PIN.length }).map((_, i) => (
           <div key={i} style={{ width: 14, height: 14, borderRadius: "50%", border: `2px solid ${input.length > i ? "#f2efe8" : "#333"}`, background: input.length > i ? "#f2efe8" : "transparent", transition: "all 0.15s" }} />
