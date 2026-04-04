@@ -86,7 +86,7 @@ export default function ModelYear({ setPage }) {
             </div>
             <div style={{ width: 40, height: 3, background: S.red, marginBottom: 20 }} />
             <div style={{ fontSize: 13, color: "#444", lineHeight: 1.9 }}>
-              The 1967 Volkswagen Beetle — designated model year August 1966 to July 1967 — represents a significant step forward from everything that came before. Disc brakes, 12 volt electrics, two-speed wipers, revised engine, new steering. The changes documented by Etzold across chassis 117 000 001 onwards transformed the car from a refined 1950s design into something genuinely capable for the modern road. GVU 798D, built 9th August 1966, carries every one of these changes from day one.
+              The 1967 Volkswagen Beetle — designated model year August 1966 to July 1967 — represents a significant step forward from everything that came before. Disc brakes, 12 volt electrics, two-speed wipers, revised engine, new steering. The changes introduced across chassis 117 000 001 onwards transformed the car from a refined 1950s design into something genuinely capable for the modern road. GVU 798D, built 9th August 1966, carries every one of these changes from day one.
             </div>
           </div>
         </div>
