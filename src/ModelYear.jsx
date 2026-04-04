@@ -2,52 +2,58 @@ import { S } from "./constants.js";
 
 const sections = [
   {
-    headline: "The 12 volt switch.",
-    body: "1967 was the first year Volkswagen moved the Beetle to a 12 volt electrical system, replacing the 6 volt system used since 1938. This transformed reliability — better starting, brighter lights, more electrical capacity. A significant engineering change that went unnoticed by most owners but was felt every morning.",
+    headline: "12 volt electrics.",
+    body: "From chassis 117 000 001, 1st August 1966, the Beetle moved to a 12 volt electrical system. The fuse box increased from 8 to 10 fuses — one dedicated to the windscreen wiper motor. The distributor was modified, the ignition coil updated to three connections at terminal 15, and the windscreen wiper motor became a two-speed unit with rotary switch replacing the former pull switch. Headlights moved to a vertically mounted sealed beam design on certain export models including Great Britain.",
   },
   {
     headline: "Disc brakes up front.",
-    body: "For the first time on a Beetle, 1967 brought front disc brakes — a major safety improvement over the drums used previously. Combined with the rear drums, the 1967 stopping performance was a genuine step forward. Look for the larger front hubs — they tell the story.",
+    body: "The VW 1500 received front disc brakes from 1st August 1966 (chassis 117 000 003). The new hubs used 4 wheel bolts M14 x 1.5 with a tightening torque of 13 mkg and a hole PCD of 130mm — replacing the previous five M12 bolts at 10 mkg on a 250mm PCD. The steering stub axle was altered to suit, wheel trims were adapted to the modified hubs, and hub cap shape was changed.",
   },
   {
-    headline: "The upright headlamps.",
-    body: "1967 was the last year for the distinctive upright, slightly inward-angled headlamps that define the classic Beetle profile. From 1968 the headlamps moved to a more vertical position. The 1967 lamps give the car its characteristic friendly expression — unmistakably Beetle.",
+    headline: "Engine changes.",
+    body: "The 1.5-litre engine producing 44 bhp was introduced from 1st August 1966 (chassis 117 000 002). Key changes included a revised carburettor pre-heating system drawing warm air from the heat exchangers via two pipes rather than from the underside of the cylinder heads. The push rod was lengthened from 8.14mm to 9mm. Big-end bearing cap radius changed from 4mm to 2.5mm. Oil pipe became seamless rather than welded. Crankcase studs M12 x 1.5 at bearing 2 fitted with sealing rings.",
   },
   {
-    headline: "One year only features.",
-    body: "Several features appeared on the 1967 Beetle and never again. The semi-trailing arm rear suspension was unique to this year. The fresh air heater system was revised. The door handles changed. Many of these details are subtle but they combine to make the 1967 the most sought-after year among serious collectors.",
+    headline: "Steering and suspension.",
+    body: "From August 1966 the steering wheel changed to a two-spoke design with deep set hub, replacing the former three-spoke wheel. The steering track-rod outer end was secured with a damping sleeve and inner end with a control nut. Rear suspension gained an equalizer spring on the rear axle from the same date (chassis 117 000 001), assisting the action of the rear torsion bars and giving a wider rear track of 1350mm. Brake and clutch pedals changed from cast iron to sheet steel construction.",
   },
   {
-    headline: "The 1500 engine.",
-    body: "GVU 798D left Wolfsburg with the 1493cc flat four — 44 horsepower by the standards of the day. Modest by any modern measure but entirely adequate for a car weighing 800kg. The engine's reputation for longevity is well founded — units regularly exceed 100,000 miles with basic maintenance. Ours is being replaced with a rebuilt 1641cc twin port, the definitive air-cooled upgrade.",
+    headline: "Bodywork and interior.",
+    body: "The engine cover was reshaped — the lower section shortened, making the registration plate surface more vertical. The central rib was dropped and the number plate light adapted. The VW 1500 motif was fitted to the engine hood. Chrome exterior moulding became narrower, secured with plastic clips. Interior control knobs changed to flexible plastic. Door handles were redesigned in Nirosta steel with the ignition lock now operable with the door key — a single key system. Door locks gained a locking plate secured with 4 screws (formerly 3). Front seat backrest lock moved to the upper part of the backrest.",
   },
   {
-    headline: "Deluxe specification.",
-    body: "Not all 1967 Beetles were equal. The Deluxe — or Export — specification brought chrome window surrounds, padded sun visors, a dipping rear view mirror, two-speed wipers and the Platinum leatherette interior. Option code M348 confirms this car was built to Equipment for Great Britain specification. A Deluxe car in every sense.",
+    headline: "Deluxe specification — this car.",
+    body: "GVU 798D was built to Deluxe/Export specification confirmed by option code M348 (Equipment for Great Britain) on the Wolfsburg Certificate. The Deluxe specification brought chrome window surrounds, padded sun visors, a dipping interior mirror, two-speed windscreen wipers (standard from August 1966 on all models), and the Platinum leatherette interior (interior code 86). The car left Wolfsburg on 9th August 1966 — one of the first built to the full 1967 model year specification.",
   },
 ];
 
 const comparison = [
   {
-    label: "Standard 1967 Beetle",
+    label: "Pre-August 1966 Beetle",
     dark: false,
     items: [
-      "6 volt electrical (changed to 12v)",
+      "6 volt electrical system",
+      "8 fuse box",
       "Drum brakes all round",
-      "Basic interior",
-      "Single speed wipers",
+      "Five stud wheel hubs (M12)",
+      "Single speed wipers (pull switch)",
+      "Cast iron pedals",
+      "Three-spoke steering wheel",
     ],
   },
   {
-    label: "This car — Deluxe spec",
+    label: "This car — from 1st August 1966",
     dark: true,
     items: [
-      "12 volt electrical",
-      "Front disc brakes",
-      "Platinum leatherette interior",
-      "Two-speed wipers",
-      "Chrome surrounds",
+      "12 volt electrical system",
+      "10 fuse box",
+      "Front disc brakes (VW 1500)",
+      "Four stud hubs M14 x 1.5",
+      "Two-speed wipers (rotary switch)",
+      "Sheet steel pedals",
+      "Two-spoke steering wheel",
       "M348 GB specification",
+      "Deluxe/Export trim",
     ],
   },
 ];
@@ -76,11 +82,11 @@ export default function ModelYear({ setPage }) {
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 48px)", width: "100%", boxSizing: "border-box" }}>
           <div style={{ maxWidth: 640 }}>
             <div style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 20 }}>
-              The last of the true split-window era. Almost.
+              The crossroads car.
             </div>
             <div style={{ width: 40, height: 3, background: S.red, marginBottom: 20 }} />
             <div style={{ fontSize: 13, color: "#444", lineHeight: 1.9 }}>
-              The 1967 Volkswagen Beetle was a pivotal year — the final model before significant changes transformed the car forever. It sits at the crossroads of old and new, retaining the character of the classic while introducing refinements that made it the most complete Beetle yet built.
+              The 1967 Volkswagen Beetle — designated model year August 1966 to July 1967 — represents a significant step forward from everything that came before. Disc brakes, 12 volt electrics, two-speed wipers, revised engine, new steering. The changes documented by Etzold across chassis 117 000 001 onwards transformed the car from a refined 1950s design into something genuinely capable for the modern road. GVU 798D, built 9th August 1966, carries every one of these changes from day one.
             </div>
           </div>
         </div>
