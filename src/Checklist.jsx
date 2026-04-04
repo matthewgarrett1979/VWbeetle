@@ -433,12 +433,12 @@ export default function Checklist() {
   const pct = Math.round((doneCount / totalJobs) * 100);
 
   return (
-    <div style={{ minHeight: "100vh", background: S.white, fontFamily: S.font }}>
+    <div style={{ minHeight: "100vh", background: S.white, fontFamily: S.font, overflowX: "hidden", width: "100%" }}>
       {/* PIN prompt overlay */}
       {showPin && <PINPrompt onUnlock={() => { setUnlocked(true); setShowPin(false); }} />}
       {/* Header bar */}
-      <div style={{ background: S.black, padding: "28px 32px" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+      <div style={{ background: S.black, padding: "28px clamp(16px, 4vw, 32px)" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
             <div>
               <div style={{ fontSize: 11, letterSpacing: 6, color: "#888", textTransform: "uppercase", marginBottom: 8 }}>
@@ -449,7 +449,7 @@ export default function Checklist() {
               </div>
             </div>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: 48, fontWeight: 900, color: S.red, lineHeight: 1 }}>{pct}%</div>
+              <div style={{ fontSize: "clamp(32px, 8vw, 48px)", fontWeight: 900, color: S.red, lineHeight: 1 }}>{pct}%</div>
               <div style={{ fontSize: 11, color: "#888", letterSpacing: 3, textTransform: "uppercase" }}>{doneCount} of {totalJobs} done</div>
               <div style={{ fontSize: 10, color: saveStatus === "saved" ? "#4ade80" : saveStatus === "saving" ? "#facc15" : saveStatus === "error" ? "#f87171" : "transparent", transition: "color 0.3s", letterSpacing: 2, marginTop: 4 }}>
                 {saveStatus === "saving" ? "SYNCING..." : saveStatus === "error" ? "SYNC FAILED" : "SYNCED ✓"}
@@ -469,7 +469,7 @@ export default function Checklist() {
       </div>
 
       {/* Build Record */}
-      <div style={{ maxWidth: 820, margin: "0 auto", padding: "40px 24px 0" }}>
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "40px clamp(16px, 4vw, 32px) 0", width: "100%", boxSizing: "border-box" }}>
         <div style={{ marginBottom: 8 }}>
           <div style={{ fontSize: 11, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 4 }}>Build Record</div>
           <div style={{ fontSize: 22, fontWeight: 900, color: S.black, letterSpacing: -0.5 }}>Professional Works — GVU 798D.</div>
@@ -497,7 +497,7 @@ export default function Checklist() {
       </div>
 
       {/* Phases */}
-      <div style={{ maxWidth: 820, margin: "0 auto", padding: "0 24px 64px" }}>
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "0 clamp(16px, 4vw, 32px) 64px", width: "100%", boxSizing: "border-box" }}>
         {phases.map((phase, pi) => {
           const phaseDone = phase.jobs.filter(j => checked[j.id]).length;
           const phaseComplete = phaseDone === phase.jobs.length;
@@ -510,7 +510,7 @@ export default function Checklist() {
                     {String(pi + 1).padStart(2, "0")}
                   </div>
                   <div>
-                    <div style={{ fontSize: 16, fontWeight: 900, color: S.black, letterSpacing: -0.5, textTransform: "uppercase" }}>
+                    <div style={{ fontSize: "clamp(12px, 3vw, 16px)", fontWeight: 900, color: S.black, letterSpacing: -0.5, textTransform: "uppercase" }}>
                       {phase.phase.replace(/Phase \d+ — /, "")}
                     </div>
                     <div style={{ fontSize: 11, color: "#777", marginTop: 4, lineHeight: 1.6, maxWidth: 560 }}>{phase.note}</div>
@@ -534,7 +534,7 @@ export default function Checklist() {
                     {/* Text */}
                     <div style={{ flex: 1 }}>
                       <span onClick={() => toggle(job.id)} style={{ fontSize: 9, color: "#bbb", letterSpacing: 2, marginRight: 8, textTransform: "uppercase", cursor: "pointer", userSelect: "none", fontWeight: 700 }}>{job.id.toUpperCase()}</span>
-                      <span onClick={() => toggle(job.id)} style={{ fontSize: 13, color: done ? "#bbb" : isWarning ? "#cc6600" : S.black, textDecoration: done ? "line-through" : "none", cursor: "pointer", userSelect: "none", lineHeight: 1.5 }}>{job.text}</span>
+                      <span onClick={() => toggle(job.id)} style={{ fontSize: "clamp(11px, 2.5vw, 13px)", color: done ? "#bbb" : isWarning ? "#cc6600" : S.black, textDecoration: done ? "line-through" : "none", cursor: "pointer", userSelect: "none", lineHeight: 1.5 }}>{job.text}</span>
                       {job.resource && (
                         <a href={job.resource.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginLeft: 10, fontSize: 10, color: S.red, textDecoration: "none", letterSpacing: 0.5, fontWeight: 700, verticalAlign: "middle" }}>
                           {job.resource.label} →

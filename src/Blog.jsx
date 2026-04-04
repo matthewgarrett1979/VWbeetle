@@ -154,8 +154,8 @@ export default function Blog({ setPage }) {
   // ─── Editor ──────────────────────────────────────────────────────────────────
   if (showEditor) {
     return (
-      <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px 64px" }}>
+      <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font, overflowX: "hidden", width: "100%" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px) 64px" }}>
           <button onClick={() => setShowEditor(false)} style={{ background: "none", border: "none", fontFamily: S.font, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "#888", cursor: "pointer", padding: 0, marginBottom: 32 }}>← Back</button>
           <input
             value={newTitle}
@@ -182,8 +182,8 @@ export default function Blog({ setPage }) {
   // ─── Full post view ───────────────────────────────────────────────────────────
   if (selectedPost) {
     return (
-      <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 24px 64px" }}>
+      <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font, overflowX: "hidden", width: "100%" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px) 64px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 36 }}>
             <button onClick={() => setSelectedPost(null)} style={{ background: "none", border: "none", fontFamily: S.font, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "#888", cursor: "pointer", padding: 0 }}>← Back</button>
             {adminMode && (
@@ -191,7 +191,7 @@ export default function Blog({ setPage }) {
             )}
           </div>
           <div style={{ fontSize: 9, color: S.red, letterSpacing: 4, textTransform: "uppercase", marginBottom: 12 }}>{selectedPost.date}</div>
-          <div style={{ fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 28 }}>{selectedPost.title}.</div>
+          <div style={{ fontSize: "clamp(22px, 5vw, 42px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 28 }}>{selectedPost.title}.</div>
           <div style={{ fontSize: 14, color: "#333", lineHeight: 1.9 }}>
             {selectedPost.body.split("\n").map((para, i) => para.trim() ? <p key={i} style={{ marginBottom: 16 }}>{para}</p> : <br key={i} />)}
           </div>
@@ -204,11 +204,11 @@ export default function Blog({ setPage }) {
   return (
     <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font }}>
       {/* Header */}
-      <div style={{ background: S.ink, borderBottom: S.border, padding: "32px 24px 28px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+      <div style={{ background: S.ink, borderBottom: S.border, padding: "32px clamp(16px, 4vw, 48px) 28px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "space-between", width: "100%", boxSizing: "border-box" }}>
           <div>
             <div style={{ fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 8 }}>Restoration log</div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1 }}>Build Journal.</div>
+            <div style={{ fontSize: "clamp(22px, 5vw, 42px)", fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1 }}>Build Journal.</div>
             <div style={{ fontSize: 10, color: "#555", letterSpacing: 3, marginTop: 8, textTransform: "uppercase" }}>A record of the restoration as it happens.</div>
           </div>
           <div onClick={handleLockToggle} style={{ cursor: "pointer", paddingBottom: 4 }}>
@@ -220,7 +220,7 @@ export default function Blog({ setPage }) {
       {/* Admin: new post button */}
       {adminMode && (
         <div style={{ borderBottom: S.border, background: S.darkCream }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", padding: "12px 24px" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", padding: "12px clamp(16px, 4vw, 48px)" }}>
             <button onClick={() => setShowEditor(true)}
               style={{ background: S.red, color: "#fff", border: "none", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", padding: "10px 20px", cursor: "pointer" }}>
               New Post +
@@ -230,7 +230,7 @@ export default function Blog({ setPage }) {
       )}
 
       {/* Posts */}
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px 64px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px) 64px" }}>
         {loading ? (
           <div style={{ padding: "80px 0", textAlign: "center", fontSize: 10, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>Loading...</div>
         ) : posts.length === 0 ? (

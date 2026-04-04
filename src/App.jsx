@@ -180,7 +180,7 @@ function AdCarousel() {
 
   return (
     <div>
-      <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px 24px" }}>
+      <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px clamp(16px, 4vw, 48px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontFamily: S.font, fontSize: 9, color: "#555", letterSpacing: 6, textTransform: "uppercase", marginBottom: 4 }}>Volkswagen · 1966</div>
@@ -192,8 +192,8 @@ function AdCarousel() {
           </div>
         </div>
       </div>
-      <div style={{ background: S.darkCream, padding: "24px", borderBottom: S.border }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: `repeat(${perPage}, 1fr)`, gap: 16 }}>
+      <div style={{ background: S.darkCream, padding: "clamp(16px, 4vw, 24px)", borderBottom: S.border }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
           {visible.map((item, i) => {
             if (!item) return <div key={i} />;
             if (useImages) {
@@ -220,7 +220,7 @@ function AdCarousel() {
 function StatBox({ number, label }) {
   return (
     <div style={{ borderLeft: `4px solid ${S.ink}`, paddingLeft: 16 }}>
-      <div style={{ fontFamily: S.font, fontSize: 40, fontWeight: 900, color: S.ink, lineHeight: 1, letterSpacing: -2 }}>{number}</div>
+      <div style={{ fontFamily: S.font, fontSize: "clamp(28px, 6vw, 40px)", fontWeight: 900, color: S.ink, lineHeight: 1, letterSpacing: -2 }}>{number}</div>
       <div style={{ fontFamily: S.font, fontSize: 9, color: "#888", letterSpacing: 4, textTransform: "uppercase", marginTop: 4 }}>{label}</div>
     </div>
   );
@@ -289,7 +289,7 @@ function HomePage({ setPage }) {
       <PhotoSlideshow />
 
       <div style={{ borderBottom: S.border, background: S.cream }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px", display: "flex", gap: 40, flexWrap: "wrap" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px)", display: "flex", gap: 40, flexWrap: "wrap" }}>
           <StatBox number={`${pct}%`} label="Complete" />
           <StatBox number={doneCount} label="Jobs done" />
           <StatBox number={remaining} label="Jobs left" />
@@ -300,12 +300,12 @@ function HomePage({ setPage }) {
         <div style={{ height: 5, width: `${pct}%`, background: S.red, transition: "width 0.5s" }} />
       </div>
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 32px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 48px) 32px" }}>
 
         {/* Personal intro */}
         <div style={{ borderBottom: S.border, paddingBottom: 40, marginBottom: 40 }}>
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The story.</div>
-          <div style={{ fontFamily: S.font, fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 24 }}>
+          <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 4vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 24 }}>
             Some things are worth waiting for.
           </div>
           <div style={{ fontFamily: S.font, fontSize: 13, color: "#444", lineHeight: 1.9, maxWidth: 680, display: "flex", flexDirection: "column", gap: 16 }}>
@@ -326,9 +326,9 @@ function HomePage({ setPage }) {
       </div>
 
       <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "44px 24px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "44px clamp(16px, 4vw, 48px)" }}>
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 28 }}>Technical specification.</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "20px 28px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "20px 28px" }}>
             {[
               ["VIN", "1170707xx"], ["Product", "1500 Sedan — RHD"], ["Model year", "1967"],
               ["Original reg", "CJD 511D"], ["Current reg", "GVU 798D"],
@@ -372,7 +372,7 @@ function Header({ page, setPage }) {
             <div style={{ fontFamily: S.font, fontSize: 10, color: "#999", letterSpacing: 3, textTransform: "uppercase" }}>Resto '26 · 60th Anniversary</div>
           </div>
         </div>
-        <nav style={{ display: "flex" }}>
+        <nav style={{ display: "flex", overflowX: "auto", whiteSpace: "nowrap" }}>
           {[
             { id: "home", label: "Home" },
             { id: "checklist", label: "Checklist" },
@@ -382,7 +382,7 @@ function Header({ page, setPage }) {
             { id: "modelyear", label: "1967" },
           ].map(item => (
             <button key={item.id} onClick={() => setPage(item.id)}
-              style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", transition: "all 0.15s" }}>
+              style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 10px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 8, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", transition: "all 0.15s" }}>
               {item.label}
             </button>
           ))}
@@ -396,7 +396,7 @@ function Header({ page, setPage }) {
 export default function App() {
   const [page, setPage] = useState("home");
   return (
-    <div>
+    <div style={{ overflowX: "hidden", width: "100%" }}>
       <Header page={page} setPage={setPage} />
       {page === "home" && <HomePage setPage={setPage} />}
       {page === "checklist" && <Checklist />}

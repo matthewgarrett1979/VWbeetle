@@ -17,14 +17,14 @@ export default function Gallery({ setPage }) {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font }}>
+    <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font, overflowX: "hidden", width: "100%" }}>
       {/* Header */}
-      <div style={{ background: S.ink, borderBottom: S.border, padding: "32px 24px 28px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ background: S.ink, borderBottom: S.border, padding: "32px clamp(16px, 4vw, 48px) 28px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
           <div style={{ fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 8 }}>
             Build documentation
           </div>
-          <div style={{ fontSize: 32, fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1 }}>
+          <div style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1 }}>
             Gallery.
           </div>
           <div style={{ fontSize: 10, color: "#555", letterSpacing: 3, marginTop: 8, textTransform: "uppercase" }}>
@@ -34,7 +34,7 @@ export default function Gallery({ setPage }) {
       </div>
 
       {/* Grid */}
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px 64px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px) 64px", width: "100%", boxSizing: "border-box" }}>
         {loading ? (
           <div style={{ padding: "80px 0", textAlign: "center", fontSize: 10, color: "#aaa", letterSpacing: 4, textTransform: "uppercase" }}>
             Loading photos...
@@ -53,7 +53,7 @@ export default function Gallery({ setPage }) {
             <div style={{ fontSize: 10, color: "#aaa", letterSpacing: 3, textTransform: "uppercase", marginBottom: 20 }}>
               {photos.length} {photos.length === 1 ? "photo" : "photos"}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 3 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 3 }}>
               {photos.map((photo, i) => (
                 <div
                   key={photo.public_id || i}
