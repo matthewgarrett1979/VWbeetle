@@ -3,6 +3,7 @@ import Checklist from "./Checklist.jsx";
 import Gallery from "./Gallery.jsx";
 import History from "./History.jsx";
 import Blog from "./Blog.jsx";
+import ModelYear from "./ModelYear.jsx";
 import { S, FOLDERS } from "./constants.js";
 import { fetchFolder as fetchFolderRaw } from "./utils.js";
 
@@ -378,6 +379,7 @@ function Header({ page, setPage }) {
             { id: "gallery", label: "Gallery" },
             { id: "history", label: "History" },
             { id: "blog", label: "Journal" },
+            { id: "modelyear", label: "1967" },
           ].map(item => (
             <button key={item.id} onClick={() => setPage(item.id)}
               style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", transition: "all 0.15s" }}>
@@ -401,6 +403,7 @@ export default function App() {
       {page === "gallery" && <Gallery setPage={setPage} />}
       {page === "history" && <History setPage={setPage} />}
       {page === "blog" && <Blog setPage={setPage} />}
+      {page === "modelyear" && <ModelYear setPage={setPage} />}
     </div>
   );
 }
