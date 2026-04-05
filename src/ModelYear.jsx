@@ -197,42 +197,6 @@ export default function ModelYear({ setPage }) {
         </div>
       </div>
 
-      {/* Lightbox */}
-      {lightbox !== null && (
-        <div
-          onClick={() => setLightbox(null)}
-          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.97)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}
-        >
-          <img
-            src={archivePhotos[lightbox].full}
-            alt=""
-            onClick={e => e.stopPropagation()}
-            style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain", display: "block" }}
-          />
-          <div
-            onClick={() => setLightbox(null)}
-            style={{ position: "fixed", top: 20, right: 24, color: S.cream, fontSize: 28, cursor: "pointer", fontFamily: S.font, fontWeight: 300, lineHeight: 1, userSelect: "none" }}
-          >
-            ✕
-          </div>
-          {lightbox > 0 && (
-            <div
-              onClick={e => { e.stopPropagation(); setLightbox(i => i - 1); }}
-              style={{ position: "fixed", left: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}
-            >
-              ‹
-            </div>
-          )}
-          {lightbox < archivePhotos.length - 1 && (
-            <div
-              onClick={e => { e.stopPropagation(); setLightbox(i => i + 1); }}
-              style={{ position: "fixed", right: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}
-            >
-              ›
-            </div>
-          )}
-        </div>
-      )}
 
     </div>
   );
