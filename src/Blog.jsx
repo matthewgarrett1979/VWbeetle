@@ -4,7 +4,7 @@ import { S } from "./constants.js";
 const UPSTASH_URL = "https://tight-magpie-91087.upstash.io";
 const UPSTASH_TOKEN = "gQAAAAAAAWPPAAIncDEyZTk4MjE1MTdmMmU0ODJiYTkzOWY5NTlmZDhkOTgyOXAxOTEwODc";
 const BLOG_KEY = "beetle-blog-posts";
-const ADMIN_PIN = "140279";
+const AUTH_KEY = "beetle-auth";
 
 async function fetchPosts() {
   try {
@@ -54,27 +54,42 @@ export default function Blog({ setPage }) {
   const [saving, setSaving] = useState(false);
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState(false);
+  const [pinChecking, setPinChecking] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem("beetle-blog-admin") === "1") setAdminMode(true);
+    if (sessionStorage.getItem(AUTH_KEY) === "1") setAdminMode(true);
     fetchPosts().then(p => { setPosts(p); setLoading(false); });
   }, []);
 
-  // ─── PIN entry ───────────────────────────────────────────────────────────────
-  function handlePinDigit(d) {
-    if (pin.length >= 6) return;
+  // ─── TOTP entry ──────────────────────────────────────────────────────────────
+  async function handlePinDigit(d) {
+    if (pin.length >= 6 || pinChecking) return;
     const next = pin + d;
     setPin(next);
     setPinError(false);
     if (next.length === 6) {
-      if (next === ADMIN_PIN) {
-        setAdminMode(true);
-        sessionStorage.setItem("beetle-blog-admin", "1");
-        setShowPinEntry(false);
-        setPin("");
-      } else {
+      setPinChecking(true);
+      try {
+        const res = await fetch("/api/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: next }),
+        });
+        const data = await res.json();
+        if (data.valid) {
+          setAdminMode(true);
+          sessionStorage.setItem(AUTH_KEY, "1");
+          setShowPinEntry(false);
+          setPin("");
+        } else {
+          setPinError(true);
+          setTimeout(() => { setPin(""); setPinError(false); }, 600);
+        }
+      } catch {
         setPinError(true);
-        setTimeout(() => setPin(""), 600);
+        setTimeout(() => { setPin(""); setPinError(false); }, 600);
+      } finally {
+        setPinChecking(false);
       }
     }
   }
@@ -87,7 +102,7 @@ export default function Blog({ setPage }) {
   function handleLockToggle() {
     if (adminMode) {
       setAdminMode(false);
-      sessionStorage.removeItem("beetle-blog-admin");
+      sessionStorage.removeItem(AUTH_KEY);
     } else {
       setPin("");
       setPinError(false);
@@ -132,7 +147,7 @@ export default function Blog({ setPage }) {
     const digits = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
     return (
       <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.97)", zIndex: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: S.font }}>
-        <div style={{ fontSize: 10, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 32 }}>Enter PIN</div>
+        <div style={{ fontSize: 10, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 32 }}>{pinChecking ? "Checking..." : "Authenticator Code"}</div>
         <div style={{ display: "flex", gap: 12, marginBottom: 36 }}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} style={{ width: 12, height: 12, borderRadius: "50%", background: pin.length > i ? (pinError ? S.red : S.cream) : "#333", transition: "background 0.15s" }} />

@@ -4,6 +4,7 @@ import Gallery from "./Gallery.jsx";
 import History from "./History.jsx";
 import Blog from "./Blog.jsx";
 import ModelYear from "./ModelYear.jsx";
+import Setup from "./Setup.jsx";
 import { S, FOLDERS } from "./constants.js";
 import { fetchFolder as fetchFolderRaw } from "./utils.js";
 
@@ -474,6 +475,10 @@ function Header({ page, setPage }) {
 // ─── Root ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const [page, setPage] = useState("home");
+
+  if (typeof window !== "undefined" && window.location.pathname === "/setup-vwb66-auth") {
+    return <Setup />;
+  }
   return (
     <div style={{ overflowX: "hidden", width: "100%" }}>
       <Header page={page} setPage={setPage} />
