@@ -63,9 +63,12 @@ const comparison = [
 export default function ModelYear({ setPage }) {
   const [archivePhotos, setArchivePhotos] = useState([]);
   const [lightbox, setLightbox] = useState(null);
+  const [photos1967, setPhotos1967] = useState([]);
+  const [lightbox1967, setLightbox1967] = useState(null);
 
   useEffect(() => {
     fetchFolder("beetle/history").then(imgs => setArchivePhotos(imgs));
+    fetchFolder("beetle/1967").then(imgs => setPhotos1967(imgs));
   }, []);
 
   return (
@@ -165,6 +168,52 @@ export default function ModelYear({ setPage }) {
           <div style={{ background: "#111", color: "#666", fontSize: 9, letterSpacing: 4, textTransform: "uppercase", textAlign: "center", padding: "12px 0 24px" }}>
             Archive — The 1967 Volkswagen Beetle
           </div>
+        </div>
+      )}
+
+      {/* 1967 photo strip */}
+      {photos1967.length > 0 && (
+        <div>
+          <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px clamp(16px, 4vw, 48px) 0" }}>
+            <div style={{ fontSize: 9, letterSpacing: 6, color: "#cc0000", textTransform: "uppercase", marginBottom: 8 }}>Archive</div>
+            <div style={{ fontSize: "clamp(22px, 4vw, 36px)", fontWeight: 900, color: "#111", letterSpacing: -0.5, borderBottom: "2px solid #111", paddingBottom: 16, marginBottom: 0 }}>The 1967 Volkswagen Beetle.</div>
+          </div>
+          <div style={{ overflowX: "auto", whiteSpace: "nowrap", padding: "0", background: "#111", borderTop: "3px solid #cc0000", marginTop: 0 }}>
+            {photos1967.map((photo, i) => (
+              <img
+                key={photo.public_id || i}
+                src={photo.thumb}
+                alt={`1967 ${i + 1}`}
+                onClick={() => setLightbox1967(i)}
+                style={{ display: "inline-block", height: 280, width: "auto", objectFit: "cover", marginRight: 3, filter: "sepia(0.3) contrast(1.1)", cursor: "pointer" }}
+              />
+            ))}
+          </div>
+          <div style={{ background: "#111", color: "#666", fontSize: 9, letterSpacing: 4, textTransform: "uppercase", textAlign: "center", padding: "12px 0 24px" }}>
+            Archive — The 1967 Volkswagen Beetle
+          </div>
+        </div>
+      )}
+
+      {/* 1967 lightbox */}
+      {lightbox1967 !== null && (
+        <div
+          onClick={() => setLightbox1967(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.97)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
+          <img
+            src={photos1967[lightbox1967].full}
+            alt=""
+            onClick={e => e.stopPropagation()}
+            style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain", display: "block" }}
+          />
+          <div onClick={() => setLightbox1967(null)} style={{ position: "fixed", top: 20, right: 24, color: S.cream, fontSize: 28, cursor: "pointer", fontFamily: S.font, fontWeight: 300, lineHeight: 1, userSelect: "none" }}>✕</div>
+          {lightbox1967 > 0 && (
+            <div onClick={e => { e.stopPropagation(); setLightbox1967(i => i - 1); }} style={{ position: "fixed", left: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}>‹</div>
+          )}
+          {lightbox1967 < photos1967.length - 1 && (
+            <div onClick={e => { e.stopPropagation(); setLightbox1967(i => i + 1); }} style={{ position: "fixed", right: 20, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, border: "2px solid rgba(255,255,255,0.2)", background: "rgba(0,0,0,0.4)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, cursor: "pointer", userSelect: "none" }}>›</div>
+          )}
         </div>
       )}
 
