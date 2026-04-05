@@ -328,12 +328,11 @@ function HomePage({ setPage }) {
         <div style={{ borderBottom: S.border, paddingBottom: 40, marginBottom: 40 }}>
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The story.</div>
           <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 4vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 24 }}>
-            GVU 798D. 1967 Volkswagen Beetle 1500 Deluxe.
+            GVU 798D – 1967 Volkswagen Beetle 1500 Deluxe.
           </div>
           <div style={{ fontFamily: S.font, fontSize: 13, color: "#444", lineHeight: 1.9, maxWidth: 680, display: "flex", flexDirection: "column", gap: 16 }}>
             <p>Almost sixty years ago, in the Volkswagen factory at Wolfsburg, this car was built.</p>
-            <p>It was the 9th of August 1966. England had just won the World Cup. The Beatles were everywhere. In a city still finding its feet after the war, Volkswagen were doing what they had been doing since 1945 — making the same car, quietly, relentlessly, and better than anyone had any right to expect them to. This one rolled off the line on a Tuesday, was loaded onto a transporter, and began the journey that would end, eleven days later, at the port of Ramsgate.</p>
-            <p>From Ramsgate it went to a dealer in east London. In October 1966, two months after it left the factory, someone in West Ham registered it CJD 511D.</p>
+            <p>9 August 1966. England had just won the World Cup. On a Tuesday, this Beetle rolled off the line, was loaded onto a transporter and began its journey north. Eleven days later it reached Ramsgate. From there it went to a dealer in east London, and in October 1966, two months after leaving the factory, it was registered in West Ham as CJD 511D.</p>
 
             <StoryPhoto index={0} photos={storyPhotos} />
 
@@ -343,8 +342,9 @@ function HomePage({ setPage }) {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>What happened to it in the decades between then and May 2024, when it came to me, is largely unknown. It changed hands. It was resprayed at some point by someone who understood the appearance of the problem better than the problem itself. Rust found its way in, as rust always does when given enough time and enough indifference. By the time it reached me it was carrying the quiet evidence of a life not quite looked after — nothing catastrophic, nothing that couldn't be fixed, but nothing that could be ignored either.</p>
-            <p>I had owned a Beetle before. A 1968, my first car, sold when I was twenty and couldn't afford to keep it properly. That decision had sat somewhere at the back of things for a long time. When this one came up it felt less like buying a car and more like closing something out.</p>
+            <p>What happened over the following decades is largely unrecorded. It changed hands. It was resprayed at some point, tidied rather than properly repaired. Rust, inevitably, found its way in.</p>
+            <p>By the time it came to me in May 2024, it carried the signs of a car that had been kept going rather than properly looked after. Nothing terminal, but enough to make it clear that doing things properly was the only sensible route. It arrived with a 1300cc single port AB engine, serviceable, but not what the car originally left the factory with.</p>
+            <p>I've had a Beetle before, a 1968, my first car. I sold it at twenty when I couldn't afford to keep it as it deserved. That decision has a way of lingering. This felt less like a purchase and more like a correction.</p>
 
             <StoryPhoto index={1} photos={storyPhotos} />
 
@@ -354,7 +354,8 @@ function HomePage({ setPage }) {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>The Wolfsburg Certificate tells you what it is in the language of facts. Deluxe specification. Original paint L633 VW Blue — the deeper shade, the export shade, not the pale blue of the holiday catalogue. Platinum leatherette interior. Built for the British market. The chassis number places it in the very first week of 1967 model year production, carrying every change Volkswagen had introduced that August — 12 volt electrics, front disc brakes, a revised engine, two-speed wipers. A fully documented car. The kind you don't often find.</p>
+            <p>The Wolfsburg Certificate sets out the facts. Deluxe specification. Originally L633 VW Blue, the deeper export shade rather than the lighter catalogue colour. Platinum leatherette interior. Built for the UK market.</p>
+            <p>The chassis number places it at the very start of the 1967 model year, that brief one-year-only specification where Volkswagen introduced a raft of meaningful changes — 12-volt electrics, front disc brakes, a revised engine and two-speed wipers. Properly documented cars from this point in production are not common.</p>
 
             <StoryPhoto index={2} photos={storyPhotos} />
 
@@ -364,8 +365,9 @@ function HomePage({ setPage }) {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>Restoring it properly rather than presentably was never really a question once the extent of what it needed became clear. Beetlelink stripped it to bare metal. Both heater channels came out. New quarter panels, new A and B posts, new boot panel, rear valance, front bulkhead. POR-15 on the floor pan. Raptor on the arches and engine bay. Seven months of work, finished in October 2025. What came back had integrity — not just the appearance of it, but the real thing, built into every panel and every weld.</p>
-            <p>The paint is L519 VW Blue, a shade lighter than the original L633 and correct for the car as it stands. The glass went back in. The doors were aligned until they closed with the kind of solidity that tells you the geometry is right and somebody cared enough to get there. Cavity wax throughout, in every space it could reach. The details that don't show in photographs but determine whether something lasts.</p>
+            <p>Once the extent of the work became clear, there was no real decision to make. It had to be restored properly, not simply improved.</p>
+            <p>Beetlelink stripped it back to bare metal. Both heater channels were replaced. New quarter panels, A and B posts, boot panel, rear valance and front bulkhead. The floor pan was treated with POR-15, the arches and engine bay finished in Raptor. Seven months of work, completed in October 2025.</p>
+            <p>What emerged was not just presentable, but structurally right — the sort of car where the quality sits beneath the paint as much as on it.</p>
 
             <StoryPhoto index={3} photos={storyPhotos} />
 
@@ -375,7 +377,9 @@ function HomePage({ setPage }) {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>The engine is a 1641cc twin port, replacing the original 1493cc unit — the one considered departure from factory specification. More torque, better reliability, the same essential character. The Sachs clutch, the correct gearbox seals, fresh oil throughout. The Blaupunkt Frankfurt X — a 1967 unit, exactly right for the car — going back into the dash. The interior stays as Wolfsburg made it. Platinum leatherette. Correct headlining. Every detail as it should be.</p>
+            <p>It now wears L519 VW Blue, a slightly lighter shade, but one that suits the car as it stands. The glass has been refitted, the doors aligned properly, closing with the sort of precision that only comes when everything underneath is correct. Cavity wax has been applied throughout, in all the places that matter and none that show.</p>
+            <p>The engine is now a 1641cc twin port, replacing the 1300cc single port unit it arrived with — the only real deviation from factory specification. It brings a useful increase in torque and usability without altering the character. A Sachs clutch, correct gearbox seals and fresh oil complete the mechanical work.</p>
+            <p>A period correct Blaupunkt Frankfurt returns to the dashboard. The interior remains as Wolfsburg intended in form, though not yet in finish.</p>
 
             <StoryPhoto index={4} photos={storyPhotos} />
 
@@ -385,9 +389,10 @@ function HomePage({ setPage }) {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>The target is June 2026. Not a car kept under a cover and trailered to shows. A car that gets driven. That earns its place on the road. That does what Volkswagen always intended — which, when you strip everything else away, is simply to be there, and to be exactly what it says it is.</p>
+            <p>The target is June 2026.</p>
+            <p>This is not the end of the work. A second phase is planned, focused on correcting the blistering to the paintwork on the dashboard, roof and engine lid, along with restoring the seats and headlining to the standard the rest of the car now warrants — cosmetic work, but worth doing properly when the time is right.</p>
 
-            <p style={{ fontStyle: "italic", color: "#cc0000", textAlign: "center", fontSize: 13, letterSpacing: 2 }}>Almost sixty years from Wolfsburg.</p>
+            <p style={{ fontStyle: "italic", color: "#cc0000", textAlign: "center", fontSize: 13, letterSpacing: 2 }}>Sixty years on from Wolfsburg, back where it should be.</p>
           </div>
         </div>
 
