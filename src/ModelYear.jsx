@@ -61,13 +61,10 @@ const comparison = [
 ];
 
 export default function ModelYear({ setPage }) {
-  const [archivePhotos, setArchivePhotos] = useState([]);
-  const [lightbox, setLightbox] = useState(null);
   const [photos1967, setPhotos1967] = useState([]);
   const [lightbox1967, setLightbox1967] = useState(null);
 
   useEffect(() => {
-    fetchFolder("beetle/history").then(imgs => setArchivePhotos(imgs));
     fetchFolder("beetle/1967").then(imgs => setPhotos1967(imgs));
   }, []);
 
@@ -146,30 +143,6 @@ export default function ModelYear({ setPage }) {
           </div>
         </div>
       </div>
-
-      {/* Archive photo strip */}
-      {archivePhotos.length > 0 && (
-        <div>
-          <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px clamp(16px, 4vw, 48px) 0" }}>
-            <div style={{ fontSize: 9, letterSpacing: 6, color: "#cc0000", textTransform: "uppercase", marginBottom: 8 }}>Archive</div>
-            <div style={{ fontSize: "clamp(22px, 4vw, 36px)", fontWeight: 900, color: "#111", letterSpacing: -0.5, borderBottom: "2px solid #111", paddingBottom: 16, marginBottom: 0 }}>The 1967 Volkswagen Beetle.</div>
-          </div>
-          <div style={{ overflowX: "auto", whiteSpace: "nowrap", padding: "0", background: "#111", borderTop: "3px solid #cc0000", marginTop: 0 }}>
-            {archivePhotos.map((photo, i) => (
-              <img
-                key={photo.public_id || i}
-                src={photo.thumb}
-                alt={`Archive ${i + 1}`}
-                onClick={() => setLightbox(i)}
-                style={{ display: "inline-block", height: 280, width: "auto", objectFit: "cover", marginRight: 3, filter: "sepia(0.3) contrast(1.1)", cursor: "pointer" }}
-              />
-            ))}
-          </div>
-          <div style={{ background: "#111", color: "#666", fontSize: 9, letterSpacing: 4, textTransform: "uppercase", textAlign: "center", padding: "12px 0 24px" }}>
-            Archive — The 1967 Volkswagen Beetle
-          </div>
-        </div>
-      )}
 
       {/* 1967 photo strip */}
       {photos1967.length > 0 && (
