@@ -274,6 +274,20 @@ function NavCard({ icon, headline, body, cta, onClick }) {
   );
 }
 
+// ─── Story photo helper ───────────────────────────────────────────────────────
+function StoryPhoto({ index, photos }) {
+  if (!photos || !photos[index]) return null;
+  return (
+    <div style={{ margin: "32px 0", width: "100%", overflow: "hidden", borderLeft: "3px solid #cc0000" }}>
+      <img
+        src={photos[index].url}
+        alt=""
+        style={{ width: "100%", maxHeight: 320, objectFit: "cover", filter: "sepia(0.2) contrast(1.05)", display: "block" }}
+      />
+    </div>
+  );
+}
+
 // ─── Home page ────────────────────────────────────────────────────────────────
 function HomePage({ setPage }) {
   const totalJobs = 147;
@@ -283,6 +297,14 @@ function HomePage({ setPage }) {
   })();
   const pct = Math.round((doneCount / totalJobs) * 100);
   const remaining = totalJobs - doneCount;
+
+  const [storyPhotos, setStoryPhotos] = useState([]);
+  useEffect(() => {
+    fetch("/api/photos?folder=beetle/gallery")
+      .then(res => res.json())
+      .then(data => setStoryPhotos(data.images || []))
+      .catch(() => setStoryPhotos([]));
+  }, []);
 
   return (
     <div style={{ background: S.cream, fontFamily: S.font }}>
@@ -313,6 +335,8 @@ function HomePage({ setPage }) {
             <p>It was the 9th of August 1966. England had just won the World Cup. The Beatles were everywhere. In a city still finding its feet after the war, Volkswagen were doing what they had been doing since 1945 — making the same car, quietly, relentlessly, and better than anyone had any right to expect them to. This one rolled off the line on a Tuesday, was loaded onto a transporter, and began the journey that would end, eleven days later, at the port of Ramsgate.</p>
             <p>From Ramsgate it went to a dealer in east London. In October 1966, two months after it left the factory, someone in West Ham registered it CJD 511D.</p>
 
+            <StoryPhoto index={0} photos={storyPhotos} />
+
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
               <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
@@ -322,6 +346,8 @@ function HomePage({ setPage }) {
             <p>What happened to it in the decades between then and May 2024, when it came to me, is largely unknown. It changed hands. It was resprayed at some point by someone who understood the appearance of the problem better than the problem itself. Rust found its way in, as rust always does when given enough time and enough indifference. By the time it reached me it was carrying the quiet evidence of a life not quite looked after — nothing catastrophic, nothing that couldn't be fixed, but nothing that could be ignored either.</p>
             <p>I had owned a Beetle before. A 1968, my first car, sold when I was twenty and couldn't afford to keep it properly. That decision had sat somewhere at the back of things for a long time. When this one came up it felt less like buying a car and more like closing something out.</p>
 
+            <StoryPhoto index={1} photos={storyPhotos} />
+
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
               <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
@@ -329,6 +355,8 @@ function HomePage({ setPage }) {
             </div>
 
             <p>The Wolfsburg Certificate tells you what it is in the language of facts. Deluxe specification. Original paint L633 VW Blue — the deeper shade, the export shade, not the pale blue of the holiday catalogue. Platinum leatherette interior. Built for the British market. The chassis number places it in the very first week of 1967 model year production, carrying every change Volkswagen had introduced that August — 12 volt electrics, front disc brakes, a revised engine, two-speed wipers. A fully documented car. The kind you don't often find.</p>
+
+            <StoryPhoto index={2} photos={storyPhotos} />
 
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
@@ -339,6 +367,8 @@ function HomePage({ setPage }) {
             <p>Restoring it properly rather than presentably was never really a question once the extent of what it needed became clear. Beetlelink stripped it to bare metal. Both heater channels came out. New quarter panels, new A and B posts, new boot panel, rear valance, front bulkhead. POR-15 on the floor pan. Raptor on the arches and engine bay. Seven months of work, finished in October 2025. What came back had integrity — not just the appearance of it, but the real thing, built into every panel and every weld.</p>
             <p>The paint is L519 VW Blue, a shade lighter than the original L633 and correct for the car as it stands. The glass went back in. The doors were aligned until they closed with the kind of solidity that tells you the geometry is right and somebody cared enough to get there. Cavity wax throughout, in every space it could reach. The details that don't show in photographs but determine whether something lasts.</p>
 
+            <StoryPhoto index={3} photos={storyPhotos} />
+
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
               <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
@@ -346,6 +376,8 @@ function HomePage({ setPage }) {
             </div>
 
             <p>The engine is a 1641cc twin port, replacing the original 1493cc unit — the one considered departure from factory specification. More torque, better reliability, the same essential character. The Sachs clutch, the correct gearbox seals, fresh oil throughout. The Blaupunkt Frankfurt X — a 1967 unit, exactly right for the car — going back into the dash. The interior stays as Wolfsburg made it. Platinum leatherette. Correct headlining. Every detail as it should be.</p>
+
+            <StoryPhoto index={4} photos={storyPhotos} />
 
             <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
