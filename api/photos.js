@@ -1,3 +1,8 @@
+function addWatermark(url) {
+  const watermark = 'l_text:Arial_18_bold:vwbeetle66.com,co_rgb:ffffff,o_40,g_south_east,x_10,y_10';
+  return url.replace('/upload/', `/upload/${watermark}/`);
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
@@ -33,9 +38,9 @@ export default async function handler(req, res) {
     if (searchRes.ok) {
       const data = await searchRes.json();
       const images = (data.resources || []).map(r => ({
-        url: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`,
-        thumb: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_600/${r.public_id}`,
-        full: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`,
+        url: addWatermark(`https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`),
+        thumb: addWatermark(`https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_600/${r.public_id}`),
+        full: addWatermark(`https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`),
         public_id: r.public_id,
         created_at: r.created_at,
       }));
@@ -57,9 +62,9 @@ export default async function handler(req, res) {
     const images = (data.resources || [])
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // newest first
       .map(r => ({
-        url: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`,
-        thumb: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_600/${r.public_id}`,
-        full: `https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`,
+        url: addWatermark(`https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1400/${r.public_id}`),
+        thumb: addWatermark(`https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_600/${r.public_id}`),
+        full: addWatermark(`https://res.cloudinary.com/${cloud}/image/upload/q_auto,f_auto,w_1800/${r.public_id}`),
         public_id: r.public_id,
         created_at: r.created_at,
       }));
