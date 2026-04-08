@@ -1,5 +1,7 @@
 function addWatermark(url) {
-  const watermark = 'l_text:Arial_18_bold:vwbeetle66.com,co_rgb:ffffff,o_40,g_south_east,x_10,y_10';
+  if (!url || !url.includes('/upload/')) return url;
+  const watermark = 'l_text:Arial_18:vwbeetle66.com,co_rgb:FFFFFF,o_40,g_south_east,x_15,y_15';
+  console.log('Watermarked URL:', url.replace('/upload/', `/upload/${watermark}/`));
   return url.replace('/upload/', `/upload/${watermark}/`);
 }
 
