@@ -55,43 +55,48 @@ export default function Blog({ setPage }) {
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState(false);
   const [pinChecking, setPinChecking] = useState(false);
+  const [pinInputError, setPinInputError] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem(AUTH_KEY) === "1") setAdminMode(true);
     fetchPosts().then(p => { setPosts(p); setLoading(false); });
   }, []);
 
-  // ─── TOTP entry ──────────────────────────────────────────────────────────────
-  async function handlePinDigit(d) {
+  // ─── TOTP verify ─────────────────────────────────────────────────────────────
+  async function verifyCode(code) {
+    setPinChecking(true);
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: code }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setAdminMode(true);
+        sessionStorage.setItem(AUTH_KEY, "1");
+        setShowPinEntry(false);
+        setPin("");
+      } else {
+        setPinError(true);
+        setPinInputError(true);
+        setTimeout(() => { setPin(""); setPinError(false); setPinInputError(false); }, 600);
+      }
+    } catch {
+      setPinError(true);
+      setPinInputError(true);
+      setTimeout(() => { setPin(""); setPinError(false); setPinInputError(false); }, 600);
+    } finally {
+      setPinChecking(false);
+    }
+  }
+
+  function handlePinDigit(d) {
     if (pin.length >= 6 || pinChecking) return;
     const next = pin + d;
     setPin(next);
     setPinError(false);
-    if (next.length === 6) {
-      setPinChecking(true);
-      try {
-        const res = await fetch("/api/auth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: next }),
-        });
-        const data = await res.json();
-        if (data.valid) {
-          setAdminMode(true);
-          sessionStorage.setItem(AUTH_KEY, "1");
-          setShowPinEntry(false);
-          setPin("");
-        } else {
-          setPinError(true);
-          setTimeout(() => { setPin(""); setPinError(false); }, 600);
-        }
-      } catch {
-        setPinError(true);
-        setTimeout(() => { setPin(""); setPinError(false); }, 600);
-      } finally {
-        setPinChecking(false);
-      }
-    }
+    if (next.length === 6) verifyCode(next);
   }
 
   function handlePinBack() {
@@ -148,6 +153,30 @@ export default function Blog({ setPage }) {
     return (
       <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.97)", zIndex: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: S.font }}>
         <div style={{ fontSize: 10, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 32 }}>{pinChecking ? "Checking..." : "Authenticator Code"}</div>
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={6}
+          value={pin}
+          placeholder="······"
+          autoFocus
+          onChange={e => {
+            if (pinChecking) return;
+            const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+            setPin(val);
+            setPinError(false);
+            if (val.length === 6) verifyCode(val);
+          }}
+          onPaste={e => {
+            e.preventDefault();
+            if (pinChecking) return;
+            const val = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+            setPin(val);
+            setPinError(false);
+            if (val.length === 6) verifyCode(val);
+          }}
+          style={{ width: 160, fontSize: 28, fontWeight: 900, textAlign: "center", letterSpacing: 8, border: `2px solid ${pinInputError ? S.red : "#111"}`, background: S.cream, color: S.ink, fontFamily: S.font, padding: "12px 8px", outline: "none", marginBottom: 16, transition: "border-color 0.15s", boxSizing: "border-box" }}
+        />
         <div style={{ display: "flex", gap: 12, marginBottom: 36 }}>
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} style={{ width: 12, height: 12, borderRadius: "50%", background: pin.length > i ? (pinError ? S.red : S.cream) : "#333", transition: "background 0.15s" }} />

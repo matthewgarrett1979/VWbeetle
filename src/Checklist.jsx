@@ -334,6 +334,7 @@ function PINPrompt({ onUnlock }) {
   const [input, setInput] = useState("");
   const [shake, setShake] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [inputError, setInputError] = useState(false);
 
   const attempt = async (val) => {
     setChecking(true);
@@ -348,14 +349,16 @@ function PINPrompt({ onUnlock }) {
         sessionStorage.setItem(AUTH_KEY, "1");
         onUnlock();
       } else {
+        setInputError(true);
         setShake(true);
         setInput("");
-        setTimeout(() => setShake(false), 500);
+        setTimeout(() => { setShake(false); setInputError(false); }, 500);
       }
     } catch {
+      setInputError(true);
       setShake(true);
       setInput("");
-      setTimeout(() => setShake(false), 500);
+      setTimeout(() => { setShake(false); setInputError(false); }, 500);
     } finally {
       setChecking(false);
     }
@@ -368,9 +371,37 @@ function PINPrompt({ onUnlock }) {
     if (next.length === 6) attempt(next);
   };
 
+  const handleTextChange = (e) => {
+    if (checking) return;
+    const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+    setInput(val);
+    if (val.length === 6) attempt(val);
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    if (checking) return;
+    const val = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    setInput(val);
+    if (val.length === 6) attempt(val);
+  };
+
   return (
     <div style={{ position: "fixed", inset: 0, background: S.black, zIndex: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: S.font }}>
       <div style={{ fontSize: 10, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 32 }}>{checking ? "Checking..." : "Authenticator Code"}</div>
+
+      {/* Text input */}
+      <input
+        type="text"
+        inputMode="numeric"
+        maxLength={6}
+        value={input}
+        placeholder="······"
+        onChange={handleTextChange}
+        onPaste={handlePaste}
+        autoFocus
+        style={{ width: 160, fontSize: 28, fontWeight: 900, textAlign: "center", letterSpacing: 8, border: `2px solid ${inputError ? S.red : "#111"}`, background: S.cream, color: S.ink, fontFamily: S.font, padding: "12px 8px", outline: "none", marginBottom: 16, transition: "border-color 0.15s", boxSizing: "border-box" }}
+      />
 
       {/* Code dots */}
       <div style={{ display: "flex", gap: 12, marginBottom: 40, animation: shake ? "shake 0.4s ease" : "none" }}>
