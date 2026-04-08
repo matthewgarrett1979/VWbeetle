@@ -476,7 +476,7 @@ function Header({ page, setPage }) {
 export default function App() {
   const [page, setPage] = useState("home");
 
-  if (typeof window !== "undefined" && window.location.pathname === "/setup-vwb66-auth") {
+  if (window.location.pathname === "/setup-vwb66-auth") {
     return <Setup />;
   }
   return (
