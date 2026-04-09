@@ -158,6 +158,8 @@ const phases = [
       { id: "1l", text: "Inspect fuel lines full length — replace any rubber sections showing age" },
       { id: "1m", text: "Check clutch cable full length — look for fraying or outer casing damage" },
       { id: "1n", text: "Inspect all underside wiring for chafing damage or missing clips" },
+      { id: "1o", text: "Apply POR-15 to all unpainted bare metal surfaces — wire wheel first, degrease, apply two thin coats" },
+      { id: "1p", text: "Reassemble pedal assembly — refit circlips (M16 DIN 471), check clutch pedal operation, confirm dip switch removed and hole grommeted" },
     ],
   },
   {

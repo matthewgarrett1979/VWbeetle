@@ -291,7 +291,7 @@ function StoryPhoto({ index, photos }) {
 
 // ─── Home page ────────────────────────────────────────────────────────────────
 function HomePage({ setPage }) {
-  const totalJobs = 147;
+  const totalJobs = 149;
   const doneCount = (() => {
     try { return 83 + Object.values(JSON.parse(localStorage.getItem("beetle-checklist-v1")) || {}).filter(Boolean).length; }
     catch { return 83; }
