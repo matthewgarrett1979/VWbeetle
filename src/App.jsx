@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import Checklist from "./Checklist.jsx";
 import Gallery from "./Gallery.jsx";
 import History from "./History.jsx";
@@ -480,14 +481,17 @@ export default function App() {
     return <Setup />;
   }
   return (
-    <div style={{ overflowX: "hidden", width: "100%" }}>
-      <Header page={page} setPage={setPage} />
-      {page === "home" && <HomePage setPage={setPage} />}
-      {page === "checklist" && <Checklist />}
-      {page === "gallery" && <Gallery setPage={setPage} />}
-      {page === "history" && <History setPage={setPage} />}
-      {page === "blog" && <Blog setPage={setPage} />}
-      {page === "modelyear" && <ModelYear setPage={setPage} />}
-    </div>
+    <>
+      <div style={{ overflowX: "hidden", width: "100%" }}>
+        <Header page={page} setPage={setPage} />
+        {page === "home" && <HomePage setPage={setPage} />}
+        {page === "checklist" && <Checklist />}
+        {page === "gallery" && <Gallery setPage={setPage} />}
+        {page === "history" && <History setPage={setPage} />}
+        {page === "blog" && <Blog setPage={setPage} />}
+        {page === "modelyear" && <ModelYear setPage={setPage} />}
+      </div>
+      <Analytics />
+    </>
   );
 }
