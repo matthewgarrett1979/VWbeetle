@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Checklist from "./Checklist.jsx";
 import Gallery from "./Gallery.jsx";
 import History from "./History.jsx";
@@ -497,6 +498,7 @@ export default function App() {
         </Routes>
       </div>
       <Analytics />
+      <SpeedInsights />
     </>
   );
 }
