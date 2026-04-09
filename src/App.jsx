@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import Checklist from "./Checklist.jsx";
 import Gallery from "./Gallery.jsx";
@@ -291,7 +292,8 @@ function StoryPhoto({ index, photos }) {
 }
 
 // ─── Home page ────────────────────────────────────────────────────────────────
-function HomePage({ setPage }) {
+function HomePage() {
+  const navigate = useNavigate();
   const totalJobs = 149;
   const doneCount = (() => {
     try { return 83 + Object.values(JSON.parse(localStorage.getItem("beetle-checklist-v1")) || {}).filter(Boolean).length; }
@@ -400,9 +402,9 @@ function HomePage({ setPage }) {
 
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 2 }}>
-          <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="A full record of the restoration — professional works completed and outstanding jobs remaining." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="Photos from the restoration, from strip-down to the current state of the build." cta="View gallery" onClick={() => setPage("gallery")} />
-          <NavCard icon={<HistoryIcon />} headline="History" body="Archive photos and records from previous owners." cta="View archive" onClick={() => setPage("history")} />
+          <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="A full record of the restoration — professional works completed and outstanding jobs remaining." cta="Open checklist" onClick={() => navigate("/checklist")} />
+          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="Photos from the restoration, from strip-down to the current state of the build." cta="View gallery" onClick={() => navigate("/gallery")} />
+          <NavCard icon={<HistoryIcon />} headline="History" body="Archive photos and records from previous owners." cta="View archive" onClick={() => navigate("/history")} />
         </div>
       </div>
 
@@ -442,11 +444,21 @@ function HomePage({ setPage }) {
 }
 
 // ─── Header ───────────────────────────────────────────────────────────────────
-function Header({ page, setPage }) {
+function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const navItems = [
+    { path: "/", label: "Home" },
+    { path: "/checklist", label: "Checklist" },
+    { path: "/gallery", label: "Gallery" },
+    { path: "/history", label: "History" },
+    { path: "/journal", label: "Journal" },
+    { path: "/1967", label: "1967" },
+  ];
   return (
     <div style={{ background: S.cream, borderBottom: S.border, position: "sticky", top: 0, zIndex: 100 }}>
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div onClick={() => setPage("home")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
+        <div onClick={() => navigate("/")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
           <VWRoundel size={30} />
           <div>
             <div style={{ fontFamily: S.font, fontSize: 12, fontWeight: 900, color: S.ink, lineHeight: 1 }}>1966 BEETLE</div>
@@ -454,16 +466,9 @@ function Header({ page, setPage }) {
           </div>
         </div>
         <nav style={{ display: "flex", overflowX: "auto", whiteSpace: "nowrap" }}>
-          {[
-            { id: "home", label: "Home" },
-            { id: "checklist", label: "Checklist" },
-            { id: "gallery", label: "Gallery" },
-            { id: "history", label: "History" },
-            { id: "blog", label: "Journal" },
-            { id: "modelyear", label: "1967" },
-          ].map(item => (
-            <button key={item.id} onClick={() => setPage(item.id)}
-              style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 10px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 8, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", transition: "all 0.15s" }}>
+          {navItems.map(item => (
+            <button key={item.path} onClick={() => navigate(item.path)}
+              style={{ background: location.pathname === item.path ? S.ink : "transparent", color: location.pathname === item.path ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 10px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 8, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", transition: "all 0.15s" }}>
               {item.label}
             </button>
           ))}
@@ -475,21 +480,21 @@ function Header({ page, setPage }) {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage] = useState("home");
-
-  if (window.location.pathname === "/setup-vwb66-auth") {
-    return <Setup />;
-  }
+  const location = useLocation();
+  const isSetup = location.pathname === "/setup-vwb66-auth";
   return (
     <>
       <div style={{ overflowX: "hidden", width: "100%" }}>
-        <Header page={page} setPage={setPage} />
-        {page === "home" && <HomePage setPage={setPage} />}
-        {page === "checklist" && <Checklist />}
-        {page === "gallery" && <Gallery setPage={setPage} />}
-        {page === "history" && <History setPage={setPage} />}
-        {page === "blog" && <Blog setPage={setPage} />}
-        {page === "modelyear" && <ModelYear setPage={setPage} />}
+        {!isSetup && <Header />}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/checklist" element={<Checklist />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/journal" element={<Blog />} />
+          <Route path="/1967" element={<ModelYear />} />
+          <Route path="/setup-vwb66-auth" element={<Setup />} />
+        </Routes>
       </div>
       <Analytics />
     </>
