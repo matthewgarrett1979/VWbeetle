@@ -117,9 +117,6 @@ export default function Blog({ setPage }) {
 
   // ─── Publish ─────────────────────────────────────────────────────────────────
   async function savePost() {
-    console.log('Publish clicked');
-    console.log('Title:', newTitle);
-    console.log('Body:', newBody);
     if (!newTitle.trim() || !newBody.trim()) return;
     setSaving(true);
     try {
@@ -136,14 +133,12 @@ export default function Blog({ setPage }) {
       const res = await fetch(`${UPSTASH_URL}/set/${BLOG_KEY}/${encoded}`, {
         headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
       });
-      const data = await res.json();
-      console.log('Save result:', data);
+      await res.json();
       setPosts(updated);
       setNewTitle('');
       setNewBody('');
       setShowEditor(false);
     } catch (err) {
-      console.error('Save error:', err);
       alert('Failed to save post: ' + err.message);
     } finally {
       setSaving(false);
