@@ -295,13 +295,13 @@ function StoryPhoto({ index, photos }) {
 // ─── Home page ────────────────────────────────────────────────────────────────
 function HomePage() {
   const navigate = useNavigate();
-  const totalJobs = 149;
-  const doneCount = (() => {
-    try { return 83 + Object.values(JSON.parse(localStorage.getItem("beetle-checklist-v1")) || {}).filter(Boolean).length; }
-    catch { return 83; }
-  })();
-  const pct = Math.round((doneCount / totalJobs) * 100);
-  const remaining = totalJobs - doneCount;
+  const [stats, setStats] = useState({ total: 160, done: 83, left: 77, percentage: 52, phases: 10 });
+  useEffect(() => {
+    fetch("/api/stats")
+      .then(res => res.json())
+      .then(data => { if (data.total) setStats(data); })
+      .catch(() => {});
+  }, []);
 
   const [storyPhotos, setStoryPhotos] = useState([]);
   useEffect(() => {
@@ -317,14 +317,14 @@ function HomePage() {
 
       <div style={{ borderBottom: S.border, background: S.cream }}>
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px)", display: "flex", gap: 40, flexWrap: "wrap" }}>
-          <StatBox number={`${pct}%`} label="Complete" />
-          <StatBox number={doneCount} label="Jobs done" />
-          <StatBox number={remaining} label="Jobs left" />
-          <StatBox number="9" label="Phases" />
+          <StatBox number={`${stats.percentage}%`} label="Complete" />
+          <StatBox number={stats.done} label="Jobs done" />
+          <StatBox number={stats.left} label="Jobs left" />
+          <StatBox number={stats.phases} label="Phases" />
         </div>
       </div>
       <div style={{ height: 5, background: S.darkCream }}>
-        <div style={{ height: 5, width: `${pct}%`, background: S.red, transition: "width 0.5s" }} />
+        <div style={{ height: 5, width: `${stats.percentage}%`, background: S.red, transition: "width 0.5s" }} />
       </div>
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 48px) 32px" }}>
