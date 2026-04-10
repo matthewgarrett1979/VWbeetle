@@ -303,6 +303,18 @@ function HomePage() {
       .catch(() => {});
   }, []);
 
+  const timelineEvents = [
+    { date: "9 August 1966",      label: "Built at Wolfsburg",               detail: "One of the first 1967 model year cars.",                                           status: "done"   },
+    { date: "20 August 1966",     label: "Delivered to Ramsgate",            detail: "Imported via VW Motors charter ship from Bremerhaven.",                            status: "done"   },
+    { date: "October 1966",       label: "First registered",                 detail: "Registered in West Ham as CJD 511D.",                                              status: "done"   },
+    { date: "May 2024",           label: "Purchased",                        detail: "Bought in Surrey. Restoration begins.",                                            status: "done"   },
+    { date: "March 2025",         label: "Beetlelink — strip down begins",   detail: "Body stripped to bare metal. Full structural assessment.",                         status: "done"   },
+    { date: "October 2025",       label: "Bodywork complete",                detail: "Respray in L519 VW Blue. All structural work finished.",                           status: "done"   },
+    { date: "November 2025",      label: "Mechanical restoration begins",    detail: "Engine out. Gearbox, clutch, seals, brakes.",                                      status: "done"   },
+    { date: "April 2026",         label: "Engine rebuild",                   detail: "1641cc twin port installed. Blaupunkt Frankfurt X refitted.",                      status: "active" },
+    { date: "15 June 2026",       label: "Target — road ready",              detail: "First drive. Sixty years from Wolfsburg.",                                         status: "target" },
+  ];
+
   const [storyPhotos, setStoryPhotos] = useState([]);
   useEffect(() => {
     fetch("/api/photos?folder=beetle/gallery")
@@ -332,12 +344,14 @@ function HomePage() {
         {/* Personal intro */}
         <div style={{ borderBottom: S.border, paddingBottom: 40, marginBottom: 40 }}>
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The story.</div>
-          <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 4vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 24 }}>
-            GVU 798D – 1967 Volkswagen Beetle 1500 Deluxe.
+          <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 4vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 8 }}>
+            1967 Volkswagen Beetle 1500 Deluxe.
           </div>
+          <div style={{ fontFamily: S.font, fontSize: 11, color: "#cc0000", letterSpacing: 6, textTransform: "uppercase", marginBottom: 24 }}>GVU 798D</div>
           <div style={{ fontFamily: S.font, fontSize: 13, color: "#444", lineHeight: 1.9, maxWidth: 680, display: "flex", flexDirection: "column", gap: 16 }}>
-            <p>Almost sixty years ago, in the Volkswagen factory at Wolfsburg, this car was built.</p>
-            <p>9 August 1966. England had just won the World Cup. On a Tuesday, this Beetle rolled off the line, was loaded onto a transporter and began its journey north. Eleven days later it reached Ramsgate. From there it went to a dealer in east London, and in October 1966, two months after leaving the factory, it was registered in West Ham as CJD 511D.</p>
+            <p>This site is a record of the restoration of my 1966 Volkswagen Beetle.</p>
+            <p>The car was built on 9th August 1966 at Wolfsburg and is a UK 1500 Deluxe. Like most cars of this age it's had work done over the years, some good, some less so.</p>
+            <p>When it came to me it was running a single port 1300 AB engine. Usable, but not original, and a sign of how the car has evolved over time.</p>
 
             <StoryPhoto index={0} photos={storyPhotos} />
 
@@ -347,9 +361,9 @@ function HomePage() {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>What happened over the following decades is largely unrecorded. It changed hands. It was resprayed at some point, tidied rather than properly repaired. Rust, inevitably, found its way in.</p>
-            <p>By the time it came to me in May 2024, it carried the signs of a car that had been kept going rather than properly looked after. Nothing terminal, but enough to make it clear that doing things properly was the only sensible route. It arrived with a 1300cc single port AB engine, serviceable, but not what the car originally left the factory with.</p>
-            <p>I've had a Beetle before, a 1968, my first car. I sold it at twenty when I couldn't afford to keep it as it deserved. That decision has a way of lingering. This felt less like a purchase and more like a correction.</p>
+            <p>This wasn't meant to be a full restoration. It started with the doors slipping and needing adjustment.</p>
+            <p>That turned into replacing heater channels, A and B pillars, and quickly became an off-body restoration. From there it was a new door, bonnet stripped and resprayed, all new wings, lights and indicators.</p>
+            <p>At that point there wasn't much left untouched.</p>
 
             <StoryPhoto index={1} photos={storyPhotos} />
 
@@ -359,8 +373,8 @@ function HomePage() {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>The Wolfsburg Certificate sets out the facts. Deluxe specification. Originally L633 VW Blue, the deeper export shade rather than the lighter catalogue colour. Platinum leatherette interior. Built for the UK market.</p>
-            <p>The chassis number places it at the very start of the 1967 model year, that brief one-year-only specification where Volkswagen introduced a raft of meaningful changes — 12-volt electrics, front disc brakes, a revised engine and two-speed wipers. Properly documented cars from this point in production are not common.</p>
+            <p>The engine followed. Matching numbers weren't an option, so I went with a 1641 instead. Not original spec, but a better, more usable setup for how the car will be driven.</p>
+            <p>The approach has been simple. Work through the car properly, fix what needs fixing, and don't cut corners.</p>
 
             <StoryPhoto index={2} photos={storyPhotos} />
 
@@ -370,9 +384,8 @@ function HomePage() {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>Once the extent of the work became clear, there was no real decision to make. It had to be restored properly, not simply improved.</p>
-            <p>Beetlelink stripped it back to bare metal. Both heater channels were replaced. New quarter panels, A and B posts, boot panel, rear valance and front bulkhead. The floor pan was treated with POR-15, the arches and engine bay finished in Raptor. Seven months of work, completed in October 2025.</p>
-            <p>What emerged was not just presentable, but structurally right — the sort of car where the quality sits beneath the paint as much as on it.</p>
+            <p>There is still more to do. Bodywork areas on the dash, roof and engine lid need addressing, along with the interior including seats and headlining.</p>
+            <p>This site is just a running log of what's being done. What works, what doesn't, and what I learn along the way.</p>
 
             <StoryPhoto index={3} photos={storyPhotos} />
 
@@ -382,22 +395,69 @@ function HomePage() {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p>It now wears L519 VW Blue, a slightly lighter shade, but one that suits the car as it stands. The glass has been refitted, the doors aligned properly, closing with the sort of precision that only comes when everything underneath is correct. Cavity wax has been applied throughout, in all the places that matter and none that show.</p>
-            <p>The engine is now a 1641cc twin port, replacing the 1300cc single port unit it arrived with — the only real deviation from factory specification. It brings a useful increase in torque and usability without altering the character. A Sachs clutch, correct gearbox seals and fresh oil complete the mechanical work.</p>
-            <p>A period correct Blaupunkt Frankfurt returns to the dashboard. The interior remains as Wolfsburg intended in form, though not yet in finish.</p>
+            <p style={{ fontStyle: "italic", color: "#cc0000", textAlign: "center", fontSize: 13, letterSpacing: 2 }}>60 years on from Wolfsburg, it's still being worked on.</p>
+          </div>
+        </div>
 
-            <StoryPhoto index={4} photos={storyPhotos} />
-
-            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
-              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
-              <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
-              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
-            </div>
-
-            <p>The target is June 2026.</p>
-            <p>This is not the end of the work. A second phase is planned, focused on correcting the blistering to the paintwork on the dashboard, roof and engine lid, along with restoring the seats and headlining to the standard the rest of the car now warrants — cosmetic work, but worth doing properly when the time is right.</p>
-
-            <p style={{ fontStyle: "italic", color: "#cc0000", textAlign: "center", fontSize: 13, letterSpacing: 2 }}>Sixty years on from Wolfsburg, back where it should be.</p>
+        {/* ── Restoration Timeline ── */}
+        <style>{`
+          .tl-row { display: flex; align-items: flex-start; gap: 0; position: relative; margin-bottom: 0; }
+          .tl-cell { width: 50%; padding: 0 32px 40px 32px; box-sizing: border-box; }
+          .tl-cell.left { text-align: right; }
+          .tl-cell.right { text-align: left; }
+          .tl-spacer { width: 50%; }
+          .tl-dot { position: absolute; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; border-radius: 50%; background: #111; border: 2px solid #cc0000; top: 4px; z-index: 1; }
+          .tl-dot.active { background: #cc0000; }
+          @media (max-width: 640px) {
+            .tl-row { flex-direction: column; padding-left: 28px; }
+            .tl-cell, .tl-spacer { width: 100%; padding: 0 0 28px 20px; text-align: left !important; }
+            .tl-dot { left: 0; transform: none; }
+          }
+        `}</style>
+        <div style={{ marginBottom: 48 }}>
+          <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 32 }}>Timeline.</div>
+          <div style={{ position: "relative" }}>
+            {/* Centre line */}
+            <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "#ddd", transform: "translateX(-50%)" }} className="tl-centre-line" />
+            <style>{`@media(max-width:640px){.tl-centre-line{left:0 !important;transform:none !important;}}`}</style>
+            {timelineEvents.map((ev, i) => {
+              const isLeft = i % 2 === 0;
+              const isTarget = ev.status === "target";
+              const isActive = ev.status === "active";
+              const cardStyle = isTarget ? {
+                background: "#cc0000", color: "#fff", border: "2px solid #cc0000",
+                padding: "14px 16px", display: "inline-block", maxWidth: 260,
+              } : {
+                border: S.border, background: S.cream, padding: "14px 16px",
+                display: "inline-block", maxWidth: 260,
+              };
+              const dateColor = isTarget ? "rgba(255,255,255,0.75)" : "#999";
+              const labelColor = isTarget ? "#fff" : "#111";
+              const detailColor = isTarget ? "rgba(255,255,255,0.85)" : "#444";
+              const card = (
+                <div style={cardStyle}>
+                  <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 3, color: dateColor, textTransform: "uppercase", marginBottom: 6 }}>{ev.date}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: labelColor, marginBottom: 4 }}>{ev.label}</div>
+                  <div style={{ fontSize: 12, color: detailColor, lineHeight: 1.5 }}>{ev.detail}</div>
+                </div>
+              );
+              return (
+                <div key={i} className="tl-row" style={{ position: "relative" }}>
+                  {isLeft ? (
+                    <>
+                      <div className="tl-cell left">{card}</div>
+                      <div className="tl-spacer" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="tl-spacer" />
+                      <div className="tl-cell right">{card}</div>
+                    </>
+                  )}
+                  <div className={`tl-dot${isActive ? " active" : ""}`} />
+                </div>
+              );
+            })}
           </div>
         </div>
 
