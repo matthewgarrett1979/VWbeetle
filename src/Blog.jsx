@@ -116,26 +116,38 @@ export default function Blog({ setPage }) {
   }
 
   // ─── Publish ─────────────────────────────────────────────────────────────────
-  async function handlePublish() {
+  async function savePost() {
+    console.log('Publish clicked');
+    console.log('Title:', newTitle);
+    console.log('Body:', newBody);
     if (!newTitle.trim() || !newBody.trim()) return;
     setSaving(true);
-    const now = new Date();
-    const month = now.toLocaleString("en-GB", { month: "long" });
-    const year = now.getFullYear();
-    const post = {
-      id: Date.now(),
-      date: `${month} ${year}`,
-      title: newTitle.trim(),
-      body: newBody.trim(),
-      summary: newBody.trim().slice(0, 120),
-    };
-    const updated = [post, ...posts];
-    await savePosts(updated);
-    setPosts(updated);
-    setNewTitle("");
-    setNewBody("");
-    setSaving(false);
-    setShowEditor(false);
+    try {
+      const existing = await fetchPosts();
+      const newPost = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
+        title: newTitle.trim(),
+        body: newBody.trim(),
+        summary: newBody.trim().slice(0, 120),
+      };
+      const updated = [newPost, ...existing];
+      const encoded = encodeURIComponent(JSON.stringify(updated));
+      const res = await fetch(`${UPSTASH_URL}/set/${BLOG_KEY}/${encoded}`, {
+        headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+      });
+      const data = await res.json();
+      console.log('Save result:', data);
+      setPosts(updated);
+      setNewTitle('');
+      setNewBody('');
+      setShowEditor(false);
+    } catch (err) {
+      console.error('Save error:', err);
+      alert('Failed to save post: ' + err.message);
+    } finally {
+      setSaving(false);
+    }
   }
 
   // ─── Delete ──────────────────────────────────────────────────────────────────
@@ -214,7 +226,7 @@ export default function Blog({ setPage }) {
             rows={18}
             style={{ display: "block", width: "100%", fontSize: 14, fontFamily: S.font, color: "#333", lineHeight: 1.9, border: S.border, background: S.cream, outline: "none", padding: 16, resize: "vertical", boxSizing: "border-box", marginBottom: 24 }}
           />
-          <button onClick={handlePublish} disabled={saving || !newTitle.trim() || !newBody.trim()}
+          <button onClick={savePost} disabled={saving || !newTitle.trim() || !newBody.trim()}
             style={{ background: saving ? "#555" : S.ink, color: S.cream, border: "none", fontFamily: S.font, fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", padding: "14px 32px", cursor: saving ? "default" : "pointer" }}>
             {saving ? "Publishing..." : "Publish"}
           </button>
