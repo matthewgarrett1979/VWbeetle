@@ -282,7 +282,7 @@ export default function Checklist() {
                           <div style={{ width: 16, height: 16, flexShrink: 0, marginTop: 1, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Tick />
                           </div>
-                          <div style={{ fontSize: 12, color: isNote ? "#cc6600" : "#aaa", lineHeight: 1.5, fontStyle: isNote ? "italic" : "normal", textDecoration: isNote ? "none" : "line-through" }}>
+                          <div style={{ fontSize: 12, color: isNote ? "#cc6600" : "#aaa", lineHeight: 1.5, fontStyle: isNote ? "italic" : "normal" }}>
                             {job}
                           </div>
                         </div>
