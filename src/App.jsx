@@ -1,8 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Checklist from "./Checklist.jsx";
 import Gallery from "./Gallery.jsx";
 import History from "./History.jsx";
-import { S, FOLDERS } from "./constants.js";
+import Blog from "./Blog.jsx";
+import ModelYear from "./ModelYear.jsx";
+import Setup from "./Setup.jsx";
+import { S, FOLDERS, L519, L633 } from "./constants.js";
 import { fetchFolder as fetchFolderRaw } from "./utils.js";
 
 // ─── CLOUDINARY via serverless API ───────────────────────────────────────────
@@ -92,7 +98,7 @@ function PhotoSlideshow() {
   const src = photos[current];
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "clamp(360px, 60vh, 620px)", overflow: "hidden", background: S.black, borderBottom: S.border }}>
+    <div style={{ position: "relative", width: "100%", height: "clamp(360px, 60vh, 620px)", overflow: "hidden", background: S.black, borderBottom: "4px solid #cc0000" }}>
       <img src={src} alt="Beetle" style={{ width: "100%", height: "100%", objectFit: "cover", opacity, transition: "opacity 0.4s ease", display: "block" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
@@ -178,7 +184,7 @@ function AdCarousel() {
 
   return (
     <div>
-      <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px 24px" }}>
+      <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink, padding: "20px clamp(16px, 4vw, 48px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontFamily: S.font, fontSize: 9, color: "#555", letterSpacing: 6, textTransform: "uppercase", marginBottom: 4 }}>Volkswagen · 1966</div>
@@ -190,8 +196,8 @@ function AdCarousel() {
           </div>
         </div>
       </div>
-      <div style={{ background: S.darkCream, padding: "24px", borderBottom: S.border }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: `repeat(${perPage}, 1fr)`, gap: 16 }}>
+      <div style={{ background: S.darkCream, padding: "clamp(16px, 4vw, 24px)", borderBottom: S.border }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
           {visible.map((item, i) => {
             if (!item) return <div key={i} />;
             if (useImages) {
@@ -218,7 +224,7 @@ function AdCarousel() {
 function StatBox({ number, label }) {
   return (
     <div style={{ borderLeft: `4px solid ${S.ink}`, paddingLeft: 16 }}>
-      <div style={{ fontFamily: S.font, fontSize: 40, fontWeight: 900, color: S.ink, lineHeight: 1, letterSpacing: -2 }}>{number}</div>
+      <div style={{ fontFamily: S.font, fontSize: "clamp(28px, 6vw, 40px)", fontWeight: 900, color: S.ink, lineHeight: 1, letterSpacing: -2 }}>{number}</div>
       <div style={{ fontFamily: S.font, fontSize: 9, color: "#888", letterSpacing: 4, textTransform: "uppercase", marginTop: 4 }}>{label}</div>
     </div>
   );
@@ -263,70 +269,211 @@ function NavCard({ icon, headline, body, cta, onClick }) {
   const [hov, setHov] = useState(false);
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ border: S.border, padding: "28px 24px", cursor: "pointer", background: hov ? S.ink : S.cream, transition: "background 0.15s", height: "100%" }}>
+      style={{ border: S.border, borderLeft: `3px solid ${L519}`, padding: "28px 24px", cursor: "pointer", background: hov ? S.ink : S.cream, transition: "background 0.15s", height: "100%" }}>
       <div style={{ marginBottom: 20, filter: hov ? "invert(1)" : "none", transition: "filter 0.15s" }}>{icon}</div>
       <div style={{ fontFamily: S.font, fontSize: 15, fontWeight: 900, color: hov ? S.cream : S.ink, letterSpacing: -0.5, marginBottom: 10, textTransform: "uppercase", lineHeight: 1.1 }}>{headline}</div>
       <div style={{ fontFamily: S.font, fontSize: 11, color: hov ? "#aaa" : "#555", lineHeight: 1.8, marginBottom: 18 }}>{body}</div>
-      <div style={{ fontFamily: S.font, fontSize: 9, fontWeight: 700, color: hov ? S.cream : S.red, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
+      <div style={{ fontFamily: S.font, fontSize: 9, fontWeight: 700, color: hov ? S.cream : L633, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
+    </div>
+  );
+}
+
+// ─── Story photo helper ───────────────────────────────────────────────────────
+function StoryPhoto({ index, photos }) {
+  if (!photos || !photos[index]) return null;
+  return (
+    <div style={{ margin: "32px 0", width: "100%", overflow: "hidden", borderLeft: "3px solid #cc0000" }}>
+      <img
+        src={photos[index].url}
+        alt=""
+        style={{ width: "100%", maxHeight: 320, objectFit: "cover", filter: "sepia(0.2) contrast(1.05)", display: "block" }}
+      />
     </div>
   );
 }
 
 // ─── Home page ────────────────────────────────────────────────────────────────
-function HomePage({ setPage }) {
-  const totalJobs = 147;
-  const doneCount = (() => {
-    try { return 83 + Object.values(JSON.parse(localStorage.getItem("beetle-checklist-v1")) || {}).filter(Boolean).length; }
-    catch { return 83; }
-  })();
-  const pct = Math.round((doneCount / totalJobs) * 100);
-  const remaining = totalJobs - doneCount;
+function HomePage() {
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({ total: 164, done: 83, left: 81, percentage: 51, phases: 10 });
+  useEffect(() => {
+    fetch("/api/stats")
+      .then(res => res.json())
+      .then(data => { if (data.total) setStats(data); })
+      .catch(() => {});
+  }, []);
+
+  const timelineEvents = [
+    { date: "9 August 1966",      label: "Built at Wolfsburg",               detail: "One of the first 1967 model year cars.",                                           status: "done"   },
+    { date: "20 August 1966",     label: "Delivered to Ramsgate",            detail: "Imported via VW Motors charter ship from Bremerhaven.",                            status: "done"   },
+    { date: "October 1966",       label: "First registered",                 detail: "Registered in West Ham as CJD 511D.",                                              status: "done"   },
+    { date: "May 2024",           label: "Purchased",                        detail: "Bought in Surrey. Restoration begins.",                                            status: "done"   },
+    { date: "March 2025",         label: "Beetlelink — strip down begins",   detail: "Body stripped to bare metal. Full structural assessment.",                         status: "done"   },
+    { date: "October 2025",       label: "Bodywork complete",                detail: "Respray in L519 VW Blue. All structural work finished.",                           status: "done"   },
+    { date: "November 2025",      label: "Mechanical restoration begins",    detail: "Engine out. Gearbox, clutch, seals, brakes.",                                      status: "done"   },
+    { date: "April 2026",         label: "Engine rebuild",                   detail: "1641cc twin port installed. Blaupunkt Frankfurt X refitted.",                      status: "active" },
+    { date: "15 June 2026",       label: "Target — road ready",              detail: "First drive. Sixty years from Wolfsburg.",                                         status: "target" },
+  ];
+
+  const [storyPhotos, setStoryPhotos] = useState([]);
+  useEffect(() => {
+    fetch("/api/photos?folder=beetle/gallery")
+      .then(res => res.json())
+      .then(data => setStoryPhotos(data.images || []))
+      .catch(() => setStoryPhotos([]));
+  }, []);
 
   return (
     <div style={{ background: S.cream, fontFamily: S.font }}>
       <PhotoSlideshow />
+      <div style={{ height: 3, background: L519, width: "100%" }} />
 
-      <div style={{ borderBottom: S.border, background: S.cream }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px", display: "flex", gap: 40, flexWrap: "wrap" }}>
-          <StatBox number={`${pct}%`} label="Complete" />
-          <StatBox number={doneCount} label="Jobs done" />
-          <StatBox number={remaining} label="Jobs left" />
-          <StatBox number="9" label="Phases" />
+      <div style={{ borderBottom: S.border, background: S.cream, borderTop: `1px solid ${L633}`, boxShadow: `0 -1px 0 ${L519}` }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px)", display: "flex", gap: 40, flexWrap: "wrap" }}>
+          <StatBox number={`${stats.percentage}%`} label="Complete" />
+          <StatBox number={stats.done} label="Jobs done" />
+          <StatBox number={stats.left} label="Jobs left" />
+          <StatBox number={stats.phases} label="Phases" />
         </div>
       </div>
       <div style={{ height: 5, background: S.darkCream }}>
-        <div style={{ height: 5, width: `${pct}%`, background: S.red, transition: "width 0.5s" }} />
+        <div style={{ height: 5, width: `${stats.percentage}%`, background: S.red, transition: "width 0.5s" }} />
       </div>
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 24px 32px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 48px) 32px" }}>
 
         {/* Personal intro */}
         <div style={{ borderBottom: S.border, paddingBottom: 40, marginBottom: 40 }}>
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The story.</div>
-          <div style={{ fontFamily: S.font, fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 24 }}>
-            Some things are worth waiting for.
+          <div style={{ fontFamily: S.font, fontSize: "clamp(18px, 4vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 8 }}>
+            1967 Volkswagen Beetle 1500 Deluxe.
           </div>
+          <div style={{ fontFamily: S.font, fontSize: 11, color: "#cc0000", letterSpacing: 6, textTransform: "uppercase", marginBottom: 24 }}>GVU 798D</div>
           <div style={{ fontFamily: S.font, fontSize: 13, color: "#444", lineHeight: 1.9, maxWidth: 680, display: "flex", flexDirection: "column", gap: 16 }}>
-            <p>I grew up around Volkswagens. My grandmother owned one of the first Type 2 campers imported into the UK — bought from Colbournes in Ripley, one of the earliest VW dealers in the country. That was followed by a 1970 Type 2 that the family simply called the Big Car. Summers, holidays, weekends — it went everywhere with us. The shape, the sound, the whole philosophy of the thing became part of how I thought about cars. My first car was a 1968 Beetle, but as a student who couldn't afford to restore it properly, I had to sell it and I've regretted it ever since.</p>
-            <p>For years the idea of owning another sat quietly in the background — not a nostalgia trip, but something more considered. When the means finally aligned, so did the opportunity. In May 2024 this one came up and I knew immediately it was the right car.</p>
-            <p>It looked promising. The paintwork had other ideas — bubbling, poorly done, hiding what turned out to be a significant amount of work underneath. What started as stopping the doors from dropping became a proper restoration. Beetlelink stripped it back, rebuilt what needed rebuilding, and brought the bodywork up to the standard the car always deserved.</p>
-            <p>The mechanical restoration follows now. A rebuilt engine, enhanced as i couldn't find a matching numbers engine. The goal is a decent quality result — not a concours trailer queen, but a car that can be driven, enjoyed, and occasionally turn heads at the right events. The restoration stops here, before it becomes necessary to rob a bank.</p>
-            <p style={{ fontStyle: "italic", color: "#888" }}>Sixty years from Wolfsburg..</p>
+            <p>This site is a record of the restoration of my 1966 Volkswagen Beetle.</p>
+            <p>The car was built on 9th August 1966 at Wolfsburg and is a UK 1500 Deluxe. Like most cars of this age it's had work done over the years, some good, some less so.</p>
+            <p>When it came to me it was running a single port 1300 AB engine. Usable, but not original, and a sign of how the car has evolved over time.</p>
+
+            <StoryPhoto index={0} photos={storyPhotos} />
+
+            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+              <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+            </div>
+
+            <p>This wasn't meant to be a full restoration. It started with the doors slipping and needing adjustment.</p>
+            <p>That turned into replacing heater channels, A and B pillars, and quickly became an off-body restoration. From there it was a new door, bonnet stripped and resprayed, all new wings, lights and indicators.</p>
+            <p>At that point there wasn't much left untouched.</p>
+
+            <StoryPhoto index={1} photos={storyPhotos} />
+
+            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+              <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+            </div>
+
+            <p>The engine followed. Matching numbers weren't an option, so I went with a 1641 instead. Not original spec, but a better, more usable setup for how the car will be driven.</p>
+            <p>The approach has been simple. Work through the car properly, fix what needs fixing, and don't cut corners.</p>
+
+            <StoryPhoto index={2} photos={storyPhotos} />
+
+            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+              <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+            </div>
+
+            <p>There is still more to do. Bodywork areas on the dash, roof and engine lid need addressing, along with the interior including seats and headlining.</p>
+            <p>This site is just a running log of what's being done. What works, what doesn't, and what I learn along the way.</p>
+
+            <StoryPhoto index={3} photos={storyPhotos} />
+
+            <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+              <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" transform="rotate(45 6 6)" fill="#111111"/></svg>
+              <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
+            </div>
+
+            <p style={{ fontStyle: "italic", color: "#cc0000", textAlign: "center", fontSize: 13, letterSpacing: 2, borderLeft: `2px solid ${L519}`, paddingLeft: 12 }}>60 years on from Wolfsburg, it's still being worked on.</p>
+          </div>
+        </div>
+
+        {/* ── Restoration Timeline ── */}
+        <style>{`
+          .tl-row { display: flex; align-items: flex-start; gap: 0; position: relative; margin-bottom: 0; }
+          .tl-cell { width: 50%; padding: 0 32px 40px 32px; box-sizing: border-box; }
+          .tl-cell.left { text-align: right; }
+          .tl-cell.right { text-align: left; }
+          .tl-spacer { width: 50%; }
+          .tl-dot { position: absolute; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; border-radius: 50%; background: #111; border: 2px solid #cc0000; top: 4px; z-index: 1; }
+          .tl-dot.active { background: #cc0000; }
+          @media (max-width: 640px) {
+            .tl-row { flex-direction: column; padding-left: 28px; }
+            .tl-cell, .tl-spacer { width: 100%; padding: 0 0 28px 20px; text-align: left !important; }
+            .tl-dot { left: 0; transform: none; }
+          }
+        `}</style>
+        <div style={{ marginBottom: 48 }}>
+          <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 32 }}>Timeline.</div>
+          <div style={{ position: "relative" }}>
+            {/* Centre line */}
+            <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "#ddd", transform: "translateX(-50%)" }} className="tl-centre-line" />
+            <style>{`@media(max-width:640px){.tl-centre-line{left:0 !important;transform:none !important;}}`}</style>
+            {timelineEvents.map((ev, i) => {
+              const isLeft = i % 2 === 0;
+              const isTarget = ev.status === "target";
+              const isActive = ev.status === "active";
+              const cardStyle = isTarget ? {
+                background: "#cc0000", color: "#fff", border: "2px solid #cc0000",
+                padding: "14px 16px", display: "inline-block", maxWidth: 260,
+              } : {
+                border: S.border, background: S.cream, padding: "14px 16px",
+                display: "inline-block", maxWidth: 260,
+              };
+              const dateColor = isTarget ? "rgba(255,255,255,0.75)" : "#999";
+              const labelColor = isTarget ? "#fff" : "#111";
+              const detailColor = isTarget ? "rgba(255,255,255,0.85)" : "#444";
+              const card = (
+                <div style={cardStyle}>
+                  <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 3, color: dateColor, textTransform: "uppercase", marginBottom: 6 }}>{ev.date}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: labelColor, marginBottom: 4 }}>{ev.label}</div>
+                  <div style={{ fontSize: 12, color: detailColor, lineHeight: 1.5 }}>{ev.detail}</div>
+                </div>
+              );
+              return (
+                <div key={i} className="tl-row" style={{ position: "relative" }}>
+                  {isLeft ? (
+                    <>
+                      <div className="tl-cell left">{card}</div>
+                      <div className="tl-spacer" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="tl-spacer" />
+                      <div className="tl-cell right">{card}</div>
+                    </>
+                  )}
+                  <div className={`tl-dot${isActive ? " active" : ""}`} />
+                </div>
+              );
+            })}
           </div>
         </div>
 
         <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", marginBottom: 20 }}>The project.</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 2 }}>
-          <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="A full record of the restoration — professional works completed and outstanding jobs remaining." cta="Open checklist" onClick={() => setPage("checklist")} />
-          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="Photos from the restoration, from strip-down to the current state of the build." cta="View gallery" onClick={() => setPage("gallery")} />
-          <NavCard icon={<HistoryIcon />} headline="History" body="Archive photos and records from previous owners." cta="View archive" onClick={() => setPage("history")} />
+          <NavCard icon={<ChecklistIcon />} headline="Work Checklist" body="A full record of the restoration — professional works completed and outstanding jobs remaining." cta="Open checklist" onClick={() => navigate("/checklist")} />
+          <NavCard icon={<GalleryIcon />} headline="Build Gallery" body="Photos from the restoration, from strip-down to the current state of the build." cta="View gallery" onClick={() => navigate("/gallery")} />
+          <NavCard icon={<HistoryIcon />} headline="History" body="Archive photos and records from previous owners." cta="View archive" onClick={() => navigate("/history")} />
         </div>
       </div>
 
       <div style={{ borderTop: S.border, borderBottom: S.border, background: S.ink }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "44px 24px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "44px clamp(16px, 4vw, 48px)" }}>
           <div style={{ fontFamily: S.font, fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 28 }}>Technical specification.</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "20px 28px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "20px 28px" }}>
             {[
               ["VIN", "1170707xx"], ["Product", "1500 Sedan — RHD"], ["Model year", "1967"],
               ["Original reg", "CJD 511D"], ["Current reg", "GVU 798D"],
@@ -359,26 +506,31 @@ function HomePage({ setPage }) {
 }
 
 // ─── Header ───────────────────────────────────────────────────────────────────
-function Header({ page, setPage }) {
+function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const navItems = [
+    { path: "/", label: "Home" },
+    { path: "/checklist", label: "Checklist" },
+    { path: "/gallery", label: "Gallery" },
+    { path: "/history", label: "History" },
+    { path: "/journal", label: "Journal" },
+    { path: "/1967", label: "1967" },
+  ];
   return (
     <div style={{ background: S.cream, borderBottom: S.border, position: "sticky", top: 0, zIndex: 100 }}>
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div onClick={() => setPage("home")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
+        <div onClick={() => navigate("/")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}>
           <VWRoundel size={30} />
           <div>
             <div style={{ fontFamily: S.font, fontSize: 12, fontWeight: 900, color: S.ink, lineHeight: 1 }}>1966 BEETLE</div>
             <div style={{ fontFamily: S.font, fontSize: 10, color: "#999", letterSpacing: 3, textTransform: "uppercase" }}>Resto '26 · 60th Anniversary</div>
           </div>
         </div>
-        <nav style={{ display: "flex" }}>
-          {[
-            { id: "home", label: "Home" },
-            { id: "checklist", label: "Checklist" },
-            { id: "gallery", label: "Gallery" },
-            { id: "history", label: "History" },
-          ].map(item => (
-            <button key={item.id} onClick={() => setPage(item.id)}
-              style={{ background: page === item.id ? S.ink : "transparent", color: page === item.id ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 16px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", transition: "all 0.15s" }}>
+        <nav style={{ display: "flex", overflowX: "auto", whiteSpace: "nowrap" }}>
+          {navItems.map(item => (
+            <button key={item.path} onClick={() => navigate(item.path)}
+              style={{ background: location.pathname === item.path ? L633 : "transparent", color: location.pathname === item.path ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 10px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 8, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", transition: "all 0.15s" }}>
               {item.label}
             </button>
           ))}
@@ -390,14 +542,24 @@ function Header({ page, setPage }) {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage] = useState("home");
+  const location = useLocation();
+  const isSetup = location.pathname === "/setup-vwb66-auth";
   return (
-    <div>
-      <Header page={page} setPage={setPage} />
-      {page === "home" && <HomePage setPage={setPage} />}
-      {page === "checklist" && <Checklist />}
-      {page === "gallery" && <Gallery setPage={setPage} />}
-      {page === "history" && <History setPage={setPage} />}
-    </div>
+    <>
+      <div style={{ overflowX: "hidden", width: "100%" }}>
+        {!isSetup && <Header />}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/checklist" element={<Checklist />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/journal" element={<Blog />} />
+          <Route path="/1967" element={<ModelYear />} />
+          <Route path="/setup-vwb66-auth" element={<Setup />} />
+        </Routes>
+      </div>
+      <Analytics />
+      <SpeedInsights />
+    </>
   );
 }
