@@ -354,7 +354,7 @@ export default function Checklist() {
                             <div style={{ flex: 1 }}>
                               <span
                                 onClick={() => toggle(job.id)}
-                                style={{ fontSize: 12, color: done ? "#aaa" : isWarning ? "#cc6600" : "#111", textDecoration: done ? "line-through" : "none", cursor: "pointer", userSelect: "none", lineHeight: 1.5 }}
+                                style={{ fontSize: 12, color: done ? "#aaa" : isWarning ? "#cc6600" : "#111", cursor: "pointer", userSelect: "none", lineHeight: 1.5 }}
                               >
                                 {job.text}
                               </span>
