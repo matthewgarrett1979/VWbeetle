@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { S } from "./constants.js";
+import { S, L519, L633 } from "./constants.js";
 import { fetchFolder } from "./utils.js";
 
 const sections = [
@@ -74,7 +74,7 @@ export default function ModelYear({ setPage }) {
       {/* Header */}
       <div style={{ background: S.ink, borderBottom: S.border, padding: "32px clamp(16px, 4vw, 48px) 28px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
-          <div style={{ fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 8 }}>
+          <div style={{ fontSize: 9, letterSpacing: 6, color: L519, textTransform: "uppercase", marginBottom: 8 }}>
             Volkswagen · Wolfsburg · 1966–67
           </div>
           <div style={{ fontSize: "clamp(24px, 5vw, 52px)", fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1 }}>
@@ -85,6 +85,7 @@ export default function ModelYear({ setPage }) {
           </div>
         </div>
       </div>
+      <div style={{ height: 3, background: L519, width: "100%" }} />
 
       {/* Intro — DDB style */}
       <div style={{ borderBottom: S.border, background: S.cream }}>
@@ -93,7 +94,7 @@ export default function ModelYear({ setPage }) {
             <div style={{ fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 20 }}>
               The crossroads car.
             </div>
-            <div style={{ width: 40, height: 3, background: S.red, marginBottom: 20 }} />
+            <div style={{ width: 40, height: 3, background: L519, marginBottom: 20 }} />
             <div style={{ fontSize: 13, color: "#444", lineHeight: 1.9 }}>
               The 1967 Volkswagen Beetle — designated model year August 1966 to July 1967 — represents a significant step forward from everything that came before. Disc brakes, 12 volt electrics, two-speed wipers, revised engine, new steering. The changes introduced across chassis 117 000 001 onwards transformed the car from a refined 1950s design into something genuinely capable for the modern road. GVU 798D, built 9th August 1966, carries every one of these changes from day one.
             </div>
@@ -104,8 +105,8 @@ export default function ModelYear({ setPage }) {
       {/* Sections grid */}
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px) 48px", width: "100%", boxSizing: "border-box" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 2 }}>
-          {sections.map(({ headline, body }) => (
-            <div key={headline} style={{ border: S.border, background: S.cream, display: "flex", flexDirection: "column", padding: "28px 24px" }}>
+          {sections.map(({ headline, body }, idx) => (
+            <div key={headline} style={{ border: S.border, borderLeft: `3px solid ${idx % 2 === 0 ? L519 : L633}`, background: S.cream, display: "flex", flexDirection: "column", padding: "28px 24px" }}>
               <div style={{ width: 24, height: 3, background: S.red, marginBottom: 16 }} />
               <div style={{ fontSize: "clamp(18px, 4vw, 32px)", fontWeight: 900, color: S.ink, letterSpacing: -0.3, lineHeight: 1.1, marginBottom: 14 }}>
                 {headline}
@@ -123,12 +124,12 @@ export default function ModelYear({ setPage }) {
       <div style={{ borderTop: S.border, borderBottom: S.border }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <div style={{ background: S.ink, padding: "20px clamp(16px, 4vw, 48px)", borderBottom: S.border }}>
-            <div style={{ fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 4 }}>Specification</div>
+            <div style={{ fontSize: 9, letterSpacing: 6, color: L519, textTransform: "uppercase", marginBottom: 4 }}>Specification</div>
             <div style={{ fontSize: 18, fontWeight: 900, color: S.cream, letterSpacing: -0.5 }}>Standard vs. this car.</div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
             {comparison.map(({ label, dark, items }) => (
-              <div key={label} style={{ background: dark ? S.ink : S.darkCream, padding: "28px 24px", borderRight: S.border }}>
+              <div key={label} style={{ background: dark ? L633 : S.darkCream, padding: "28px 24px", borderRight: S.border }}>
                 <div style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase", color: dark ? "#555" : "#888", marginBottom: 16 }}>{label}</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {items.map(item => (

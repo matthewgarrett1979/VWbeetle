@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { S, FOLDERS } from "./constants.js";
+import { S, FOLDERS, L519, L633 } from "./constants.js";
 import { fetchFolder } from "./utils.js";
 import Lightbox from "./Lightbox.jsx";
 
@@ -21,7 +21,7 @@ export default function History({ setPage }) {
       {/* Header */}
       <div style={{ background: S.ink, borderBottom: S.border, padding: "32px clamp(16px, 4vw, 48px) 28px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
-          <div style={{ fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 8 }}>
+          <div style={{ fontSize: 9, letterSpacing: 6, color: L519, textTransform: "uppercase", marginBottom: 8 }}>
             Archive
           </div>
           <div style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1 }}>
@@ -32,6 +32,7 @@ export default function History({ setPage }) {
           </div>
         </div>
       </div>
+      <div style={{ height: 3, background: L519, width: "100%" }} />
 
       {/* Provenance note */}
       <div style={{ borderBottom: S.border, background: S.darkCream }}>
@@ -43,9 +44,9 @@ export default function History({ setPage }) {
               ["Delivered", "Ramsgate, GB — Aug 1966"],
               ["Original colour", "L633 VW Blue"],
             ].map(([label, value]) => (
-              <div key={label} style={{ borderLeft: `2px solid ${S.red}`, paddingLeft: 12 }}>
+              <div key={label} style={{ borderLeft: `2px solid ${L519}`, paddingLeft: 12, borderBottom: `1px solid ${L519}99`, paddingBottom: 8 }}>
                 <div style={{ fontSize: 9, color: "#888", letterSpacing: 3, textTransform: "uppercase", marginBottom: 3 }}>{label}</div>
-                <div style={{ fontSize: 12, color: S.ink, fontWeight: 700 }}>{value}</div>
+                <div style={{ fontSize: 12, color: L633, fontWeight: 700 }}>{value}</div>
               </div>
             ))}
           </div>
@@ -71,7 +72,7 @@ export default function History({ setPage }) {
           </div>
         ) : (
           <>
-            <div style={{ fontSize: 10, color: "#aaa", letterSpacing: 3, textTransform: "uppercase", marginBottom: 20 }}>
+            <div style={{ fontSize: 10, color: L519, letterSpacing: 3, textTransform: "uppercase", marginBottom: 20 }}>
               {photos.length} {photos.length === 1 ? "item" : "items"} in archive
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 3 }}>

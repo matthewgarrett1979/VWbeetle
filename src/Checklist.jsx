@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { buildRecord, phases } from "./data/checklist-data.js";
 
+const L519 = "#5b8fa8"; // Bahama Blue — current paint
+const L633 = "#2b5c8a"; // VW Blue — original paint
+
 const STORAGE_KEY = "beetle-checklist-v1";
 const UPSTASH_URL = "https://tight-magpie-91087.upstash.io";
 const UPSTASH_TOKEN = "gQAAAAAAAWPPAAIncDEyZTk4MjE1MTdmMmU0ODJiYTkzOWY5NTlmZDhkOTgyOXAxOTEwODc";
@@ -212,15 +215,17 @@ export default function Checklist() {
       {showPin && <PINPrompt onUnlock={() => { setUnlocked(true); setShowPin(false); }} />}
 
       {/* ── Sticky progress bar ── */}
-      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "#111111", borderBottom: "2px solid #cc0000", padding: "10px 16px", display: "flex", flexDirection: "column", gap: 6 }}>
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "#111111", padding: "10px 16px 0", display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: 9, letterSpacing: 4, color: "#f2efe8", textTransform: "uppercase", fontFamily: S.font }}>GVU 798D</span>
           <span style={{ fontSize: 9, color: "#cc0000", letterSpacing: 1, fontFamily: S.font }}>{doneCount} of {totalJobs} jobs</span>
         </div>
         <div style={{ height: 4, background: "#333", borderRadius: 2, overflow: "hidden" }}>
-          <div style={{ background: "#cc0000", height: "100%", width: `${pct}%`, transition: "width 0.4s ease" }} />
+          <div style={{ background: L633, height: "100%", width: `${pct}%`, transition: "width 0.4s ease" }} />
         </div>
         <div style={{ textAlign: "center", fontSize: 9, color: "#f2efe8", letterSpacing: 4, textTransform: "uppercase", fontFamily: S.font }}>{pct}% Complete</div>
+        <div style={{ marginLeft: -16, marginRight: -16, marginTop: 10, height: 2, background: "#cc0000" }} />
+        <div style={{ marginLeft: -16, marginRight: -16, height: 3, background: L519 }} />
       </div>
 
       {/* ── Main content ── */}
@@ -242,7 +247,7 @@ export default function Checklist() {
         <div style={{ maxWidth: 640, margin: "0 auto", paddingLeft: 48, paddingRight: "clamp(16px, 4vw, 32px)", paddingBottom: 64, position: "relative", boxSizing: "border-box" }}>
 
           {/* Vertical centre line */}
-          <div style={{ position: "absolute", top: 0, bottom: 0, left: 24, width: 2, background: "#e0ddd6" }} />
+          <div style={{ position: "absolute", top: 0, bottom: 0, left: 24, width: 2, background: L519 + "66" }} />
 
           {/* ── BUILD RECORD ── */}
           <div style={{ position: "relative", borderBottom: "1px solid #111", padding: "12px 0", marginBottom: 8 }}>
@@ -299,15 +304,15 @@ export default function Checklist() {
             const inProgress = phaseDone > 0 && !phaseComplete;
             const isOpen = !!expandedPhases[phase.id];
 
-            const dotBg = phaseComplete ? "#cc0000" : "#f2efe8";
-            const dotBorder = phaseComplete ? "#cc0000" : inProgress ? "#111" : "#ccc";
+            const dotBg = phaseComplete ? L633 : "#f2efe8";
+            const dotBorder = phaseComplete ? L633 : inProgress ? "#111" : "#ccc";
 
             return (
               <div key={phase.id} style={{ position: "relative", marginBottom: 4 }}>
                 {/* Dot */}
                 <div style={{ position: "absolute", left: -31, top: 12, width: 14, height: 14, borderRadius: "50%", background: dotBg, border: `2px solid ${dotBorder}`, transition: "background 0.2s, border-color 0.2s" }} />
                 {/* Phase card */}
-                <div style={{ borderLeft: `3px solid ${phase.colour || "#111"}`, paddingLeft: 12 }}>
+                <div style={{ borderLeft: `3px solid ${L519}`, paddingLeft: 12 }}>
                   {/* Header */}
                   <div
                     onClick={() => setExpandedPhases(p => ({ ...p, [phase.id]: !p[phase.id] }))}

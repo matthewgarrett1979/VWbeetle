@@ -8,7 +8,7 @@ import History from "./History.jsx";
 import Blog from "./Blog.jsx";
 import ModelYear from "./ModelYear.jsx";
 import Setup from "./Setup.jsx";
-import { S, FOLDERS } from "./constants.js";
+import { S, FOLDERS, L519, L633 } from "./constants.js";
 import { fetchFolder as fetchFolderRaw } from "./utils.js";
 
 // ─── CLOUDINARY via serverless API ───────────────────────────────────────────
@@ -98,7 +98,7 @@ function PhotoSlideshow() {
   const src = photos[current];
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "clamp(360px, 60vh, 620px)", overflow: "hidden", background: S.black, borderBottom: S.border }}>
+    <div style={{ position: "relative", width: "100%", height: "clamp(360px, 60vh, 620px)", overflow: "hidden", background: S.black, borderBottom: "4px solid #cc0000" }}>
       <img src={src} alt="Beetle" style={{ width: "100%", height: "100%", objectFit: "cover", opacity, transition: "opacity 0.4s ease", display: "block" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 32px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
@@ -269,11 +269,11 @@ function NavCard({ icon, headline, body, cta, onClick }) {
   const [hov, setHov] = useState(false);
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ border: S.border, padding: "28px 24px", cursor: "pointer", background: hov ? S.ink : S.cream, transition: "background 0.15s", height: "100%" }}>
+      style={{ border: S.border, borderLeft: `3px solid ${L519}`, padding: "28px 24px", cursor: "pointer", background: hov ? S.ink : S.cream, transition: "background 0.15s", height: "100%" }}>
       <div style={{ marginBottom: 20, filter: hov ? "invert(1)" : "none", transition: "filter 0.15s" }}>{icon}</div>
       <div style={{ fontFamily: S.font, fontSize: 15, fontWeight: 900, color: hov ? S.cream : S.ink, letterSpacing: -0.5, marginBottom: 10, textTransform: "uppercase", lineHeight: 1.1 }}>{headline}</div>
       <div style={{ fontFamily: S.font, fontSize: 11, color: hov ? "#aaa" : "#555", lineHeight: 1.8, marginBottom: 18 }}>{body}</div>
-      <div style={{ fontFamily: S.font, fontSize: 9, fontWeight: 700, color: hov ? S.cream : S.red, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
+      <div style={{ fontFamily: S.font, fontSize: 9, fontWeight: 700, color: hov ? S.cream : L633, letterSpacing: 3, textTransform: "uppercase" }}>{cta} →</div>
     </div>
   );
 }
@@ -326,8 +326,9 @@ function HomePage() {
   return (
     <div style={{ background: S.cream, fontFamily: S.font }}>
       <PhotoSlideshow />
+      <div style={{ height: 3, background: L519, width: "100%" }} />
 
-      <div style={{ borderBottom: S.border, background: S.cream }}>
+      <div style={{ borderBottom: S.border, background: S.cream, borderTop: `1px solid ${L633}`, boxShadow: `0 -1px 0 ${L519}` }}>
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px)", display: "flex", gap: 40, flexWrap: "wrap" }}>
           <StatBox number={`${stats.percentage}%`} label="Complete" />
           <StatBox number={stats.done} label="Jobs done" />
@@ -395,7 +396,7 @@ function HomePage() {
               <div style={{ flex: 1, height: 1, background: "#cc0000" }}/>
             </div>
 
-            <p style={{ fontStyle: "italic", color: "#cc0000", textAlign: "center", fontSize: 13, letterSpacing: 2 }}>60 years on from Wolfsburg, it's still being worked on.</p>
+            <p style={{ fontStyle: "italic", color: "#cc0000", textAlign: "center", fontSize: 13, letterSpacing: 2, borderLeft: `2px solid ${L519}`, paddingLeft: 12 }}>60 years on from Wolfsburg, it's still being worked on.</p>
           </div>
         </div>
 
@@ -529,7 +530,7 @@ function Header() {
         <nav style={{ display: "flex", overflowX: "auto", whiteSpace: "nowrap" }}>
           {navItems.map(item => (
             <button key={item.path} onClick={() => navigate(item.path)}
-              style={{ background: location.pathname === item.path ? S.ink : "transparent", color: location.pathname === item.path ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 10px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 8, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", transition: "all 0.15s" }}>
+              style={{ background: location.pathname === item.path ? L633 : "transparent", color: location.pathname === item.path ? S.cream : "#888", border: "none", borderLeft: "1px solid #ccc", padding: "0 10px", height: 52, cursor: "pointer", fontFamily: S.font, fontSize: 8, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", transition: "all 0.15s" }}>
               {item.label}
             </button>
           ))}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { S, FOLDERS } from "./constants.js";
+import { S, FOLDERS, L519, L633 } from "./constants.js";
 import { fetchFolder } from "./utils.js";
 import Lightbox from "./Lightbox.jsx";
 
@@ -24,14 +24,19 @@ export default function Gallery({ setPage }) {
           <div style={{ fontSize: 9, letterSpacing: 6, color: "#555", textTransform: "uppercase", marginBottom: 8 }}>
             Build documentation
           </div>
-          <div style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1 }}>
+          <div style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 900, color: S.cream, letterSpacing: -1, lineHeight: 1, display: "flex", alignItems: "flex-end", gap: 12 }}>
             Gallery.
+            <div style={{ display: "flex", gap: 2, paddingBottom: 4 }}>
+              <div style={{ width: 10, height: 24, background: L519 }} title="L519 Bahama Blue — current" />
+              <div style={{ width: 10, height: 24, background: L633 }} title="L633 VW Blue — original" />
+            </div>
           </div>
           <div style={{ fontSize: 10, color: "#555", letterSpacing: 3, marginTop: 8, textTransform: "uppercase" }}>
             VIN 1170707xx · Surrey, UK
           </div>
         </div>
       </div>
+      <div style={{ height: 3, background: L519, width: "100%" }} />
 
       {/* Grid */}
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px) 64px", width: "100%", boxSizing: "border-box" }}>
@@ -58,7 +63,9 @@ export default function Gallery({ setPage }) {
                 <div
                   key={photo.public_id || i}
                   onClick={() => setLightbox(i)}
-                  style={{ aspectRatio: "4/3", overflow: "hidden", cursor: "pointer", position: "relative", background: S.darkCream, border: "1px solid rgba(0,0,0,0.08)" }}
+                  onMouseEnter={e => e.currentTarget.style.boxShadow = `0 0 0 3px ${L519}`}
+                  onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}
+                  style={{ aspectRatio: "4/3", overflow: "hidden", cursor: "pointer", position: "relative", background: S.darkCream, border: "1px solid rgba(0,0,0,0.08)", transition: "box-shadow 0.15s" }}
                 >
                   <img
                     src={photo.thumb}

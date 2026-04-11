@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { S } from "./constants.js";
+import { S, L519, L633 } from "./constants.js";
 
 const UPSTASH_URL = "https://tight-magpie-91087.upstash.io";
 const UPSTASH_TOKEN = "gQAAAAAAAWPPAAIncDEyZTk4MjE1MTdmMmU0ODJiYTkzOWY5NTlmZDhkOTgyOXAxOTEwODc";
@@ -236,13 +236,14 @@ export default function Blog({ setPage }) {
       <div style={{ minHeight: "100vh", background: S.cream, fontFamily: S.font, overflowX: "hidden", width: "100%" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px clamp(16px, 4vw, 48px) 64px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 36 }}>
-            <button onClick={() => setSelectedPost(null)} style={{ background: "none", border: "none", fontFamily: S.font, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "#888", cursor: "pointer", padding: 0 }}>← Back</button>
+            <button onClick={() => setSelectedPost(null)} style={{ background: "none", border: "none", fontFamily: S.font, fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: L519, cursor: "pointer", padding: 0 }}>← Back</button>
             {adminMode && (
               <button onClick={() => handleDelete(selectedPost.id)} style={{ background: "none", border: "none", fontFamily: S.font, fontSize: 9, letterSpacing: 3, textTransform: "uppercase", color: S.red, cursor: "pointer", padding: 0, fontWeight: 700 }}>Delete</button>
             )}
           </div>
           <div style={{ fontSize: 9, color: S.red, letterSpacing: 4, textTransform: "uppercase", marginBottom: 12 }}>{selectedPost.date}</div>
-          <div style={{ fontSize: "clamp(22px, 5vw, 42px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 28 }}>{selectedPost.title}.</div>
+          <div style={{ fontSize: "clamp(22px, 5vw, 42px)", fontWeight: 900, color: S.ink, letterSpacing: -0.5, lineHeight: 1.1, marginBottom: 8 }}>{selectedPost.title}.</div>
+          <div style={{ height: 2, background: L519, marginBottom: 24 }} />
           <div style={{ fontSize: 14, color: "#333", lineHeight: 1.9 }}>
             {selectedPost.body.split("\n").map((para, i) => para.trim() ? <p key={i} style={{ marginBottom: 16 }}>{para}</p> : <br key={i} />)}
           </div>
@@ -268,12 +269,14 @@ export default function Blog({ setPage }) {
         </div>
       </div>
 
+      <div style={{ height: 3, background: L519, width: "100%" }} />
+
       {/* Admin: new post button */}
       {adminMode && (
         <div style={{ borderBottom: S.border, background: S.darkCream }}>
           <div style={{ maxWidth: 900, margin: "0 auto", padding: "12px clamp(16px, 4vw, 48px)" }}>
             <button onClick={() => setShowEditor(true)}
-              style={{ background: S.red, color: "#fff", border: "none", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", padding: "10px 20px", cursor: "pointer" }}>
+              style={{ background: L633, color: "#fff", border: "none", fontFamily: S.font, fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", padding: "10px 20px", cursor: "pointer" }}>
               New Post +
             </button>
           </div>
@@ -292,10 +295,10 @@ export default function Blog({ setPage }) {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {posts.map(post => (
-              <div key={post.id} onClick={() => setSelectedPost(post)} style={{ border: S.border, padding: "24px", cursor: "pointer", background: S.cream, transition: "background 0.15s" }}
+              <div key={post.id} onClick={() => setSelectedPost(post)} style={{ border: S.border, borderLeft: `3px solid ${L519}`, padding: "24px", cursor: "pointer", background: S.cream, transition: "background 0.15s" }}
                 onMouseEnter={e => e.currentTarget.style.background = S.darkCream}
                 onMouseLeave={e => e.currentTarget.style.background = S.cream}>
-                <div style={{ fontSize: 9, color: S.red, letterSpacing: 4, textTransform: "uppercase", marginBottom: 8 }}>{post.date}</div>
+                <div style={{ fontSize: 9, color: L519, letterSpacing: 4, textTransform: "uppercase", marginBottom: 8 }}>{post.date}</div>
                 <div style={{ fontSize: 16, fontWeight: 900, color: S.ink, letterSpacing: -0.3, marginBottom: 8, lineHeight: 1.2 }}>{post.title}</div>
                 <div style={{ fontSize: 12, color: "#777", lineHeight: 1.7 }}>{post.summary}{post.summary.length >= 120 ? "…" : ""}</div>
               </div>
