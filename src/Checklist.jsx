@@ -215,7 +215,7 @@ export default function Checklist() {
       {showPin && <PINPrompt onUnlock={() => { setUnlocked(true); setShowPin(false); }} />}
 
       {/* ── Sticky progress bar ── */}
-      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "#111111", padding: "10px 16px 0", display: "flex", flexDirection: "column", gap: 6 }}>
+      <div style={{ position: "fixed", top: 52, left: 0, right: 0, zIndex: 99, background: "#111111", padding: "10px 16px 0", display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: 9, letterSpacing: 4, color: "#f2efe8", textTransform: "uppercase", fontFamily: S.font }}>GVU 798D</span>
           <span style={{ fontSize: 9, color: "#cc0000", letterSpacing: 1, fontFamily: S.font }}>{doneCount} of {totalJobs} jobs</span>
@@ -229,10 +229,10 @@ export default function Checklist() {
       </div>
 
       {/* ── Main content ── */}
-      <div style={{ paddingTop: 88 }}>
+      <div style={{ paddingTop: 140 }}>
 
         {/* Lock / sync strip */}
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "8px 16px 8px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", boxSizing: "border-box" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "4px 16px 8px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", boxSizing: "border-box" }}>
           <div
             onClick={() => { if (unlocked) { sessionStorage.removeItem(AUTH_KEY); setUnlocked(false); } else { setShowPin(true); } }}
             style={{ fontSize: 9, color: unlocked ? "#4ade80" : "#aaa", letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", userSelect: "none" }}>
