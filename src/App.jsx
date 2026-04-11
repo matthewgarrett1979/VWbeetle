@@ -295,7 +295,7 @@ function StoryPhoto({ index, photos }) {
 // ─── Home page ────────────────────────────────────────────────────────────────
 function HomePage() {
   const navigate = useNavigate();
-  const [stats, setStats] = useState({ total: 164, done: 83, left: 81, percentage: 51, phases: 11 });
+  const [stats, setStats] = useState({ total: 164, done: 83, left: 81, percentage: 51, phases: 10 });
   useEffect(() => {
     fetch("/api/stats")
       .then(res => res.json())
