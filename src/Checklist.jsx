@@ -5,25 +5,25 @@ const L519 = "#5b8fa8"; // Bahama Blue — current paint
 const L633 = "#2b5c8a"; // VW Blue — original paint
 
 const STORAGE_KEY = "beetle-checklist-v1";
-const UPSTASH_URL = "https://tight-magpie-91087.upstash.io";
-const UPSTASH_TOKEN = "gQAAAAAAAWPPAAIncDEyZTk4MjE1MTdmMmU0ODJiYTkzOWY5NTlmZDhkOTgyOXAxOTEwODc";
 
 async function remoteGet() {
   try {
-    const res = await fetch(`${UPSTASH_URL}/get/${STORAGE_KEY}`, {
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
-    });
+    const res = await fetch('/api/checklist');
     const data = await res.json();
-    return data.result ? JSON.parse(data.result) : null;
+    return data.checked || null;
   } catch { return null; }
 }
 
 async function remoteSet(value) {
   try {
-    const encoded = encodeURIComponent(JSON.stringify(value));
-    await fetch(`${UPSTASH_URL}/set/${STORAGE_KEY}/${encoded}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+    const session = sessionStorage.getItem("beetle-session") || "";
+    await fetch('/api/checklist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session}`,
+      },
+      body: JSON.stringify({ checked: value }),
     });
   } catch {}
 }
@@ -58,6 +58,7 @@ function PINPrompt({ onUnlock }) {
       const data = await res.json();
       if (data.valid) {
         sessionStorage.setItem(AUTH_KEY, "1");
+        if (data.session) sessionStorage.setItem("beetle-session", data.session);
         onUnlock();
       } else {
         setInputError(true);

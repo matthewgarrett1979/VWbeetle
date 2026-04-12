@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import { S, L519, L633 } from "./constants.js";
 
-const UPSTASH_URL = "https://tight-magpie-91087.upstash.io";
-const UPSTASH_TOKEN = "gQAAAAAAAWPPAAIncDEyZTk4MjE1MTdmMmU0ODJiYTkzOWY5NTlmZDhkOTgyOXAxOTEwODc";
-const BLOG_KEY = "beetle-blog-posts";
 const AUTH_KEY = "beetle-auth";
 
 async function fetchPosts() {
   try {
-    const res = await fetch(`${UPSTASH_URL}/get/${BLOG_KEY}`, {
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` }
-    });
+    const res = await fetch('/api/posts');
     const data = await res.json();
-    return data.result ? JSON.parse(data.result) : [];
+    return data.posts || [];
   } catch { return []; }
 }
 
 async function savePosts(posts) {
   try {
-    const encoded = encodeURIComponent(JSON.stringify(posts));
-    await fetch(`${UPSTASH_URL}/set/${BLOG_KEY}/${encoded}`, {
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` }
+    const session = sessionStorage.getItem("beetle-session") || "";
+    await fetch('/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session}`,
+      },
+      body: JSON.stringify({ posts }),
     });
   } catch {}
 }
@@ -75,6 +75,7 @@ export default function Blog({ setPage }) {
       if (data.valid) {
         setAdminMode(true);
         sessionStorage.setItem(AUTH_KEY, "1");
+        if (data.session) sessionStorage.setItem("beetle-session", data.session);
         setShowPinEntry(false);
         setPin("");
       } else {
@@ -129,17 +130,13 @@ export default function Blog({ setPage }) {
         summary: newBody.trim().slice(0, 120),
       };
       const updated = [newPost, ...existing];
-      const encoded = encodeURIComponent(JSON.stringify(updated));
-      const res = await fetch(`${UPSTASH_URL}/set/${BLOG_KEY}/${encoded}`, {
-        headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
-      });
-      await res.json();
+      await savePosts(updated);
       setPosts(updated);
       setNewTitle('');
       setNewBody('');
       setShowEditor(false);
-    } catch (err) {
-      alert('Failed to save post: ' + err.message);
+    } catch {
+      alert('Failed to save post.');
     } finally {
       setSaving(false);
     }
