@@ -166,14 +166,44 @@ export const phases = [
     note: "Car is on axle stands — full access to suspension front and rear. Do all suspension work before the car comes down. New steering box and damper already fitted — centre the box, check column and coupler. Tracking done after road test.",
     colour: "#111",
     jobs: [
-      { id: "2a", text: "Install Bilstein B6 front shock absorber — n/s side (Bilstein part 24-006200). Torque upper nut to 30Nm, lower mounting bolt to 50Nm.", resource: { label: "▶ Front shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+front+shock+absorber+replacement" } },
-      { id: "2b", text: "Install Bilstein B6 front shock absorber — o/s side. Replace dust covers and bump stops if worn.", resource: { label: "▶ Front shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+front+shock+absorber+replacement" } },
-      { id: "2c", text: "Install Bilstein B6 rear shock absorber — n/s side (Bilstein part 24-181488). Upper eye bolt torque 20Nm, lower eye bolt torque 50Nm.", resource: { label: "▶ Rear shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+rear+shock+absorber+replacement" } },
-      { id: "2d", text: "Install Bilstein B6 rear shock absorber — o/s side. Check rubber bushes in all four mounting eyes before fitting.", resource: { label: "▶ Rear shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+rear+shock+absorber+replacement" } },
-      { id: "2e", text: "Centre new steering box — count full lock to lock, set to mid-point before connecting drag link", resource: { label: "▶ Adjustment guide — Torkwerks", url: "https://torkwerks.com/vw-beetle-steering-box-adjustment/" } },
-      { id: "2f", text: "Check steering column and coupler / rag joint for wear or play", resource: { label: "▶ Column discussion — Volkszone", url: "https://www.volkszone.com/threads/steering-box-adjustment.1602295/" } },
-      { id: "2g", text: "New steering damper already fitted — confirm correct orientation and torque mountings" },
-    ],
+  { id: "2a", text: "Raise front axle and support securely on axle stands under chassis — ensure front suspension is fully unloaded before adjustment" },
+
+  { id: "2b", text: "Adjust front torsion bar preload using beam adjusters — slacken lock nuts on upper and lower tubes, rotate adjuster to raise ride height slightly, then re-tighten lock nuts evenly. Make small incremental changes and keep both adjusters matched side-to-side to maintain balance.", resource: { label: "▶ Beam adjuster setup (short guide)", url: "https://youtube.com/shorts/uzfdAx3KJBc?si=AZT33oozDSc80BO4" } },
+
+  { id: "2c", text: "Set baseline ride height — measure from floor to front wheel arch both sides and ensure even adjustment before proceeding" },
+
+  { id: "2d", text: "Grease front torsion bar beam via all grease nipples until fresh grease is visible at trailing arms — wipe excess and check for blocked nipples", resource: { label: "▶ Greasing front beam guide", url: "https://www.youtube.com/results?search_query=vw+beetle+front+beam+grease+points" } },
+
+  { id: "2e", text: "Cycle front suspension manually through travel (raise/lower hub) to distribute grease and confirm smooth movement with no binding" },
+
+  { id: "2f", text: "Install Bilstein B6 front shock absorber — n/s side (Bilstein part 24-006200). Torque upper nut to 30Nm, lower mounting bolt to 50Nm.", resource: { label: "▶ Front shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+front+shock+absorber+replacement" } },
+
+  { id: "2g", text: "Install Bilstein B6 front shock absorber — o/s side. Replace dust covers and bump stops if worn.", resource: { label: "▶ Front shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+front+shock+absorber+replacement" } },
+
+  { id: "2h", text: "Install Bilstein B6 rear shock absorber — n/s side (Bilstein part 24-181488). Upper eye bolt torque 20Nm, lower eye bolt torque 50Nm.", resource: { label: "▶ Rear shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+rear+shock+absorber+replacement" } },
+
+  { id: "2i", text: "Install Bilstein B6 rear shock absorber — o/s side. Check rubber bushes in all four mounting eyes before fitting.", resource: { label: "▶ Rear shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+rear+shock+absorber+replacement" } },
+
+  { id: "2j", text: "Centre new steering box — count full lock to lock, set to mid-point before connecting drag link", resource: { label: "▶ Adjustment guide — Torkwerks", url: "https://torkwerks.com/vw-beetle-steering-box-adjustment/" } },
+
+  { id: "2k", text: "Check steering column and coupler / rag joint for wear or play", resource: { label: "▶ Column discussion — Volkszone", url: "https://www.volkszone.com/threads/steering-box-adjustment.1602295/" } },
+
+  { id: "2l", text: "New steering damper already fitted — confirm correct orientation and torque mountings" },
+
+  { id: "2m", text: "Reinstall wheels and torque wheel bolts to 130Nm — lower vehicle to ground" },
+
+  { id: "2n", text: "Settle suspension — bounce each corner to allow torsion bars and dampers to seat correctly" },
+
+  { id: "2o", text: "Final ride height check — measure front arch heights again and confirm level side-to-side; adjust beam again if required" },
+
+  { id: "2p", text: "Check front toe alignment — set slight toe-in (approx. 2–3mm total) to stabilise steering", resource: { label: "▶ Toe setting guide — VW Beetle", url: "https://www.youtube.com/results?search_query=vw+beetle+toe+alignment+string+method" } },
+
+  { id: "2q", text: "Static steering and suspension check — turn steering lock-to-lock and confirm smooth movement with no binding, knocks, or fouling" },
+
+  { id: "2r", text: "Recheck all accessible fasteners — confirm shock mounts, beam adjuster lock nuts, and steering components remain correctly torqued after settling" },
+
+  { id: "2s", text: "Visual inspection — confirm brake hoses, hard lines, and steering components have adequate clearance throughout full suspension and steering travel" },
+],
   },
   {
     id: 3,
