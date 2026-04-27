@@ -312,7 +312,7 @@ function HomePage() {
     { date: "October 2025",       label: "Bodywork complete",                detail: "Respray in L519 VW Blue. All structural work finished.",                           status: "done"   },
     { date: "November 2025",      label: "Mechanical restoration begins",    detail: "Engine out. Gearbox, clutch, seals, brakes.",                                      status: "done"   },
     { date: "April 2026",         label: "Engine rebuild",                   detail: "1641cc twin port installed. Blaupunkt Frankfurt X refitted.",                      status: "active" },
-    { date: "15 June 2026",       label: "Target — road ready",              detail: "First drive. Sixty years from Wolfsburg.",                                         status: "target" },
+    { date: "15 August 2026",     label: "Target — road ready and 60ty Birthday!",              detail: "First drive. Sixty years from Wolfsburg.",                                         status: "target" },
   ];
 
   const [storyPhotos, setStoryPhotos] = useState([]);
