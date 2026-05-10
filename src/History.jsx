@@ -43,12 +43,18 @@ export default function History({ setPage }) {
               ["Current registration", "GVU 798D"],
               ["Delivered", "Ramsgate, GB — Aug 1966"],
               ["Original colour", "L633 VW Blue"],
+              ["Original dealer (likely)", "Gerry Hill's Volkswagen, Leyton"],
             ].map(([label, value]) => (
               <div key={label} style={{ borderLeft: `2px solid ${L519}`, paddingLeft: 12, borderBottom: `1px solid ${L519}99`, paddingBottom: 8 }}>
                 <div style={{ fontSize: 9, color: "#888", letterSpacing: 3, textTransform: "uppercase", marginBottom: 3 }}>{label}</div>
                 <div style={{ fontSize: 12, color: L633, fontWeight: 700 }}>{value}</div>
               </div>
             ))}
+          </div>
+          <div style={{ marginTop: 20, paddingTop: 16, borderTop: `1px solid ${L519}33` }}>
+            <div style={{ fontSize: 11, color: "#666", lineHeight: 1.8, maxWidth: 640 }}>
+              The <span style={{ fontWeight: 700, color: S.ink }}>CJD</span> prefix was issued by West Ham County Borough Council, placing the car's first registration in East London. Based on this, it was most likely supplied through a local authorised dealer — possibly <span style={{ fontWeight: 700, color: S.ink }}>Gerry Hill's Volkswagen showroom in Leyton</span>, one of the area's dealers operating at the time.
+            </div>
           </div>
         </div>
       </div>
