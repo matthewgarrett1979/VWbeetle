@@ -60,9 +60,40 @@ const comparison = [
   },
 ];
 
+const exteriorSpec = [
+  { item: "Running board covering", value: "PVC black" },
+  { item: "Wing / fender piping", value: "VW blue" },
+  { item: "Wheel hub disc", value: "L 43 grey-black" },
+  { item: "Chassis parts / underfloor", value: "L 41 black" },
+  { item: "Rim well (wheel centre)", value: "L 680 cumulus white" },
+  { item: "Engine compartment tin", value: "L 41 black" },
+];
+
+const interiorSpec = [
+  { item: "Upholstery fabric", value: "structured platinum (64)" },
+  { item: "Upholstery leatherette", value: "platinum (64)" },
+  { item: "Door trim panel", value: "platinum" },
+  { item: "Armrest", value: "platinum" },
+  { item: "Carpet / edging tape", value: "T 317 lava" },
+  { item: "Headlining", value: "K 456B cloud white" },
+  { item: "Door pillar trim", value: "K 458B cloud white" },
+  { item: "Sunroof lining", value: "K 457B cloud white" },
+  { item: "Seat frames", value: "L 43 grey-black" },
+  { item: "Steering column / wheel", value: "L 43 grey-black" },
+  { item: "Gear lever", value: "L 43 grey-black" },
+  { item: "Handbrake lever", value: "L 43 grey-black" },
+  { item: "Sun visor", value: "Ks 81 cloud white" },
+  { item: "Gear / handbrake knobs", value: "black" },
+  { item: "Switch knobs", value: "black" },
+  { item: "Rubber coverings", value: "lava" },
+  { item: "Grab strap / coat hook", value: "Ku 003 cloud white" },
+  { item: "Fuel tank", value: "L 41 black" },
+];
+
 export default function ModelYear({ setPage }) {
   const [photos1967, setPhotos1967] = useState([]);
   const [lightbox1967, setLightbox1967] = useState(null);
+  const [colourView, setColourView] = useState("exterior");
 
   useEffect(() => {
     fetchFolder("beetle/1967").then(imgs => setPhotos1967(imgs));
@@ -142,6 +173,105 @@ export default function ModelYear({ setPage }) {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* ── Factory colour specification ── */}
+      <div style={{ borderTop: S.border, borderBottom: S.border }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+
+          {/* Header */}
+          <div style={{ background: S.ink, padding: "20px clamp(16px, 4vw, 48px)", borderBottom: S.border }}>
+            <div style={{ fontSize: 9, letterSpacing: 6, color: L519, textTransform: "uppercase", marginBottom: 4 }}>Factory Records</div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: S.cream, letterSpacing: -0.5, marginBottom: 4 }}>Original factory colour specification.</div>
+            <div style={{ fontSize: 9, color: "#555", letterSpacing: 2, textTransform: "uppercase" }}>L 633 VW Blue · 1967 model year · Source: buginfo.de</div>
+          </div>
+
+          {/* Image viewer */}
+          <div style={{ background: "#0d0d0d", borderBottom: S.border }}>
+            {/* Tab switcher */}
+            <div style={{ display: "flex", gap: 0, borderBottom: "1px solid #222", padding: "0 clamp(16px, 4vw, 48px)" }}>
+              {[
+                { key: "exterior", label: "Exterior" },
+                { key: "interior1", label: "Interior — front" },
+                { key: "interior2", label: "Interior — rear" },
+              ].map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setColourView(key)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    borderBottom: colourView === key ? `2px solid ${L519}` : "2px solid transparent",
+                    color: colourView === key ? S.cream : "#555",
+                    fontFamily: S.font,
+                    fontSize: 9,
+                    letterSpacing: 3,
+                    textTransform: "uppercase",
+                    padding: "12px 16px 10px",
+                    cursor: "pointer",
+                    transition: "color 0.15s",
+                    marginBottom: -1,
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {/* Image */}
+            <div style={{ display: "flex", justifyContent: "center", padding: "24px clamp(16px, 4vw, 48px)" }}>
+              <img
+                src={
+                  colourView === "exterior" ? "/l633-exterior.gif"
+                  : colourView === "interior1" ? "/l633-interior1.gif"
+                  : "/l633-interior2.gif"
+                }
+                alt={`L 633 VW Blue — ${colourView}`}
+                style={{ maxWidth: "100%", height: "auto", display: "block", imageRendering: "auto" }}
+              />
+            </div>
+            <div style={{ fontSize: 9, color: "#333", letterSpacing: 3, textTransform: "uppercase", textAlign: "center", paddingBottom: 16 }}>
+              Factory illustration · L 633 VW Blue · © buginfo.de
+            </div>
+          </div>
+
+          {/* Two-column spec grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
+
+            {/* Exterior column */}
+            <div style={{ background: S.darkCream, padding: "28px clamp(16px, 4vw, 32px)", borderRight: S.border }}>
+              <div style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase", color: "#888", marginBottom: 20 }}>Exterior specification</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                {exteriorSpec.map(({ item, value }) => (
+                  <div key={item} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, padding: "8px 0", borderBottom: "1px solid rgba(0,0,0,0.07)" }}>
+                    <div style={{ fontSize: 11, color: S.ink, lineHeight: 1.4 }}>{item}</div>
+                    <div style={{ fontSize: 10, color: "#666", letterSpacing: 0.5, textAlign: "right", flexShrink: 0 }}>{value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Interior column */}
+            <div style={{ background: L633, padding: "28px clamp(16px, 4vw, 32px)" }}>
+              <div style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase", color: L519, marginBottom: 20 }}>Interior specification</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                {interiorSpec.map(({ item, value }) => (
+                  <div key={item} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, padding: "8px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                    <div style={{ fontSize: 11, color: S.cream, lineHeight: 1.4 }}>{item}</div>
+                    <div style={{ fontSize: 10, color: "#8ab0cc", letterSpacing: 0.5, textAlign: "right", flexShrink: 0 }}>{value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Footnote */}
+          <div style={{ background: S.cream, borderTop: S.border, padding: "16px clamp(16px, 4vw, 48px)" }}>
+            <div style={{ fontSize: 10, color: "#777", lineHeight: 1.8, maxWidth: 700 }}>
+              Standard interior: structured platinum (64). Optional at extra cost: full basket-weave leatherette, platinum (86) — confirmed on this car by interior code 86 on the Wolfsburg Certificate.
+            </div>
+          </div>
+
         </div>
       </div>
 
