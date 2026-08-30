@@ -177,7 +177,7 @@ export const phases = [
   { id: "2i", text: "Install Bilstein B6 rear shock absorber — o/s side. Check rubber bushes in all four mounting eyes before fitting.", resource: { label: "▶ Rear shock replacement guide", url: "https://www.youtube.com/results?search_query=VW+Beetle+type+1+rear+shock+absorber+replacement" } },
   { id: "2j", text: "Centre new steering box — count full lock to lock, set to mid-point before connecting drag link", resource: { label: "▶ Adjustment guide — Torkwerks", url: "https://torkwerks.com/vw-beetle-steering-box-adjustment/" } },
   { id: "2k", text: "Check steering column and coupler / rag joint for wear or play", resource: { label: "▶ Column discussion — Volkszone", url: "https://www.volkszone.com/threads/steering-box-adjustment.1602295/" } },
-  { id: "2l", text: "New steering damper already fitted — confirm correct orientation and torque mountings" }
+  { id: "2l", text: "New steering damper already fitted — confirm correct orientation and torque mountings" },
   { id: "2m", text: "Reinstall wheels and torque wheel bolts to 130Nm — lower vehicle to ground" },
   { id: "2n", text: "Settle suspension — bounce each corner to allow torsion bars and dampers to seat correctly" },
   { id: "2o", text: "Final ride height check — measure front arch heights again and confirm level side-to-side; adjust beam again if required" },
