@@ -5,25 +5,25 @@ const L519 = "#5b8fa8"; // Bahama Blue — current paint
 const L633 = "#2b5c8a"; // VW Blue — original paint
 
 const STORAGE_KEY = "beetle-checklist-v1";
-const UPSTASH_URL = "https://tight-magpie-91087.upstash.io";
-const UPSTASH_TOKEN = "gQAAAAAAAWPPAAIncDEyZTk4MjE1MTdmMmU0ODJiYTkzOWY5NTlmZDhkOTgyOXAxOTEwODc";
 
 async function remoteGet() {
   try {
-    const res = await fetch(`${UPSTASH_URL}/get/${STORAGE_KEY}`, {
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
-    });
+    const res = await fetch('/api/checklist');
     const data = await res.json();
-    return data.result ? JSON.parse(data.result) : null;
+    return data.checked || null;
   } catch { return null; }
 }
 
 async function remoteSet(value) {
   try {
-    const encoded = encodeURIComponent(JSON.stringify(value));
-    await fetch(`${UPSTASH_URL}/set/${STORAGE_KEY}/${encoded}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+    const session = sessionStorage.getItem("beetle-session") || "";
+    await fetch('/api/checklist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session}`,
+      },
+      body: JSON.stringify({ checked: value }),
     });
   } catch {}
 }
@@ -58,6 +58,7 @@ function PINPrompt({ onUnlock }) {
       const data = await res.json();
       if (data.valid) {
         sessionStorage.setItem(AUTH_KEY, "1");
+        if (data.session) sessionStorage.setItem("beetle-session", data.session);
         onUnlock();
       } else {
         setInputError(true);
@@ -138,12 +139,12 @@ function PINPrompt({ onUnlock }) {
   );
 }
 
-// ── Shared small components ───────────────────────────────────────────────────
+// ── Small components ──────────────────────────────────────────────────────────
 
 function Chevron({ open }) {
   return (
-    <svg width="12" height="12" viewBox="0 0 12 12" style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>
-      <polyline points="2,4 6,8 10,4" stroke="#999" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="12" height="12" viewBox="0 0 12 12" style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s", flexShrink: 0 }}>
+      <polyline points="4,2 8,6 4,10" stroke="#999" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -152,6 +153,16 @@ function Tick({ color = "#f2efe8" }) {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10">
       <polyline points="1.5,5 4,7.5 8.5,2" stroke={color} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function InfoIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" style={{ flexShrink: 0, marginTop: 2 }}>
+      <circle cx="8" cy="8" r="6.5" stroke="#cc6600" strokeWidth="1.5" fill="none" />
+      <line x1="8" y1="7" x2="8" y2="11.5" stroke="#cc6600" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="8" cy="4.8" r="0.9" fill="#cc6600" />
     </svg>
   );
 }
@@ -175,7 +186,6 @@ export default function Checklist() {
   const [expandedBuild, setExpandedBuild] = useState({});
   const [expandedPhases, setExpandedPhases] = useState({});
 
-  // On mount — pull from Upstash (cloud is source of truth)
   useEffect(() => {
     remoteGet().then((remote) => {
       if (remote && Object.keys(remote).length > 0) {
@@ -186,7 +196,6 @@ export default function Checklist() {
     });
   }, []);
 
-  // On every change after first load — save to both localStorage and Upstash
   useEffect(() => {
     if (isFirstLoad.current) { isFirstLoad.current = false; return; }
     if (!synced) return;
@@ -232,7 +241,7 @@ export default function Checklist() {
       <div style={{ paddingTop: 140 }}>
 
         {/* Lock / sync strip */}
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "4px 16px 8px 48px", display: "flex", justifyContent: "space-between", alignItems: "center", boxSizing: "border-box" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "4px 16px 8px", display: "flex", justifyContent: "space-between", alignItems: "center", boxSizing: "border-box" }}>
           <div
             onClick={() => { if (unlocked) { sessionStorage.removeItem(AUTH_KEY); setUnlocked(false); } else { setShowPin(true); } }}
             style={{ fontSize: 9, color: unlocked ? "#4ade80" : "#aaa", letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", userSelect: "none" }}>
@@ -243,59 +252,77 @@ export default function Checklist() {
           </div>
         </div>
 
-        {/* ── Vertical timeline ── */}
-        <div style={{ maxWidth: 640, margin: "0 auto", paddingLeft: 48, paddingRight: "clamp(16px, 4vw, 32px)", paddingBottom: 64, position: "relative", boxSizing: "border-box" }}>
+        {/* ── Timeline ── */}
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 16px 64px", position: "relative", boxSizing: "border-box" }}>
 
-          {/* Vertical centre line */}
-          <div style={{ position: "absolute", top: 0, bottom: 0, left: 24, width: 2, background: L519 + "66" }} />
+          {/* Vertical spine — absolute, runs full height of timeline */}
+          <div style={{ position: "absolute", top: 0, bottom: 64, left: 43, width: 2, background: L519 + "4c" }} />
 
-          {/* ── BUILD RECORD ── */}
-          <div style={{ position: "relative", borderBottom: "1px solid #111", padding: "12px 0", marginBottom: 8 }}>
-            <div style={{ fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase" }}>Professional Works</div>
-            <div style={{ fontSize: 11, color: "#666", fontStyle: "italic", marginTop: 2 }}>Beetlelink — March to October 2025</div>
+          {/* ── BUILD RECORD HEADER ── */}
+          <div style={{ display: "flex", alignItems: "flex-start" }}>
+            <div style={{ width: 56, flexShrink: 0, display: "flex", justifyContent: "center", paddingTop: 16, position: "relative", zIndex: 1 }}>
+              <div style={{ width: 20, height: 20, borderRadius: "50%", background: "#111", border: "2px solid #111" }} />
+            </div>
+            <div style={{ flex: 1, paddingTop: 10, paddingBottom: 20 }}>
+              <div style={{ fontSize: 9, letterSpacing: 6, color: "#888", textTransform: "uppercase", marginBottom: 4 }}>Beetlelink Professional Works</div>
+              <div style={{ fontSize: 11, color: "#666", fontStyle: "italic", marginBottom: 10 }}>March — October 2025</div>
+              <div style={{ display: "inline-block", padding: "3px 10px", background: "#111", color: "#f2efe8", fontSize: 9, letterSpacing: 2, fontFamily: S.font }}>
+                {BUILD_RECORD_TOTAL} JOBS COMPLETE
+              </div>
+            </div>
           </div>
 
+          {/* ── BUILD RECORD PHASES ── */}
           {buildRecord.map((phase) => {
             const isOpen = !!expandedBuild[phase.id];
             return (
-              <div key={phase.id} style={{ position: "relative", marginBottom: 2 }}>
-                {/* Dot */}
-                <div style={{ position: "absolute", left: -30, top: 14, width: 12, height: 12, borderRadius: "50%", background: "#111", border: "2px solid #111" }} />
-                {/* Header */}
-                <div
-                  onClick={() => setExpandedBuild(p => ({ ...p, [phase.id]: !p[phase.id] }))}
-                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0 10px 0", cursor: "pointer", userSelect: "none", gap: 8 }}
-                >
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 10, flex: 1 }}>
-                    <span style={{ fontSize: 9, letterSpacing: 5, color: "#999", textTransform: "uppercase" }}>{phase.phase}</span>
-                    <span style={{ fontSize: 9, color: "#aaa" }}>{phase.date}</span>
-                  </div>
-                  <Chevron open={isOpen} />
+              <div key={phase.id} style={{ display: "flex", alignItems: "flex-start" }}>
+                {/* Node */}
+                <div style={{ width: 56, flexShrink: 0, display: "flex", justifyContent: "center", paddingTop: 14, position: "relative", zIndex: 1 }}>
+                  <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#111", border: "2px solid #111" }} />
                 </div>
-                {/* Jobs */}
-                {isOpen && (
-                  <div style={{ paddingBottom: 8 }}>
-                    {phase.jobs.map((job, i) => {
-                      const isNote = job.startsWith("NOTE:");
-                      return (
-                        <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "7px 0", borderBottom: i < phase.jobs.length - 1 ? "1px solid #e8e8e4" : "none" }}>
-                          <div style={{ width: 16, height: 16, flexShrink: 0, marginTop: 1, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Tick />
-                          </div>
-                          <div style={{ fontSize: 12, color: isNote ? "#cc6600" : "#aaa", lineHeight: 1.5, fontStyle: isNote ? "italic" : "normal" }}>
-                            {job}
-                          </div>
-                        </div>
-                      );
-                    })}
+                {/* Content */}
+                <div style={{ flex: 1, borderBottom: "1px solid #e8e4db" }}>
+                  <div
+                    onClick={() => setExpandedBuild(p => ({ ...p, [phase.id]: !p[phase.id] }))}
+                    style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0 8px", cursor: "pointer", userSelect: "none", gap: 8 }}
+                  >
+                    <div>
+                      <div style={{ fontSize: "clamp(12px, 3vw, 13px)", fontWeight: 700, color: "#111", lineHeight: 1.2 }}>{phase.phase}</div>
+                      <div style={{ fontSize: 10, color: "#999", fontStyle: "italic", marginTop: 2 }}>{phase.date}</div>
+                    </div>
+                    <Chevron open={isOpen} />
                   </div>
-                )}
+                  {isOpen && (
+                    <div style={{ paddingBottom: 12 }}>
+                      {phase.jobs.map((job, i) => {
+                        const isNote = job.startsWith("NOTE:");
+                        return (
+                          <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0", borderBottom: i < phase.jobs.length - 1 ? "1px solid #f0ede8" : "none" }}>
+                            {isNote ? (
+                              <InfoIcon />
+                            ) : (
+                              <div style={{ width: 16, height: 16, flexShrink: 0, marginTop: 1, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Tick />
+                              </div>
+                            )}
+                            <div style={{ fontSize: 11, color: isNote ? "#cc6600" : "#999", lineHeight: 1.5, fontStyle: isNote ? "italic" : "normal" }}>
+                              {job}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
 
-          {/* ── YOUR WORKS divider ── */}
-          <div style={{ fontSize: 9, letterSpacing: 6, color: "#999", textTransform: "uppercase", margin: "24px 0 12px" }}>Your Works</div>
+          {/* ── YOUR RESTORATION DIVIDER ── */}
+          <div style={{ marginLeft: -16, marginRight: -16, marginTop: 12, marginBottom: 4, background: "#e0ddd6", padding: "14px 72px 14px 72px" }}>
+            <div style={{ fontSize: 9, letterSpacing: 6, color: "#888", textTransform: "uppercase" }}>Your Restoration</div>
+          </div>
 
           {/* ── INTERACTIVE PHASES ── */}
           {phases.map((phase) => {
@@ -304,57 +331,78 @@ export default function Checklist() {
             const inProgress = phaseDone > 0 && !phaseComplete;
             const isOpen = !!expandedPhases[phase.id];
 
-            const dotBg = phaseComplete ? L633 : "#f2efe8";
+            const parts = phase.phase.split(" — ");
+            const phaseLabel = parts[0];
+            const phaseName = parts.slice(1).join(" — ") || parts[0];
+
+            const dotBg = phaseComplete ? L633 : inProgress ? "#fff" : "#f2efe8";
             const dotBorder = phaseComplete ? L633 : inProgress ? "#111" : "#ccc";
 
             return (
-              <div key={phase.id} style={{ position: "relative", marginBottom: 4 }}>
-                {/* Dot */}
-                <div style={{ position: "absolute", left: -31, top: 12, width: 14, height: 14, borderRadius: "50%", background: dotBg, border: `2px solid ${dotBorder}`, transition: "background 0.2s, border-color 0.2s" }} />
-                {/* Phase card */}
-                <div style={{ borderLeft: `3px solid ${L519}`, paddingLeft: 12 }}>
-                  {/* Header */}
+              <div key={phase.id} style={{ display: "flex", alignItems: "flex-start" }}>
+                {/* Node */}
+                <div style={{ width: 56, flexShrink: 0, display: "flex", justifyContent: "center", paddingTop: 14, position: "relative", zIndex: 1 }}>
+                  <div style={{ width: 20, height: 20, borderRadius: "50%", background: dotBg, border: `2px solid ${dotBorder}`, transition: "background 0.2s, border-color 0.2s", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {phaseComplete && <Tick color={S.cream} />}
+                  </div>
+                </div>
+                {/* Content */}
+                <div style={{ flex: 1, borderBottom: "1px solid #e8e4db" }}>
+                  {/* Phase header */}
                   <div
                     onClick={() => setExpandedPhases(p => ({ ...p, [phase.id]: !p[phase.id] }))}
-                    style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "12px 0 8px", cursor: "pointer", userSelect: "none", gap: 8 }}
+                    style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "12px 0 10px", cursor: "pointer", userSelect: "none", gap: 8 }}
                   >
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: "clamp(13px, 3vw, 15px)", fontWeight: 700, color: "#111", lineHeight: 1.2 }}>
-                        {phase.phase}
-                      </div>
-                      {isOpen && (
-                        <div style={{ fontSize: 11, color: "#777", fontStyle: "italic", marginTop: 4, lineHeight: 1.6 }}>{phase.note}</div>
-                      )}
+                      <div style={{ fontSize: 9, letterSpacing: 5, color: "#999", textTransform: "uppercase", marginBottom: 3 }}>{phaseLabel}</div>
+                      <div style={{ fontSize: "clamp(13px, 3vw, 15px)", fontWeight: 700, color: "#111", lineHeight: 1.2 }}>{phaseName}</div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, paddingTop: 2 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, paddingTop: 4 }}>
                       {phaseComplete ? (
-                        <span style={{ fontSize: 13, color: "#cc0000", fontWeight: 700, lineHeight: 1 }}>✓</span>
+                        <span style={{ fontSize: 8, letterSpacing: 2, color: L633, border: `1px solid ${L633}`, padding: "2px 8px", fontWeight: 700, fontFamily: S.font }}>COMPLETE</span>
                       ) : (
-                        <span style={{ fontSize: 10, color: "#999" }}>{phaseDone} / {phase.jobs.length}</span>
+                        <span style={{ fontSize: 10, color: "#aaa", fontFamily: S.font }}>{phaseDone}/{phase.jobs.length}</span>
                       )}
                       <Chevron open={isOpen} />
                     </div>
                   </div>
+                  {/* Note — only when expanded */}
+                  {isOpen && phase.note && (
+                    <div style={{ fontSize: 11, color: "#777", fontStyle: "italic", lineHeight: 1.6, paddingBottom: 10, borderBottom: "1px solid #ece9e2" }}>
+                      {phase.note}
+                    </div>
+                  )}
                   {/* Jobs */}
                   {isOpen && (
-                    <div style={{ paddingBottom: 8 }}>
+                    <div style={{ paddingTop: 6, paddingBottom: 12 }}>
                       {phase.jobs.map((job, i) => {
+                        const isNote = job.text.startsWith("NOTE:");
                         const isWarning = job.text.startsWith("⚠️");
                         const done = !!checked[job.id];
                         return (
-                          <div key={job.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < phase.jobs.length - 1 ? "1px solid #f0f0f0" : "none" }}>
-                            {/* Checkbox */}
-                            <div
-                              onClick={() => toggle(job.id)}
-                              style={{ width: 18, height: 18, flexShrink: 0, marginTop: 1, cursor: "pointer", border: `2px solid ${done ? "#111" : isWarning ? "#cc6600" : "#111"}`, background: done ? "#111" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", userSelect: "none", transition: "background 0.1s" }}
-                            >
-                              {done && <Tick />}
-                            </div>
-                            {/* Text */}
+                          <div key={job.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < phase.jobs.length - 1 ? "1px solid #f0ede8" : "none" }}>
+                            {isNote ? (
+                              <div style={{ marginTop: 1, flexShrink: 0 }}><InfoIcon /></div>
+                            ) : (
+                              <div
+                                onClick={() => toggle(job.id)}
+                                style={{ width: 18, height: 18, flexShrink: 0, marginTop: 1, cursor: "pointer", border: `2px solid ${done ? "#111" : isWarning ? "#cc6600" : "#ccc"}`, background: done ? "#111" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", userSelect: "none", transition: "background 0.1s, border-color 0.1s" }}
+                              >
+                                {done && <Tick />}
+                              </div>
+                            )}
                             <div style={{ flex: 1 }}>
                               <span
-                                onClick={() => toggle(job.id)}
-                                style={{ fontSize: 12, color: done ? "#aaa" : isWarning ? "#cc6600" : "#111", cursor: "pointer", userSelect: "none", lineHeight: 1.5 }}
+                                onClick={() => !isNote && toggle(job.id)}
+                                style={{
+                                  fontSize: 12,
+                                  color: isNote ? "#cc6600" : isWarning ? "#cc6600" : done ? "#bbb" : "#111",
+                                  cursor: isNote ? "default" : "pointer",
+                                  userSelect: "none",
+                                  lineHeight: 1.5,
+                                  fontStyle: isNote ? "italic" : "normal",
+                                  textDecoration: !isNote && done ? "line-through" : "none",
+                                }}
                               >
                                 {job.text}
                               </span>
@@ -375,7 +423,7 @@ export default function Checklist() {
           })}
 
           {/* Footer */}
-          <div style={{ marginTop: 40, fontSize: 10, color: "#bbb", letterSpacing: 3, textTransform: "uppercase" }}>
+          <div style={{ marginTop: 48, paddingLeft: 56, fontSize: 10, color: "#bbb", letterSpacing: 3, textTransform: "uppercase" }}>
             Volkswagen · Beetle · 1966 · Resto '26 · 60 Years Anniversary
           </div>
 

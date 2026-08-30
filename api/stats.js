@@ -1,8 +1,7 @@
 import { buildRecord, phases } from '../src/data/checklist-data.js';
+import { UPSTASH_URL, UPSTASH_TOKEN } from './_upstash.js';
 
-const UPSTASH_URL = "https://tight-magpie-91087.upstash.io";
-const UPSTASH_TOKEN = "gQAAAAAAAWPPAAIncDEyZTk4MjE1MTdmMmU0ODJiYTkzOWY5NTlmZDhkOTgyOXAxOTEwODc";
-const STORAGE_KEY = "beetle-checklist-v1";
+const STORAGE_KEY = 'beetle-checklist-v1';
 
 export default async function handler(req, res) {
   try {

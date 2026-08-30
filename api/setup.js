@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   const secret = authenticator.generateSecret();
-  const otpauth = authenticator.keyuri('matthew@vwbeetle66.com', 'VW Beetle 66', secret);
+  const otpauth = authenticator.keyuri('admin', 'VW Beetle 66', secret);
   const qrDataUrl = await QRCode.toDataURL(otpauth);
 
   res.status(200).json({ secret, qrDataUrl, otpauth });
