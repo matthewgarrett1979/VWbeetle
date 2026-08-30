@@ -1,26 +1,9 @@
-const UPSTASH_URL = process.env.UPSTASH_URL;
-const UPSTASH_TOKEN = process.env.UPSTASH_TOKEN;
-const BLOG_KEY = 'beetle-blog-posts';
+import { UPSTASH_URL, UPSTASH_TOKEN, verifySession, bearerFrom } from './_upstash.js';
 
-async function verifySession(sessionId) {
-  if (!sessionId || !UPSTASH_URL || !UPSTASH_TOKEN) return false;
-  try {
-    const res = await fetch(`${UPSTASH_URL}/get/session:${sessionId}`, {
-      headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
-    });
-    const data = await res.json();
-    return data.result === '1';
-  } catch {
-    return false;
-  }
-}
+const BLOG_KEY = 'beetle-blog-posts';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
-
-  if (!UPSTASH_URL || !UPSTASH_TOKEN) {
-    return res.status(500).json({ error: 'Storage not configured' });
-  }
 
   if (req.method === 'GET') {
     try {
@@ -36,9 +19,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const auth = req.headers.authorization ?? '';
-    const sessionId = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-    if (!(await verifySession(sessionId))) {
+    if (!(await verifySession(bearerFrom(req)))) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 

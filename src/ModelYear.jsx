@@ -93,7 +93,6 @@ const interiorSpec = [
 export default function ModelYear({ setPage }) {
   const [photos1967, setPhotos1967] = useState([]);
   const [lightbox1967, setLightbox1967] = useState(null);
-  const [colourView, setColourView] = useState("exterior");
 
   useEffect(() => {
     fetchFolder("beetle/1967").then(imgs => setPhotos1967(imgs));
@@ -184,54 +183,16 @@ export default function ModelYear({ setPage }) {
           <div style={{ background: S.ink, padding: "20px clamp(16px, 4vw, 48px)", borderBottom: S.border }}>
             <div style={{ fontSize: 9, letterSpacing: 6, color: L519, textTransform: "uppercase", marginBottom: 4 }}>Factory Records</div>
             <div style={{ fontSize: 18, fontWeight: 900, color: S.cream, letterSpacing: -0.5, marginBottom: 4 }}>Original factory colour specification.</div>
-            <div style={{ fontSize: 9, color: "#555", letterSpacing: 2, textTransform: "uppercase" }}>L 633 VW Blue · 1967 model year · Source: buginfo.de</div>
-          </div>
-
-          {/* Image viewer */}
-          <div style={{ background: "#0d0d0d", borderBottom: S.border }}>
-            {/* Tab switcher */}
-            <div style={{ display: "flex", gap: 0, borderBottom: "1px solid #222", padding: "0 clamp(16px, 4vw, 48px)" }}>
-              {[
-                { key: "exterior", label: "Exterior" },
-                { key: "interior1", label: "Interior — front" },
-                { key: "interior2", label: "Interior — rear" },
-              ].map(({ key, label }) => (
-                <button
-                  key={key}
-                  onClick={() => setColourView(key)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    borderBottom: colourView === key ? `2px solid ${L519}` : "2px solid transparent",
-                    color: colourView === key ? S.cream : "#555",
-                    fontFamily: S.font,
-                    fontSize: 9,
-                    letterSpacing: 3,
-                    textTransform: "uppercase",
-                    padding: "12px 16px 10px",
-                    cursor: "pointer",
-                    transition: "color 0.15s",
-                    marginBottom: -1,
-                  }}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            {/* Image */}
-            <div style={{ display: "flex", justifyContent: "center", padding: "24px clamp(16px, 4vw, 48px)" }}>
-              <img
-                src={
-                  colourView === "exterior" ? "/l633-exterior.gif"
-                  : colourView === "interior1" ? "/l633-interior1.gif"
-                  : "/l633-interior2.gif"
-                }
-                alt={`L 633 VW Blue — ${colourView}`}
-                style={{ maxWidth: "100%", height: "auto", display: "block", imageRendering: "auto" }}
-              />
-            </div>
-            <div style={{ fontSize: 9, color: "#333", letterSpacing: 3, textTransform: "uppercase", textAlign: "center", paddingBottom: 16 }}>
-              Factory illustration · L 633 VW Blue · © buginfo.de
+            <div style={{ fontSize: 9, color: "#555", letterSpacing: 2, textTransform: "uppercase" }}>
+              L 633 VW Blue · 1967 model year · Data compiled from{" "}
+              <a
+                href="http://letsrace.de/bug_mobil/typ1/1967/1300_1500/l633vwblau.htm"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: L519, textDecoration: "none", borderBottom: `1px solid ${L519}66` }}
+              >
+                buginfo.de
+              </a>
             </div>
           </div>
 

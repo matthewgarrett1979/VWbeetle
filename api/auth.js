@@ -1,14 +1,12 @@
 import { authenticator } from 'otplib';
 import crypto from 'crypto';
+import { UPSTASH_URL, UPSTASH_TOKEN } from './_upstash.js';
 
-const UPSTASH_URL = process.env.UPSTASH_URL;
-const UPSTASH_TOKEN = process.env.UPSTASH_TOKEN;
 const SESSION_TTL = 86400; // 24 hours
 const MAX_ATTEMPTS = 5;
 const WINDOW_SECONDS = 60;
 
 async function rateLimit(ip) {
-  if (!UPSTASH_URL || !UPSTASH_TOKEN) return false;
   const key = `auth-rate:${ip}`;
   try {
     // Atomic INCR + EXPIRE via pipeline
@@ -33,7 +31,6 @@ async function rateLimit(ip) {
 
 async function createSession() {
   const sessionId = crypto.randomBytes(32).toString('hex');
-  if (!UPSTASH_URL || !UPSTASH_TOKEN) return sessionId;
   try {
     await fetch(`${UPSTASH_URL}/set/session:${sessionId}/1/ex/${SESSION_TTL}`, {
       headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },

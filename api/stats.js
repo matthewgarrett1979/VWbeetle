@@ -1,7 +1,6 @@
 import { buildRecord, phases } from '../src/data/checklist-data.js';
+import { UPSTASH_URL, UPSTASH_TOKEN } from './_upstash.js';
 
-const UPSTASH_URL = process.env.UPSTASH_URL;
-const UPSTASH_TOKEN = process.env.UPSTASH_TOKEN;
 const STORAGE_KEY = 'beetle-checklist-v1';
 
 export default async function handler(req, res) {
